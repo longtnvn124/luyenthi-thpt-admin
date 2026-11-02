@@ -1,0 +1,46 @@
+<!-- cardClass="user-card" -->
+<app-card [showHeader]="false" cardClass="pc-user-card" [padding]="20">
+  <div class="flex align-items-center">
+    <div class="flex-shrink-0">
+      <img [src]="avatar | safeUrl" alt="user-image" class="user-avatar" />
+    </div>
+    <div class="flex-grow-1 user-details">
+      <span class="ml-2 font-medium">{{ userDisplay }} </span>
+      <!-- <small>{{ roleName }}</small> -->
+    </div>
+    <div class="user-setting">
+      <a href="javascript:" [matMenuTriggerFor]="menu" class="text-muted">
+        <i class="ph-duotone ph-windows-logo text-xl"></i>
+        <!-- <svg class="pc-icon">
+          <use href="assets/fonts/custom-icon.svg#custom-sort-outline"></use>
+        </svg> -->
+      </a>
+      <mat-menu #menu="matMenu" [overlapTrigger]="false" yPosition="above" xPosition="after">
+        <button mat-menu-item>
+          <a routerLink="/admin/he-thong/thong-tin-tai-khoan" class="text-muted" routerLinkActive="vertical-menu-active">
+            <i class="ti ti-user f-18 m-r-10"></i>
+            <span class="mat-body">Tài khoản</span>
+          </a>
+        </button>
+        <button mat-menu-item>
+          <a href="javascript:" routerLink="settings" routerLinkActive="vertical-menu-active" class="text-muted">
+            <i class="ti ti-settings f-18 m-r-10"></i>
+            <span class="mat-body">Cài đặt</span>
+          </a>
+        </button>
+        <button mat-menu-item>
+          <a routerLink="/admin/he-thong/thong-tin-tai-khoan" routerLinkActive="vertical-menu-active" class="text-muted">
+            <i class="ti ti-lock f-18 m-r-10"></i>
+            <span class="mat-body">Cập nhật mật khẩu</span>
+          </a>
+        </button>
+        <!-- <button mat-menu-item (click)="confirmLogout()">
+                  <div class="text-muted">
+                      <i class="ti ti-power f-18 m-r-10"></i>
+                      <span class="mat-body">Đăng xuất</span>
+                  </div>
+              </button> -->
+      </mat-menu>
+    </div>
+  </div>
+</app-card>

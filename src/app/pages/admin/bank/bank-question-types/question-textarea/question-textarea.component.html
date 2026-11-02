@@ -1,0 +1,6 @@
+<div class="question-type-input-box" *ngIf="question()">
+	<label style="position: static;margin: 0 0 10px 0;font-size: 15px;color: #000;font-weight: 500;">Hướng dẫn chấm</label>
+	<div class="group-radio-question__block__editor">
+		<app-ictu-wrap-editor [initData]="question().scoring_guide" (resultData)="updateScoringGuide($event)"></app-ictu-wrap-editor>
+	</div>
+</div>

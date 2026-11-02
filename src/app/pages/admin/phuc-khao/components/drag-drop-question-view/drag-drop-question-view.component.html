@@ -1,0 +1,31 @@
+<div class="drap-drop-question-view">
+    <div class="drap-drop-question-view-content">
+        <div class="data-value w-100 d-flex flex-wrap justify-content-center">
+            <div class="item-data-value lock-ck-content" [innerHTML]="item.value | safeHtml" [IctuMediaLoader]="i" *ngFor="let item of questionData.answer_option; index as i">
+                <!-- {{item.value}} -->
+            </div>
+        </div>
+        <div class="data-answer mt-2 w-100">
+            <div class="subquestion row mb-2 " *ngFor="let item of questionData.subQuestions; index as i">
+                <div class="col-4 lock-ck-content">
+                    <div class="d-flex align-items-center">
+                        <span [innerHTML]="item.question_direction | safeHtml" [IctuMediaLoader]="i"></span> <span>&nbsp;:</span> 
+                    </div>
+                </div>
+                <div class="value-answer col-4 lock-ck-content" [ngClass]="!item.is_correct ? 'border-red' : ''">
+                    <div  [innerHTML]="getAnswerOption(item.answer) | safeHtml" [IctuMediaLoader]="i+1" class="value-answer-content" [ngClass]="getStyleClass(item)">
+                        <!-- {{getAnswerOption(item.answer)}} -->
+                    </div>
+                </div>
+                <div class="col-4 lock-ck-content" *ngIf="!item.is_correct">
+                    <div [innerHTML]="getAnswerOptionCorrect(item) | safeHtml" [IctuMediaLoader]="i+2" class="value-answer-correct checkmark">
+                        <!-- {{getAnswerOptionCorrect(item)}} -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+                            

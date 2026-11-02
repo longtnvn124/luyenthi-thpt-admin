@@ -1,0 +1,28 @@
+<div *ngIf="question()" class="drag-and-drop-question drag-and-drop-question--enable-input-question-number">
+	<div class="drag-and-drop-question__list">
+		<div class="drag-and-drop-question__list__input" *ngFor="let child of question().children; index as i">
+			<!-- <input tooltipStyleClass="ictu-p-tooltip" pTooltip="Số câu hỏi" tooltipPosition="top" class="drag-and-drop-question__list__input__question-number" type="text" pInputText [(ngModel)]="child.question_number" placeholder="Câu số..."> -->
+			<div class="drag-and-drop-question__list__input__direction">
+				<b class="question-preview__question__direction__prefix" style="font-family: 'Roboto', sans-serif;line-height: 1.5;font-size: 17px;font-weight: 700;text-transform: uppercase;color: #000000;margin: 0 0 5px;display: block;"> CÂU HỎI
+					<div class="ovic-vertical__inputs ovic-vertical__inputs--layout-2" style="width: 100px; display: inline-block; padding: 0;">
+						<input tooltipStyleClass="ictu-p-tooltip" pTooltip="Số câu hỏi" tooltipPosition="top" type="text" class="admin-wrap-table__head-actions__search" pInputText [(ngModel)]="child.question_number" (ngModelChange)="changes()" placeholder="..." style="font-family: 'Roboto', sans-serif;font-size: 15px; font-weight: 700; color: #000000; border-radius: 4px; height: auto; line-height: 1; padding: 9px 10px;">
+					</div>
+				</b>
+				<app-ictu-wrap-editor style="max-width: 100%;" [initData]="child.content" (resultData)="changeContent($event , child)"></app-ictu-wrap-editor>
+			</div>
+			<div class="drag-and-drop-question__list__input__answer-correct">
+				<b class="question-preview__question__direction__prefix" style="font-family: 'Roboto', sans-serif;line-height: 1.5;font-size: 17px;font-weight: 700;text-transform: uppercase;color: #000000;margin: 0 0 11px;display: block;padding: 6px 0 0;">Đáp án</b>
+				<app-ictu-wrap-editor style="max-width: 100%;" [initData]="child['__text']" (resultData)="changeAnswer($event , child)"></app-ictu-wrap-editor>
+			</div>
+			<button style="padding: 0;margin-top: 20px;" pButton pRipple (click)="deleteChildQuestion(child,i)" class="drag-and-drop-question__list__input__btn-delete p-button-danger p-button-rounded p-button-text" icon="pi pi-trash"></button>
+		</div>
+		<button (click)="addNewMoreChild()" class="drag-and-drop-question__list__btn-add">
+			<i class="pi pi-plus-circle"></i>Thêm câu hỏi
+		</button>
+	</div>
+<!-- 	<div class="grouping-question__disturbed-answers"> -->
+<!-- 		<h4 class="grouping-question__disturbed-answers__heading">Các phương án gây nhiễu</h4> -->
+<!-- 		<input class="grouping-question__disturbed-answers__input" type="text" pInputText [(ngModel)]="distractorGroup.text" (ngModelChange)="onChangesDisturbedAnswers()"> -->
+<!-- 		<small class="grouping-question__section__text-guide text-secondary">Các phương án ngăn cách nhau bởi dấu chấm phẩy( ";")</small> -->
+<!-- 	</div> -->
+</div>

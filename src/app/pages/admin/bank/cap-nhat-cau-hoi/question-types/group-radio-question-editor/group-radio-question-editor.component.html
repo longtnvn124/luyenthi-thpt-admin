@@ -1,0 +1,46 @@
+<div class="group-radio-question question-type-radio" *ngIf="question">
+    <ul class="question-type-radio__list" *ngIf="question.children.length">
+        <li class="question-type-radio__list__element" [ngClass]="'question-type-radio__list__element--size-'+question.config.cols" *ngFor="let childQuestion of question.children; index as i">
+            <div class="group-radio-question__block" *ngIf="!isPresent">
+                <div class="group-radio-question__block__head">
+                    <!-- <input type="text" pInputText placeholder="Nội dung câu hỏi" class="group-radio-question__block__input" [(ngModel)]="childQuestion.question_direction"> -->
+                    <div class="row align-items-center ">
+                        <div [class]="question.config.cols == 1 ? 'col-11' : 'col-10'">
+                            <app-input-question-direction
+                            [htmlInputModel]="childQuestionsDirection[i]"
+                            (editorContentEmit)="editorContentChange($event,i)"
+                            ></app-input-question-direction>
+                        </div>
+                        <div [class]="question.config.cols == 1 ? 'col-1' : 'col-2'">
+                            <button (click)="deleteAnswer(i)" pButton pRipple icon="pi pi-trash" class="question-type-radio__option__btn-remove p-button-danger p-button-rounded p-button-text p-button-outlined"></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="group-radio-question__block__buttons">
+                    <button *ngFor="let answer of childQuestion.answer_option" (click)="markCorrectAnswer(childQuestion,answer.id)" class="group-radio-question__block__buttons__btn" [class.question-type-radio__option--correct]="isCorrectAnswer(childQuestion,answer.id)">{{ answer.value }}</button>
+                </div>
+            </div>
+            <div class="group-radio-question__block" *ngIf="isPresent">
+                <div class="group-radio-question__block__head lock-ck-content">
+                    <div class="lqc-present-single-question__direction " [appLoadMediaOnText]="childQuestion['id']" [innerHTML]="childQuestion.question_direction | safeHtmlSingle"></div>
+<!--                    <input type="text" pInputText placeholder="Nội dung câu hỏi" class="group-radio-question__block__input" [value]="childQuestion.question_direction" disabled="disabled">-->
+                    <!-- <button (click)="deleteAnswer(i)" pButton pRipple icon="pi pi-trash" class="question-type-radio__option__btn-remove p-button-danger p-button-rounded p-button-text p-button-outlined"></button>-->
+                </div>
+                <div class="group-radio-question__block__buttons">
+                    <button *ngFor="let answer of childQuestion.answer_option" class="group-radio-question__block__buttons__btn" [class.question-type-radio__option--correct]="isCorrectAnswer(childQuestion,answer.id)">{{ answer.value }}</button>
+                </div>
+            </div>
+        </li>
+    </ul>
+    <div class="question-type-radio__footer d-flex justify-content-between align-items-center" *ngIf="!isPresent">
+        <p-checkbox [(ngModel)]="question.config.invertedAnswer" [binary]="true" label="Đảo vị trí của phương án trả lời"></p-checkbox>
+        <div class="ovic-vertical__inputs ovic-vertical__inputs--layout-2">
+            <p class="form-row mt-0">
+                <p-dropdown class="input-element ovic-dropdown-style" [filter]="false" [options]="colOptions" [(ngModel)]="question.config.cols" optionLabel="label" optionValue="value" optionDisabled="disable" placeholder="--Lựa chọn--"></p-dropdown>
+            </p>
+        </div>
+        <button (click)="addMoreAnswerOption()" class="typical-question__btn-add">
+            <i class="pi pi-plus-circle"></i>Thêm câu hỏi
+        </button>
+    </div>
+</div>

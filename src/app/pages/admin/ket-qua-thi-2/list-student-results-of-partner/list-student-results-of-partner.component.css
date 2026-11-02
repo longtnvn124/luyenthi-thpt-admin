@@ -1,0 +1,64 @@
+.test-results-side__body {
+    height: calc(100% - 50px);
+    min-height: calc(100% - 50px);
+    max-height: calc(100% - 50px);
+    flex: 1 1 auto;
+    overflow-y: auto;
+}
+
+.test-results-side__foot {
+    min-height: 50px;
+    max-height: 50px;
+    height: 50px;
+    background-color: #ffffff;
+    box-shadow: 0 -1px 0 0 var(--ictu-admin-side-layout-side-border-color);
+}
+
+.admin-wrap-table__body {
+    box-shadow: 1px 1px 0 0 var(--ictu-admin-side-layout-side-border-color);
+}
+
+.admin-wrap-table__body .admin-table th,
+.admin-wrap-table__body .admin-table td {
+    box-shadow: -1px -1px 0 0 var(--ictu-admin-side-layout-side-border-color);
+}
+
+.test-results__button {
+    border: none;
+    background-color: transparent;
+    outline: none;
+    box-shadow: none;
+    padding: 0;
+}
+
+.test-results__button:hover {
+    color: var(--primary);
+}
+
+.ictu-dashboard-dialog__body table,
+.ictu-dashboard-dialog__body table tr,
+.ictu-dashboard-dialog__body table td,
+.ictu-dashboard-dialog__body table th {
+    font-family: var(--primary-font), sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: #333333;
+}
+
+.ictu-dashboard-dialog__body table th {
+    font-weight: 700;
+}
+
+.ictu-dashboard-dialog__body table td,
+.ictu-dashboard-dialog__body table th {
+    padding: 10px;
+    text-align: center;
+}
+
+.col-index {
+    min-width: 50px;
+}
+
+.col-student-name {
+    min-width: 200px;
+}

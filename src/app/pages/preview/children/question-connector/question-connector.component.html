@@ -1,0 +1,15 @@
+<div class="container" #container>
+	<svg class="svg-connector">
+		<path *ngFor="let path of svgPaths" [attr.d]="path" stroke="blue" fill="transparent" stroke-width="2"/>
+	</svg>
+	<div class="columns">
+		<div class="column">
+			<h3>Câu hỏi</h3>
+			<div *ngFor="let q of questions; let i = index" class="item" [id]="'q-' + i" (click)="connect(i)">{{ q }}</div>
+		</div>
+		<div class="column">
+			<h3>Đáp án</h3>
+			<div *ngFor="let a of answers; let i = index" class="item" [id]="'a-' + i" (click)="connect(i)">{{ a }}</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,1581 @@
+.content-table-custom .table-header {
+  border: 1px solid #dee2e6;
+  background-color: #fff;
+}
+
+.content-table-custom .title-left {
+  margin: 0 auto 0 0;
+  font-size: 16px;
+  line-height: 1;
+  font-weight: 700;
+  padding: 5px;
+
+  /* color: '#118d57';
+      background-color: '#22c55e29';
+      color: #006c9c
+      backgroundColor:#00b8d929 */
+}
+
+.ovic-side-navigation-content__body {
+  max-height: calc(
+    var(--max-screen-height) - var(--side-navigation-offset-top, 60px) -
+      80px
+  ) !important;
+}
+
+.active-devices {
+  color: #28a745;
+}
+
+.not-active-devices {
+  color: #888888;
+}
+
+.theo-doi-sinhvien-ca-thi {
+  padding: 0px !important;
+  display: flex;
+}
+
+.theo-doi-sinhvien-ca-thi-left {
+  width: 100px;
+  height: 100%;
+  border-right: 1px solid #c8c8c8;
+}
+
+.theo-doi-sinhvien-ca-thi-left input {
+  width: 100%;
+  border: 1px solid #c8c8c8;
+  padding: 0px 5px;
+  font-size: 14px;
+  height: 100%;
+}
+
+.theo-doi-sinhvien-ca-thi-left-search {
+  padding: 5px;
+  border-bottom: 1px solid #c8c8c8;
+  height: 40px;
+}
+
+.theo-doi-sinhvien-ca-thi-left-body {
+  overflow-y: auto;
+  height: calc(100% - 40px);
+  font-size: 14px;
+}
+
+.room-shift-test {
+  padding: 5px;
+  margin-bottom: 1px;
+  background: #f4f4f4;
+  cursor: pointer;
+}
+
+.room-shift-test:hover {
+  background: #8dcdff78;
+}
+
+.hight-light-room {
+  background: #8dcdff78;
+}
+
+.theo-doi-sinhvien-ca-thi-right {
+  width: calc(100% - 100px);
+  height: 100%;
+}
+
+.theo-doi-sinhvien-ca-thi-right-top input {
+  padding: 0 5px;
+  border: 1px solid #c8c8c8;
+  font-size: 14px;
+  margin-left: 5px;
+  width: 200px;
+  height: 100%;
+}
+
+.theo-doi-sinhvien-ca-thi-right-bottom {
+  height: calc(100% - 40px);
+  overflow: auto;
+}
+
+.theo-doi-sinhvien-ca-thi-right-top {
+  padding: 5px;
+  text-align: right;
+  border-bottom: 1px solid #c8c8c8;
+  height: 40px;
+}
+
+.theo-doi-sinhvien-ca-thi-right-bottom span {
+  font-size: 14px;
+}
+
+.item-list-cathi-style span,
+.item-list-cathi-style i {
+  background: transparent;
+}
+
+.item-list-cathi-style:hover {
+  /* background: #03a9f43b !important; */
+}
+
+.number-of-index {
+  min-width: 50px;
+  text-align: center;
+  border-right: 1px solid #ffffff;
+  padding: 0 5px;
+}
+
+.col-of-student {
+  min-width: 250px;
+  padding-right: 5px;
+  padding-left: 5px;
+}
+
+.col-of-date {
+  min-width: 100px;
+  padding: 0 5px;
+}
+
+.col-of-gender {
+  min-width: 80px;
+  padding: 0 5px;
+}
+
+.col-of-code {
+  min-width: 100px;
+  padding: 0 5px;
+}
+
+.col-of-phone {
+  min-width: 200px;
+  padding: 0 5px;
+}
+
+.col-of-email {
+  min-width: 250px;
+  padding: 0 5px;
+}
+
+.col-of-status {
+  min-width: 100px;
+  padding: 0 5px;
+}
+
+.col-of-devices {
+  min-width: 150px;
+  padding: 0 5px;
+}
+
+.item-list-cathi-style .col-of-acion {
+  min-width: 300px;
+  text-align: center;
+  padding: 0 5px;
+}
+
+.item-list-cathi-style .col-of-acion button {
+  border-color: transparent !important;
+  background-color: transparent !important;
+}
+
+.item-list-cathi-style .col-of-acion button .fa-times {
+  color: red;
+}
+
+.item-list-cathi-style .col-of-acion button .fa-eye,
+.item-list-cathi-style .col-of-acion button .fa-pencil {
+  color: #1b81d7;
+}
+
+.col-of-acion .fa-pause {
+  color: #28a745;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.col-of-acion .fa-play {
+  color: #28a745;
+  font-size: 14px;
+  cursor: pointer;
+}
+.col-of-acion .fa-stop-circle-o {
+  color: #ffb74b;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.col-of-ip {
+  min-width: 300px;
+}
+
+.col-of-iptype {
+  min-width: 80px;
+}
+
+.col-of-browser {
+  min-width: 150px;
+}
+
+.theo-doi-sinhvien-ca-thi-right-top .list-style-right-top,
+.theo-doi-sinhvien-ca-thi-right-top .grid-style-right-top {
+  border-radius: 0px;
+  height: 30px;
+  width: 30px;
+  padding: 0px;
+}
+
+.theo-doi-sinhvien-ca-thi-right-top .list-style-right-top {
+  border-bottom-left-radius: 3px;
+  border-top-left-radius: 3px;
+}
+
+.theo-doi-sinhvien-ca-thi-right-top .speak-style-right-top {
+  border-bottom-right-radius: 3px;
+  border-top-right-radius: 3px;
+}
+
+.theo-doi-sinhvien-ca-thi-right-top .list-style-right-top i,
+.theo-doi-sinhvien-ca-thi-right-top .grid-style-right-top i {
+  margin: 0 auto;
+  font-size: 14px;
+  padding: 7px 0px;
+}
+
+.is-grid-style-open,
+.is-list-style-open {
+  background: #c8c8c8;
+  color: #333333 !important;
+  border: 1px solid #c8c8c8;
+}
+
+.header-list-type .col-of-status {
+  cursor: pointer;
+}
+
+.header-list-type {
+  cursor: default;
+  font-weight: bold;
+  position: sticky;
+  top: 0px;
+  background: #eaeaea !important;
+}
+
+.sinhvien-ca-thi-grid-style {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.sinhvien-ca-thi-speak-style {
+  padding: 5px;
+}
+
+.item-grid-cathi-style {
+  width: 25%;
+  /* height: 200px; */
+  padding: 5px;
+}
+
+.item-grid-cathi-style-content {
+  border: 1px solid #c8c8c8;
+  border: 1px solid #c8c8c8;
+  margin: 0 auto;
+  height: 100%;
+}
+
+@media (max-width: 1024px) {
+  .item-grid-cathi-style {
+    width: 50%;
+  }
+}
+
+@media (max-width: 1539px) and (min-width: 1025px) {
+  .item-grid-cathi-style {
+    width: 33.33%;
+  }
+}
+
+.set-background-row {
+  padding: 5px 5px;
+}
+
+.set-background-header {
+  padding: 5px;
+}
+
+.item-grid-cathi-style-content {
+  padding: 5px;
+  display: flex;
+  background: #f2f2f2;
+  flex-wrap: wrap;
+}
+
+.item-grid-cathi-style-content-image {
+  height: 100px;
+  width: 100px;
+  background: #ffffff;
+  border-radius: 50%;
+  position: relative;
+}
+
+.item-grid-cathi-style-content-image img {
+  height: auto;
+  width: 100%;
+}
+
+.item-grid-cathi-style-content-image-image {
+  height: 100px;
+  width: 100px;
+  background: #ffffff;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.item-grid-cathi-style-content-left {
+  width: 100px;
+  position: relative;
+  height: calc(100% - 34);
+}
+
+.item-grid-cathi-style-content-info {
+  flex-flow: column;
+  display: flex;
+  line-height: 1.5;
+  padding: 0 5px;
+  /* width: calc(100% - 100px);
+    height: calc(100% - 34px); */
+}
+
+.item-grid-cathi-style-content-info .col-of-student-text {
+  font-weight: bold;
+}
+
+.item-grid-cathi-style-content-action-bottom {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  height: 34px;
+}
+
+.item-grid-cathi-style-content-action-bottom .col-of-acion {
+  text-align: left;
+  padding: 0px !important;
+  bottom: 0px;
+}
+
+.item-grid-cathi-style-content-action-bottom .col-of-acion button i {
+  color: #ffffff;
+  margin: 0 auto;
+}
+
+.item-grid-cathi-style-content-action-bottom .col-of-acion button {
+  width: 26px;
+  height: 26px;
+  padding: 0px;
+}
+
+.male-gender-icon {
+  color: #1b81d7;
+}
+
+.female-gender-icon {
+  color: #f27474;
+}
+
+.gender-student-icon {
+  position: absolute;
+  bottom: 0px;
+  width: 25px;
+  right: 8px;
+  height: 25px;
+  border-radius: 50%;
+  text-align: center;
+  vertical-align: middle;
+  font-weight: bold;
+  background: #f2f2f2;
+  font-size: 16px !important;
+}
+
+.item-grid-cathi-style-content.student-done,
+.item-list-cathi-style.student-done {
+  background: #c1e597;
+}
+
+.sinhvien-ca-thi-speak-style .student-done {
+  background: #28a745;
+  padding: 5px;
+  color: #ffffff;
+}
+
+.sinhvien-ca-thi-speak-style .student-is-testing {
+  background: #ff980075;
+}
+
+.item-grid-cathi-style-content.student-is-testing,
+.item-list-cathi-style.student-is-testing {
+  background: #ff980075;
+}
+
+.item-grid-cathi-style-content-info-border-mid {
+  width: 100%;
+  border-bottom: 1px dashed #333333;
+  height: 1px;
+  padding: 5px;
+}
+
+.theo-doi-sinhvien-ca-thi-right-top .sort-by-status {
+  height: 30px;
+  width: 30px;
+  padding: 0px;
+  margin-right: 5px;
+}
+
+.theo-doi-sinhvien-ca-thi-right-top .sort-by-status i {
+  margin: 0 auto;
+  font-size: 14px;
+  padding: 7px 0px;
+}
+
+.show-avatar-only {
+  text-align: center;
+}
+
+.item-grid-cathi-style-content-left-bottom {
+  text-align: center;
+}
+
+.item-grid-cathi-style-content-info label {
+  font-size: 14px !important;
+  margin: 0 !important;
+}
+
+.item-grid-info-title {
+  display: inline-flex;
+  width: 65px;
+}
+
+.item-grid-cathi-style .col-of-acion button {
+  margin-right: 5px;
+}
+
+.view-student-content {
+  height: calc(100% - 59px);
+  margin: 0px;
+  padding: 0px;
+  overflow-y: hidden;
+}
+
+.info-student-view {
+  font-size: 15px;
+  flex: 1;
+}
+
+.info-student-view-name {
+  font-weight: bold;
+}
+
+.view-student-header {
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #c8c8c8;
+  margin-bottom: 5px;
+}
+
+.view-student-header-action button {
+  font-size: 14px;
+  padding: 1px 5px;
+  margin-left: 5px;
+}
+
+.view-student-header-action button i {
+  font-size: 14px !important;
+  line-height: 1 !important;
+}
+
+.view-student-body {
+  height: calc(100% - 36.16px);
+  overflow-y: auto;
+  font-size: 15px;
+}
+
+.view-student-body-skill-name {
+  display: flex;
+  margin-bottom: 5px;
+  border-bottom: none !important;
+  padding: 5px;
+  align-items: center;
+}
+
+.view-student-body-skill-part {
+  display: flex;
+  margin-bottom: 5px;
+  align-items: center;
+  padding: 5px;
+  padding-left: 10px;
+  background-color: #f2f2f2;
+}
+
+.view-student-body-skill-name-skill {
+  width: 350px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.view-student-body-skill-name button {
+  padding: 1.6px 5px;
+}
+
+.view-student-body-skill {
+  margin-bottom: 5px;
+  border-bottom: 1px solid #c8c8c8;
+}
+
+.view-student-body-skill-name input {
+  border: 1px solid #c8c8c8;
+  padding: 0 5px;
+}
+
+.view-student-body-skill-part-skill {
+  width: 345px;
+  text-transform: uppercase;
+  font-size: 14px;
+}
+
+.view-student-body-skill-part button {
+  padding: 1.6px 5px;
+}
+
+.view-student-status {
+  font-weight: bold;
+}
+
+.view-student-body-skill-name-action {
+  display: flex;
+  align-items: center;
+  width: calc(100% - 450px);
+  text-align: right;
+  justify-content: flex-end;
+}
+
+.view-student-body-skill-name-action button i {
+  font-size: 14px;
+  line-height: 1 !important;
+}
+
+.view-student-status,
+.view-student-status-part {
+  width: 100px;
+  padding: 0 5px;
+  text-align: center;
+}
+
+.working-part {
+  background: #ff980075;
+}
+
+.done-part {
+  background: #28a745;
+  color: #ffffff;
+}
+
+.info-control-action {
+  font-size: 15px;
+}
+
+.sinhvien-ca-thi-speak-style .student-reject {
+  background-color: #f27474d1;
+  padding: 5px;
+  color: #ffffff;
+}
+
+.theo-doi-sinhvien-ca-thi-right .student-reject {
+  background-color: #f27474d1;
+}
+
+.no-data-dmshifttest {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+
+.no-data-dmshifttest label {
+  font-size: 15px;
+}
+
+.view-student-body-skill-name-skill i {
+  font-style: normal;
+  font-weight: normal;
+  text-transform: lowercase;
+}
+
+.example-section {
+  display: flex;
+  align-content: center;
+  align-items: center;
+}
+
+.example-margin {
+  font-size: 14px;
+}
+
+.table-input-point-speak {
+  width: 100%;
+  border: 1px solid #c8c8c8;
+  padding: 3px 2px;
+  text-align: center;
+}
+
+.active-devices {
+  color: #28a745;
+}
+
+.not-active-devices {
+  color: #888888;
+}
+
+.theo-doi-sinhvien-ca-thi {
+  padding: 0px !important;
+  display: flex;
+}
+
+.theo-doi-sinhvien-ca-thi-left {
+  width: 100px;
+  height: 100%;
+  border-right: 1px solid #c8c8c8;
+}
+
+.theo-doi-sinhvien-ca-thi-left input {
+  width: 100%;
+  border: 1px solid #c8c8c8;
+  padding: 0px 5px;
+  font-size: 14px;
+  height: 100%;
+}
+
+.theo-doi-sinhvien-ca-thi-left-search {
+  padding: 5px;
+  border-bottom: 1px solid #c8c8c8;
+  height: 40px;
+}
+
+.theo-doi-sinhvien-ca-thi-left-body {
+  overflow-y: auto;
+  height: calc(100% - 40px);
+  font-size: 14px;
+}
+
+.room-shift-test {
+  padding: 5px;
+  margin-bottom: 1px;
+  background: #f4f4f4;
+  cursor: pointer;
+}
+
+.room-shift-test:hover {
+  background: #8dcdff78;
+}
+
+.hight-light-room {
+  background: #8dcdff78;
+}
+
+.theo-doi-sinhvien-ca-thi-right {
+  width: calc(100% - 100px);
+  height: 100%;
+}
+
+.theo-doi-sinhvien-ca-thi-right-top input {
+  padding: 0 5px;
+  border: 1px solid #c8c8c8;
+  font-size: 14px;
+  margin-left: 5px;
+  width: 200px;
+  height: 100%;
+}
+
+.theo-doi-sinhvien-ca-thi-right-bottom {
+  height: calc(100% - 40px);
+  overflow: auto;
+}
+
+.theo-doi-sinhvien-ca-thi-right-top {
+  padding: 5px;
+  text-align: right;
+  border-bottom: 1px solid #c8c8c8;
+  height: 40px;
+}
+
+.theo-doi-sinhvien-ca-thi-right-bottom span {
+  font-size: 14px;
+}
+
+.item-list-cathi-style {
+  display: flex;
+  /* margin: 1px 0px; */
+  cursor: pointer;
+  /* background: #f2f2f2; */
+}
+
+.item-list-cathi-style * {
+  background: inherit;
+}
+
+.item-list-cathi-style span,
+.item-list-cathi-style i {
+  background: transparent;
+}
+
+.item-list-cathi-style:hover {
+  /* background: #03a9f43b !important; */
+}
+
+.number-of-index {
+  min-width: 50px;
+  text-align: center;
+  border-right: 1px solid #ffffff;
+  padding: 0 5px;
+}
+
+.col-of-student {
+  min-width: 250px;
+  padding-right: 5px;
+  padding-left: 5px;
+}
+
+.col-of-date {
+  min-width: 100px;
+  padding: 0 5px;
+}
+
+.col-of-gender {
+  min-width: 80px;
+  padding: 0 5px;
+}
+
+.col-of-code {
+  min-width: 100px;
+  padding: 0 5px;
+}
+
+.col-of-phone {
+  min-width: 200px;
+  padding: 0 5px;
+}
+
+.col-of-email {
+  min-width: 250px;
+  padding: 0 5px;
+}
+
+.col-of-status {
+  min-width: 100px;
+  padding: 0 5px;
+}
+
+.col-of-devices {
+  min-width: 150px;
+  padding: 0 5px;
+}
+
+.item-list-cathi-style .col-of-acion {
+  min-width: 180px;
+  text-align: center;
+  padding: 0 5px;
+}
+
+.item-list-cathi-style .col-of-acion button {
+  border-color: transparent !important;
+  background-color: transparent !important;
+}
+
+.item-list-cathi-style .col-of-acion button .fa-times {
+  color: red;
+}
+
+.item-list-cathi-style .col-of-acion button .fa-eye,
+.item-list-cathi-style .col-of-acion button .fa-pencil {
+  color: #1b81d7;
+}
+
+.col-of-acion .fa-pause {
+  color: #28a745;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.col-of-acion .fa-play {
+  color: #28a745;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.col-of-ip {
+  min-width: 300px;
+}
+
+.col-of-iptype {
+  min-width: 80px;
+}
+
+.col-of-browser {
+  min-width: 150px;
+}
+
+.theo-doi-sinhvien-ca-thi-right-top .list-style-right-top,
+.theo-doi-sinhvien-ca-thi-right-top .grid-style-right-top {
+  height: 30px;
+  width: 30px;
+  padding: 0px;
+}
+
+.theo-doi-sinhvien-ca-thi-right-top .list-style-right-top {
+  border-bottom-left-radius: 3px;
+  border-top-left-radius: 3px;
+}
+
+.theo-doi-sinhvien-ca-thi-right-top .grid-style-right-top {
+  border-bottom-right-radius: 3px;
+  border-top-right-radius: 3px;
+}
+
+.theo-doi-sinhvien-ca-thi-right-top .list-style-right-top i,
+.theo-doi-sinhvien-ca-thi-right-top .grid-style-right-top i {
+  margin: 0 auto;
+  font-size: 14px;
+  padding: 7px 0px;
+}
+
+.is-grid-style-open,
+.is-list-style-open {
+  background: #c8c8c8;
+  color: #333333 !important;
+  border: 1px solid #c8c8c8;
+}
+
+.header-list-type .col-of-status {
+  cursor: pointer;
+}
+
+.header-list-type {
+  cursor: default;
+  font-weight: bold;
+  position: sticky;
+  top: 0px;
+  background: #eaeaea !important;
+}
+
+.sinhvien-ca-thi-grid-style {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.item-grid-cathi-style {
+  width: 25%;
+  /* height: 200px;    */
+  padding: 5px;
+}
+
+.item-grid-cathi-style-content {
+  border: 1px solid #c8c8c8;
+  border: 1px solid #c8c8c8;
+  margin: 0 auto;
+  height: 100%;
+  position: relative;
+}
+
+@media (max-width: 1024px) {
+  .item-grid-cathi-style {
+    width: 50%;
+  }
+}
+
+@media (max-width: 1539px) and (min-width: 1025px) {
+  .item-grid-cathi-style {
+    width: 33.33%;
+  }
+}
+
+.set-background-row {
+  padding: 5px 5px;
+}
+
+.set-background-header {
+  padding: 5px;
+}
+
+.item-grid-cathi-style-content {
+  padding: 5px;
+  display: flex;
+  background: #f2f2f2;
+  flex-wrap: wrap;
+}
+
+.item-grid-cathi-style-content-image {
+  height: 100px;
+  width: 100px;
+  background: #ffffff;
+  border-radius: 50%;
+  position: relative;
+}
+
+.item-grid-cathi-style-content-image img {
+  height: auto;
+  width: 100%;
+}
+
+.item-grid-cathi-style-content-image-image {
+  height: 100px;
+  width: 100px;
+  background: #ffffff;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.item-grid-cathi-style-content-left {
+  width: 100px;
+  position: relative;
+  height: calc(100% - 34);
+}
+
+.item-grid-cathi-style-content-info {
+  flex-flow: column;
+  display: flex;
+  line-height: 1.5;
+  padding: 0 5px;
+  width: calc(100% - 100px);
+  height: calc(100% - 34px);
+}
+
+.item-grid-cathi-style-content-info .col-of-student-text {
+  font-weight: bold;
+}
+
+.text-browser {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.item-grid-cathi-style-content-action-bottom {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  height: 34px;
+}
+
+.item-grid-cathi-style-content-action-bottom .col-of-acion {
+  text-align: left;
+  padding: 0px !important;
+  bottom: 0px;
+}
+
+.item-grid-cathi-style-content-action-bottom .col-of-acion button i {
+  color: #ffffff;
+  margin: 0 auto;
+}
+
+.item-grid-cathi-style-content-action-bottom .col-of-acion button {
+  width: 26px;
+  height: 26px;
+  padding: 0px;
+}
+
+.male-gender-icon {
+  color: #1b81d7;
+}
+
+.female-gender-icon {
+  color: #f27474;
+}
+
+.gender-student-icon {
+  position: absolute;
+  bottom: 0px;
+  width: 25px;
+  right: 8px;
+  height: 25px;
+  border-radius: 50%;
+  text-align: center;
+  vertical-align: middle;
+  font-weight: bold;
+  background: #f2f2f2;
+  font-size: 16px !important;
+}
+
+.item-grid-cathi-style-content.student-done,
+.item-list-cathi-style.student-done {
+  background: #c1e597;
+}
+
+.item-grid-cathi-style-content.student-is-testing,
+.item-list-cathi-style.student-is-testing {
+  background: #ff980075 !important;
+}
+
+.item-grid-cathi-style-content-info-border-mid {
+  width: 100%;
+  border-bottom: 1px dashed #333333;
+  height: 1px;
+  padding: 5px;
+}
+
+.theo-doi-sinhvien-ca-thi-right-top .sort-by-status {
+  height: 30px;
+  width: 30px;
+  padding: 0px;
+  margin-right: 5px;
+}
+
+.theo-doi-sinhvien-ca-thi-right-top .sort-by-status i {
+  margin: 0 auto;
+  font-size: 14px;
+  padding: 7px 0px;
+}
+
+.show-avatar-only {
+  text-align: center;
+}
+
+.item-grid-cathi-style-content-left-bottom {
+  text-align: center;
+}
+
+.item-grid-cathi-style-content-info label {
+  font-size: 14px !important;
+  margin: 0 !important;
+}
+
+.item-grid-info-title {
+  display: inline-flex;
+  width: 65px;
+}
+
+.item-grid-cathi-style .col-of-acion button {
+  margin-right: 5px;
+}
+
+.view-student-content {
+  height: calc(100% - 59px);
+  margin: 0px;
+  padding: 0px;
+  overflow-y: hidden;
+}
+
+.info-student-view {
+  font-size: 15px;
+  flex: 1;
+}
+
+.info-student-view-name {
+  font-weight: bold;
+}
+
+.view-student-header {
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #c8c8c8;
+  margin-bottom: 5px;
+}
+
+.view-student-header-action button {
+  font-size: 14px;
+  padding: 1px 5px;
+  margin-left: 5px;
+}
+
+.view-student-header-action button i {
+  font-size: 14px !important;
+  line-height: 1 !important;
+}
+
+.view-student-body {
+  height: calc(100% - 36.16px);
+  overflow-y: auto;
+  font-size: 15px;
+}
+
+.view-student-body-skill-name {
+  display: flex;
+  margin-bottom: 5px;
+  border-bottom: 1px solid #c8c8c8;
+  padding: 5px;
+  align-items: center;
+}
+
+.view-student-body-skill-part {
+  display: flex;
+  margin-bottom: 5px;
+  align-items: center;
+  padding: 5px;
+  padding-left: 10px;
+  background-color: #f2f2f2;
+}
+
+.view-student-body-skill-name-skill {
+  width: 350px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.view-student-body-skill-name button {
+  padding: 1.6px 5px;
+}
+
+.view-student-body-skill {
+  margin-bottom: 5px;
+  border-bottom: 1px solid #c8c8c8;
+}
+
+.view-student-body-skill-name input {
+  border: 1px solid #c8c8c8;
+  padding: 0 5px;
+}
+
+.view-student-body-skill-part-skill {
+  width: 345px;
+  text-transform: uppercase;
+  font-size: 14px;
+}
+
+.view-student-body-skill-part button {
+  padding: 1.6px 5px;
+}
+
+.view-student-status {
+  font-weight: bold;
+}
+
+.view-student-body-skill-name-action {
+  display: flex;
+  align-items: center;
+  width: calc(100% - 450px);
+  text-align: right;
+  justify-content: flex-end;
+}
+
+.view-student-body-skill-name-action button i {
+  font-size: 14px;
+  line-height: 1 !important;
+}
+
+.view-student-status,
+.view-student-status-part {
+  width: 100px;
+  padding: 0 5px;
+  text-align: center;
+}
+
+.working-part {
+  background: #ff980075;
+}
+
+.done-part {
+  background: #28a745;
+  color: #ffffff;
+}
+
+.info-control-action {
+  font-size: 15px;
+}
+
+.theo-doi-sinhvien-ca-thi-right .student-reject {
+  background-color: #f27474d1;
+}
+
+.no-data-dmshifttest {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+
+.no-data-dmshifttest label {
+  font-size: 15px;
+}
+
+.view-student-body-skill-name-skill i {
+  font-style: normal;
+  font-weight: normal;
+  text-transform: lowercase;
+}
+
+.example-section {
+  display: flex;
+  align-content: center;
+  align-items: center;
+}
+
+.example-margin {
+  font-size: 14px;
+}
+
+.resetpass-title {
+  text-align: center;
+  border: 1px solid #c8c8c8;
+  cursor: pointer;
+}
+
+.resetpass-title label {
+  cursor: pointer;
+}
+
+.active-type-reset {
+  background-color: #1b81d7;
+}
+
+.active-type-reset label {
+  color: #ffffff !important;
+}
+
+.container {
+  padding: 20px;
+}
+
+.student-card {
+  border-radius: 0px !important;
+  /* box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); */
+  transition: transform 0.3s, box-shadow 0.3s;
+  /* background-color: #ffffff; */
+  overflow: hidden;
+  min-height: 280px;
+}
+
+.student-card:hover {
+  cursor: pointer;
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.student-image {
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #e9ecef;
+  transition: border-color 0.3s;
+}
+
+.student-image:hover {
+  border-color: #007bff;
+}
+
+.card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  border-radius: 0;
+  padding: 15px;
+}
+
+.card-body {
+  padding: 20px;
+  color: #495057;
+}
+
+.card-footer {
+  background-color: #f8f9fa;
+  border-top: 1px solid #dee2e6;
+  padding: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.card-footer button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px !important;
+  width: 26px;
+  height: 26px;
+}
+
+.btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.btn-group .btn {
+  flex: 1 1 auto;
+  max-width: 100px;
+  margin: 0;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.btn-group .btn:hover {
+  opacity: 0.9;
+}
+
+.icon-gender {
+  left: 22%;
+  top: 48%;
+  position: absolute;
+  font-weight: 700;
+  font-size: 16px !important;
+}
+
+.modal-header {
+  padding: 15px;
+  border-radius: 0;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.modal-title {
+  font-size: 16px;
+  line-height: 24px;
+  margin: 0;
+  font-weight: 500;
+}
+
+.ovic-input-line {
+  display: flex;
+  vertical-align: middle;
+  justify-content: space-around;
+  position: relative;
+  width: 100%;
+  font-family: arial, sans-serif;
+}
+
+.student-done {
+  background: #40d778 !important;
+}
+
+.student-is-testing {
+  background: #ff980075 !important;
+}
+
+.fixed-header {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  background-color: white;
+  z-index: 1000;
+  /* text-align: right; */
+  justify-content: flex-end;
+  align-items: center;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.fixed-header .button-custom {
+  height: 30px;
+  width: 35px;
+  padding: 0px;
+  margin-right: 5px;
+}
+
+.fixed-header .badge-blue-custom {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 15px;
+  border-radius: 5px;
+}
+
+.form-control--input {
+  width: 200px;
+}
+
+.modal-footer {
+  border-top: 1px solid #dee2e6;
+}
+
+.border-form-left {
+  border-left: 2px solid #ccc;
+}
+
+.input-time {
+  width: auto !important;
+}
+
+.btn-add-time {
+  height: 36px;
+  margin-left: 5px;
+}
+
+.max-height {
+  max-height: 100% !important;
+}
+
+.ovic-side-navigation-content {
+  height: 100%;
+}
+
+/* trang style */
+.container-header-right {
+}
+.status-online {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 5px;
+  background-color: green; /* Màu xanh cho nút online */
+  position: relative;
+}
+
+.status-online::before,
+.status-online::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 30px; /* Kích thước sóng */
+  height: 30px; /* Kích thước sóng */
+  border-radius: 50%;
+  border: 2px solid rgba(0, 255, 0, 0.5); /* Border màu xanh nhạt cho sóng */
+  transform: translate(-50%, -50%);
+  opacity: 0; /* Ẩn sóng ban đầu */
+  animation: ripple 1.5s infinite; /* Thời gian và kiểu animation */
+}
+
+.status-online::before {
+  animation-delay: 0s; /* Bắt đầu ngay lập tức */
+}
+
+.status-online::after {
+  animation-delay: 0.75s; /* Bắt đầu sau 0.75 giây */
+}
+
+@keyframes ripple {
+  0% {
+    transform: translate(-50%, -50%) scale(0); /* Bắt đầu từ kích thước 0 */
+    opacity: 1; /* Hiện sóng */
+  }
+  50% {
+    opacity: 1; /* Sóng hiện rõ giữa animation */
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1); /* Lan ra ngoài */
+    opacity: 0; /* Ẩn sóng */
+  }
+}
+
+.status-pause {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 5px;
+  background-color: #ffcc00; /* Màu xanh cho nút online */
+  position: relative;
+}
+
+.status-pause::before,
+.status-pause::after {
+  content: "";
+  position: absolute;
+  top: 50%; /* Đặt giữa nút */
+  left: 50%; /* Đặt giữa nút */
+  width: 35px; /* Kích thước sóng */
+  height: 35px; /* Kích thước sóng */
+  border-radius: 50%;
+  border: 2px solid rgba(255, 204, 0, 0.5); /* Border màu vàng nhạt cho sóng */
+  animation: ripple 1.5s infinite; /* Thời gian và kiểu animation */
+  opacity: 0; /* Ẩn sóng ban đầu */
+  transform: translate(-50%, -50%); /* Để sóng bắt đầu từ giữa */
+}
+
+.status-pause::before {
+  animation-delay: 0s; /* Bắt đầu ngay lập tức */
+}
+
+.status-pause::after {
+  animation-delay: 0.75s; /* Bắt đầu sau 0.75 giây */
+}
+
+@keyframes ripple {
+  0% {
+    transform: translate(-50%, -50%) scale(0); /* Bắt đầu từ kích thước 0 */
+    opacity: 1; /* Hiện sóng */
+  }
+  50% {
+    opacity: 1; /* Giữ sóng hiện tại giữa animation */
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1); /* Lan ra ngoài */
+    opacity: 0; /* Ẩn sóng */
+  }
+}
+
+.status-online.active {
+  background-color: #28a745; /* Green dot */
+}
+
+.status-done {
+  width: 20px; /* Đặt kích thước của nút */
+  height: 20px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 5px;
+  background-color: green; /* Màu xanh cho nút */
+  position: relative;
+}
+
+.status-done::before {
+  content: "\2714"; /* Dấu check */
+  font-size: 14px; /* Kích thước của dấu check */
+  color: white; /* Màu của dấu check */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.status-delete {
+  width: 20px; /* Đặt kích thước của nút */
+  height: 20px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 5px;
+  background-color: red; /* Màu xanh cho nút */
+  position: relative;
+}
+
+.status-delete::before {
+  content: "\2716"; /* Dấu check */
+  font-size: 14px; /* Kích thước của dấu check */
+  color: white; /* Màu của dấu check */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Adjust the existing styles for student-is-testing */
+.student-is-testing {
+  background-color: #e6f3ff !important; /* Slightly darker blue for testing status */
+}
+
+.status-done {
+  width: 20px; /* Đặt kích thước của nút */
+  height: 20px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 5px;
+  background-color: green; /* Màu xanh cho nút */
+  position: relative;
+}
+
+.status-done::before {
+  content: "\2714"; /* Dấu check */
+  font-size: 14px; /* Kích thước của dấu check */
+  color: white; /* Màu của dấu check */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* .bg-active{
+    background-color: #22c55e29;
+  }
+
+ 
+
+  */
+.bg-stop {
+  background-color: #ff563029;
+}
+.bg-pause {
+  background-color: #fff1d6;
+}

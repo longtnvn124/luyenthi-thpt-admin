@@ -1,0 +1,10 @@
+.detail-form .header{
+    background-color: #F4F6F8;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+
+.detail-form .item-body{
+    border-bottom: 1px solid #cccccc40;
+}

@@ -1,0 +1,32 @@
+<li [ngClass]="item.classes!" *ngIf="item.url && !item.external" class="" [routerLinkActive]="['active']">
+    <a class="nav-link" [target]="item.target ? '_blank' : '_self'" [routerLink]="[item.url]" (click)="toggleMenu($event)">
+        <ng-container *ngIf="(item.icon || item.customSvg); else directTitle">
+            <span class="coded-micon" *ngIf="item.customSvg ; else iconFontTemplate"><svg class="pc-icon"><use [attr.xlink:href]="'assets/fonts/custom-icon.svg'+item.customSvg"></use></svg></span>
+            <ng-template #iconFontTemplate>
+                <i style="margin: 0 5px 0 0;" [class]="item.icon"></i>
+            </ng-template>
+            <span class="coded-mtext">{{ item.title }}</span>
+        </ng-container>
+        <ng-template #directTitle>{{ item.title }}</ng-template>
+    </a>
+</li>
+<li [ngClass]="item.classes!" *ngIf="item.url && item.external">
+    <a [target]="item.target ? '_blank' : '_self'" [href]="sanitizeURL(item.url)">
+        <ng-container *ngIf="(item.icon || item.customSvg); else directTitle">
+            <span class="coded-micon" *ngIf="item.customSvg ; else iconFontTemplate"><svg class="pc-icon"><use [attr.xlink:href]="'assets/fonts/custom-icon.svg'+item.customSvg"></use></svg></span>
+            <ng-template #iconFontTemplate>
+                <i style="margin: 0 5px 0 0;" [class]="item.icon"></i>
+            </ng-template>
+            <span class="coded-mtext">{{ item.title }}</span>
+        </ng-container>
+        <ng-template #directTitle>{{ item.title }}</ng-template>
+    </a>
+</li>
+
+<div class="content">
+    <div class="content__child">
+        <div class="content__child__head"></div>
+        <div class="content__child__body"></div>
+        <div class="content__child__footer"></div>
+    </div>
+</div>

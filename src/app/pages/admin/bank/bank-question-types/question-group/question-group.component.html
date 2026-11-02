@@ -1,0 +1,37 @@
+<div class="group-input-question" *ngIf="question()">
+	<ul class="group-input-question__list" *ngIf="question().children && question().children.length">
+		<li class="group-input-question__list__element" [ngClass]="'group-input-question__list__element--size-'+question().configs.cols" *ngFor="let child of question().children; index as i">
+			<div *ngIf="mode === 'edit'" class="group-radio-question__block question-group-children">
+				<ng-container [ngSwitch]="question().type">
+					<app-question-group-child-input *ngSwitchCase="'group-input'" class="flex-fill" style="max-width: 100%" [question]="child" (markAsDirty)="dataChanged()" (requireDelete)="deleteChildQuestion($event,i)"></app-question-group-child-input>
+					<app-question-group-child-radio *ngSwitchCase="'group-radio'" class="flex-fill" style="max-width: 100%" [question]="child" [mode]="mode" (markAsDirty)="dataChanged()" (requireDelete)="deleteChildQuestion($event,i)"></app-question-group-child-radio>
+					<app-question-group-child-true-false *ngSwitchCase="'group-true-false'" class="flex-fill" style="max-width: 100%" [question]="child" [mode]="mode" (markAsDirty)="dataChanged()" (requireDelete)="deleteChildQuestion($event,i)"></app-question-group-child-true-false>
+					<div class="d-block" *ngSwitchDefault>
+						<p class="alert alert-warning m-0">Định dạng câu hỏi chưa chính xác - <code>{{ question().type }}</code></p>
+					</div>
+				</ng-container>
+				<!-- <button (click)="deleteChildQuestion(child,i)" pButton pRipple icon="pi pi-trash" class="p-0 group-input-question__option__btn-remove p-button-danger p-button-rounded p-button-text p-button-outlined"></button> -->
+			</div>
+			<div *ngIf="mode === 'preview'" class="group-radio-question__block group-radio-question__block--only-present">
+				<div class="group-radio-question__block__head">
+					<div class="d-flex group-input-question__option__input group-input-question__option__input--bold">
+						<span class="mr-1">{{ 1 + i }}) </span>
+						<span [IctuMediaLoader]="i" [innerHTML]="child.content | safeHtmlSingle"></span>
+					</div>
+					<input [disabled]="true" type="text" pInputText placeholder="Đáp án" class="group-input-question__option__input" [(ngModel)]="child.correct_answer">
+				</div>
+			</div>
+		</li>
+	</ul>
+	<div class="group-input-question__footer d-flex justify-content-between align-items-center" *ngIf="mode === 'edit'">
+		<small *ngIf="question().type === 'group-input'" class="group-input-question__note text-left text-secondary">Trường hợp câu hỏi có nhiều đáp án đúng, thì các đáp án được phân cách nhau <br>bởi dấu chấm phẩy( ";") và không phân biệt chữ hoa, chữ thường. Ví dụ : 1; one; first</small>
+		<div class="ovic-vertical__inputs ovic-vertical__inputs--layout-2">
+			<p class="form-row mt-0">
+				<p-dropdown class="input-element ovic-dropdown-style" [filter]="false" [options]="colOptions" [(ngModel)]="question().configs.cols" optionLabel="label" optionValue="value" optionDisabled="disable" placeholder="--Lựa chọn--"></p-dropdown>
+			</p>
+		</div>
+		<button (click)="addNewMoreChild()" class="typical-question__btn-add">
+			<i class="pi pi-plus-circle"></i>Thêm câu hỏi
+		</button>
+	</div>
+</div>

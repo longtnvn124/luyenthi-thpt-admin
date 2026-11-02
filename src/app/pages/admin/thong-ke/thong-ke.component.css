@@ -1,0 +1,11 @@
+.admin-wrap-table__body {
+    overflow-x: auto;
+}
+
+.col-title {
+    min-width: 200px;
+}
+
+.col-index {
+    min-width: 50px;
+}

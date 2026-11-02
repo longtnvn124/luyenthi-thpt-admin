@@ -1,0 +1,126 @@
+<ng-container *ngIf="question">
+  <div
+    class="drag-and-drop-question"
+    [ngClass]="
+      enableQuestionNumber
+        ? 'drag-and-drop-question--enable-input-question-number'
+        : 'drag-and-drop-question--disable-input-question-number'
+    "
+  >
+    <div
+      class="drag-and-drop-question__list pb-3"
+      style="border-bottom: 1px dashed #bbbbbb"
+    >
+      <div
+        class="drag-and-drop-question__list__input pb-3"
+        style="border-bottom: 1px dashed #bbbbbb"
+        *ngFor="let questionChild of answers; index as i"
+      >
+        <!-- <input *ngIf="enableQuestionNumber" tooltipStyleClass="ictu-p-tooltip" pTooltip="Question number" tooltipPosition="top" class="drag-and-drop-question__list__input__question-number" type="text" pInputText [(ngModel)]="questionChild.question.question_number" placeholder="Câu số...">
+                <textarea class="drag-and-drop-question__list__input__direction" [rows]="1" [cols]="1000" pInputTextarea [autoResize]="true" [(ngModel)]="questionChild.question.question_direction" placeholder="Câu hỏi..."></textarea>
+                <input class="drag-and-drop-question__list__input__answer-correct" type="text" pInputText [(ngModel)]="questionChild.answer.value" (ngModelChange)="onChangesAnswers(questionChild)" placeholder="Đáp án..."> -->
+        <!-- <button pButton pRipple (click)="deleteQuestion(i)" class="drag-and-drop-question__list__input__btn-delete p-button-danger p-button-rounded p-button-text" icon="pi pi-trash"></button> -->
+
+        <div class="d-flex align-items-center w-100">
+          <div style="width: 95%">
+            <div class="question pt-2 pb-2">
+              <b class="question-preview__question__direction__prefix">
+                CÂU {{ i + 1 }}:</b
+              >
+              <div>
+                <app-input-question-direction
+                  [htmlInputModel]="childQuestionsDirection[i]"
+                  [triggerFromParent]="countContentEditorChanged"
+                  (editorContentEmit)="
+                    editorContentChange($event, i, 'question')
+                  "
+                ></app-input-question-direction>
+              </div>
+            </div>
+            <div class="question pt-2 pb-2">
+              <b class="question-preview__question__direction__prefix">
+                CÂU TRẢ LỜI:</b
+              >
+              <div>
+                <app-input-question-direction
+                  [htmlInputModel]="answers[i].answer"
+                  [triggerFromParent]="countContentEditorChanged"
+                  (editorContentEmit)="editorContentChange($event, i, 'answer')"
+                ></app-input-question-direction>
+              </div>
+            </div>
+          </div>
+
+          <div style="width: 5%">
+            <button
+              pButton
+              pRipple
+              (click)="deleteQuestion(i)"
+              class="drag-and-drop-question__list__input__btn-delete p-button-danger p-button-rounded p-button-text"
+              icon="pi pi-trash"
+            ></button>
+          </div>
+        </div>
+      </div>
+      <button
+        (click)="addMoreQuestion()"
+        class="drag-and-drop-question__list__btn-add"
+      >
+        <i class="pi pi-plus-circle"></i>Thêm câu hỏi
+      </button>
+    </div>
+    <div class="grouping-question__disturbed-answers mt-3">
+      <div class="question-preview__question__size">
+        <b class="question-preview__question__direction__prefix">
+          CÁC PHƯƠNG ÁN GÂY NHIỄU:</b
+        >
+      </div>
+      <!-- <input
+        class="grouping-question__disturbed-answers__input"
+        type="text"
+        pInputText
+        [(ngModel)]="disturbedAnswers"
+        (ngModelChange)="onChangesDisturbedAnswers()"
+      />
+      <small class="grouping-question__section__text-guide text-secondary"
+        >Các phương án ngăn cách nhau bởi dấu chấm phẩy( ";")</small
+      > -->
+      <div *ngFor="let item of disturbedAnswers2; index as i">
+        <div class="w-100 pt-2 pb-2" style="border-bottom: 1px dashed #bbbbbb">
+          <div class="w-100 d-flex align-items-center">
+            <div class="question pt-2 pb-2" style="width: 95%">
+              <b class="question-preview__question__direction__prefix">
+                PHƯƠNG ÁN {{ i + 1 }}:</b
+              >
+              <app-input-question-direction
+                [htmlInputModel]="item"
+                [triggerFromParent]="countContentEditorChanged"
+                (editorContentEmit)="
+                  editorContentDisturbedAnswerChange($event, i)
+                "
+              ></app-input-question-direction>
+            </div>
+            <div style="width: 5%">
+              <button
+                (click)="deleteDisturbedAnswer(i)"
+                pButton
+                pRipple
+                class="drag-and-drop-question__list__input__btn-delete p-button-danger p-button-rounded p-button-text"
+                icon="pi pi-trash"
+              ></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center w-100">
+        <button
+          (click)="addDisturbedAnswer()"
+          class="drag-and-drop-question__list__btn-add w-100 mt-2"
+        >
+          <i class="pi pi-plus-circle"></i>Thêm phương án gây nhiễu
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-container>

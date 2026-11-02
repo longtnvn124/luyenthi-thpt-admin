@@ -1,0 +1,527 @@
+<div class="intro-y">
+  <div>
+    <div class="layout_component_container intro-x">
+      <div *ngIf="!isLoading; else tableLoading" class="scroll-table-layout-set">
+        <ovic-table
+          emptyMessage="Danh sách trống"
+          [index]="index"
+          [data]="listData"
+          styleClass="table-scroll-able table-able-dropdown table-reBorder"
+          dataKey="id"
+          rowHover="true"
+          [rows]="10"
+          tableName="Danh sách form đề thi"
+          [tblStructure]="tblStructure"
+          [enableSearch]="true"
+          (onButtonClick)="handleClickOnTable($event)"
+          [enableSearchLocal]="false"
+          (onSearch)="onSearch($event)"
+          [searchDebounceTime]="800"
+          [headerButtons]="headButtons"
+        >
+        </ovic-table>
+      </div>
+
+      <ng-template #tableLoading>
+        <app-table-loader [tableCol]="6" [tableRow]="7"></app-table-loader>
+      </ng-template>
+      <div class="page-layout-set">
+        <p-paginator
+          [rows]="rows"
+          [totalRecords]="recordsTotal"
+          [pageLinkSize]="5"
+          (onPageChange)="paginate($event)"
+        >
+        </p-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #templateTestForm>
+  <div class="ovic-side-navigation-content">
+    <div class="ovic-side-navigation-content__head">
+      <h4 class="ovic-side-navigation-content__head__title">{{ titleForm }}</h4>
+      <button
+        (click)="closeForm()"
+        pButton
+        pRipple
+        type="button"
+        icon="pi pi-times"
+        class="p-button-rounded p-button-danger p-button-text close ovic-side-navigation-content__head__btn-close"
+      ></button>
+    </div>
+    <div class="ovic-side-navigation-content__body ovic-scroll-style">
+      <div class="ovic-vertical__inputs ovic-vertical__inputs--layout-2">
+        <form [formGroup]="formData" autocomplete="off">
+          <div class="row">
+            <div class="col-12">
+              <p class="form-row">
+                <label>Tên form<span class="ovic-mark">*</span></label>
+                <input
+                  type="text"
+                  class="ovic-input-field"
+                  formControlName="name"
+                  autocomplete="off"
+                  placeholder="Nhập tên form..."
+                />
+              </p>
+            </div>
+
+            
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <p class="form-row mt-2">
+                <label>Chọn ngân hàng<span class="ovic-mark">*</span></label>
+                <ovic-dropdown
+                  optionLabel="name"
+                  [options]="dmBank"
+                  optionId="id"
+                  [filter]="false"
+                  [formField]="f['bank_id']"
+                  [defaultValue]="f['bank_id'].value"
+                ></ovic-dropdown>
+              </p>
+            </div>
+          </div>
+          <!-- <div class="row">
+            <div class="col-6">
+              <p class="form-row mt-2">
+                <label
+                  >Phương thức quy đổi điểm<span class="ovic-mark"
+                    >*</span
+                  ></label
+                >
+                <ovic-dropdown
+                  [disabled]="false"
+                  optionLabel="value"
+                  [options]="bank_question"
+                  optionId="key"
+                  [formField]="f['scoring_method']"
+                  [defaultValue]="f['scoring_method'].value"
+                ></ovic-dropdown>
+              </p>
+            </div>
+            <div class="col-6">
+              <p class="form-row mt-2">
+                <label
+                  >Kiểu tính thời gian<span class="ovic-mark">*</span></label
+                >
+                <ovic-dropdown
+                  [disabled]="true"
+                  optionLabel="label"
+                  [options]="typeTime"
+                  optionId="value"
+                  [defaultValue]="typeTime[0]['value']"
+                >
+                </ovic-dropdown>
+              </p>
+            </div>
+          </div> -->
+          <div class="row">
+
+            <div class="col-6">
+              <p class="form-row mt-2">
+                <label>Số lượng câu hỏi<span class="ovic-mark">*</span></label>
+                <input
+                  type="number"
+                  class="ovic-input-field"
+                  formControlName="number_question"
+                  autocomplete="off"
+                  placeholder="Ví dụ: 25..."
+                />
+              </p>
+            </div>
+            <div class="col-6">
+              <p class="form-row mt-2">
+                <label
+                  >Thời gian theo bài thi (phút)<span class="ovic-mark"
+                    >*</span
+                  ></label
+                >
+                <input
+                  type="number"
+                  class="ovic-input-field"
+                  formControlName="total"
+                  autocomplete="off"
+                />
+              </p>
+            </div>
+
+            
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <p class="form-row mt-2">
+                <label>Mô tả</label>
+                <textarea
+                  formControlName="desc"
+                  placeholder="Mô tả..."
+                  autocomplete="off"
+                  id="mota"
+                  cols="15"
+                  rows="3"
+                ></textarea>
+              </p>
+            </div>
+          </div>
+          <div class="row mt-2 config-bottom">
+            <!-- <div class="col-6 d-flex align-items-center">
+              <label>Trạng thái kích hoạt</label>
+              <p-inputSwitch
+                class="ml-1"
+                [trueValue]="1"
+                [falseValue]="0"
+                formControlName="status"
+              ></p-inputSwitch>
+            </div>
+            <div class="col-6 d-flex align-items-center">
+              <label>Hiển thị gợi ý</label>
+              <p-inputSwitch
+                class="ml-1"
+                [trueValue]="1"
+                [falseValue]="0"
+                formControlName="show_hint"
+              ></p-inputSwitch>
+            </div> -->
+            <!-- <div class="col-6 d-flex align-items-center">
+              <label>Hiển thị đáp án</label>
+              <p-inputSwitch
+                class="ml-auto"
+                [trueValue]="1"
+                [falseValue]="0"
+                formControlName="show_result"
+              ></p-inputSwitch>
+            </div>
+            <div class="col-6 d-flex align-items-center">
+              <label>Hiển thị giải thích đáp án</label>
+              <p-inputSwitch
+                class="ml-auto"
+                [trueValue]="1"
+                [falseValue]="0"
+                formControlName="show_explain"
+              ></p-inputSwitch>
+            </div> -->
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="ovic-side-navigation-content__foot">
+      <span class="ovic-side-navigation-content__foot__notice mr-auto"
+        ><mark>(*)</mark> bắt buộc phải nhập</span
+      >
+      <button
+        pButton
+        pRipple
+        type="button"
+        label="Lưu lại"
+        icon="pi pi-save"
+        (click)="saveFormData()"
+        class="p-button-success"
+      ></button>
+      <button
+        pButton
+        pRipple
+        type="button"
+        label="Đóng"
+        class="p-button-secondary ml-3"
+        icon="pi pi-times"
+        (click)="closeForm()"
+      ></button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #templateFormDetailOther>
+  <div class="ovic-side-navigation-content">
+    <div class="ovic-side-navigation-content__head">
+      <h4 class="ovic-side-navigation-content__head__title">{{ titleForm }}</h4>
+      <button
+        (click)="closeForm()"
+        pButton
+        pRipple
+        type="button"
+        icon="pi pi-times"
+        class="p-button-rounded p-button-danger p-button-text close ovic-side-navigation-content__head__btn-close"
+      ></button>
+    </div>
+    <div
+      style="padding: 5px"
+      class="ovic-side-navigation-content__body ovic-scroll-style"
+    >
+      <!-- <p-table [value]="dmFormDetail" dataKey="id" editMode="row">
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="text-align: center; width: 50px; padding: 12px 5px">
+              TT
+            </th>
+            <th style="width: 260px; padding: 12px 5px">Chương/ bài</th>
+            <th style="width: 140px; padding: 12px 5px">Cấp độ câu hỏi</th>
+            <th style="padding: 12px 5px">
+              Giới hạn<span class="ovic-mark">*</span>
+            </th>
+            <th style="width: 130px; padding: 12px 5px">
+              Số lượng câu hỏi<span class="ovic-mark">*</span>
+            </th>
+            <th style="width: 100px; padding: 12px 5px; text-align: center">
+              Điểm<span class="ovic-mark">*</span>
+            </th>
+            <th style="width: 100px; padding: 12px 5px; text-align: center">
+              Thao tác
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template
+          pTemplate="body"
+          let-rowData
+          let-editing="true"
+          let-ri="rowIndex"
+        >
+          <tr pInitEditableRow [pEditableRow]="rowData">
+            <td style="text-align: center">
+              {{ ri + 1 }}
+            </td>
+            <td class="row-dropdown-test-form">
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <p-dropdown
+                    (onChange)="
+                      changeValueFormAnhVan(
+                        'bank_id',
+                        $event.value.id,
+                        true,
+                        ri
+                      )
+                    "
+                    [options]="listChuong"
+                    optionLabel="name"
+                    dataKey="id"
+                    [style]="{ width: '100%' }"
+                    appendTo="body"
+                  >
+                  </p-dropdown>
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{ checkDropDown(listChuong, rowData.bank_id, "id", "name") }}
+                </ng-template>
+              </p-cellEditor>
+            </td>
+            <td class="row-dropdown-test-form">
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <p-dropdown
+                    (onChange)="
+                      changeValueFormAnhVan('level', $event.value, true, ri)
+                    "
+                    [options]="levelQuestion"
+                    [(ngModel)]="rowData.level"
+                    [style]="{ width: '100%' }"
+                    appendTo="body"
+                  ></p-dropdown>
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{
+                    checkDropDown(
+                      levelQuestion,
+                      rowData.level,
+                      "value",
+                      "label"
+                    )
+                  }}
+                </ng-template>
+              </p-cellEditor>
+            </td>
+            <td
+              class="row-select-test-form"
+              [ngClass]="!rowData.required ? 'required-high-color' : ''"
+              style="text-align: c"
+            >
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  {{
+                    checkMultiSelect(rowData.dmQuestionType, rowData.param, ri)
+                  }}
+                  <button
+                    (click)="openTemplateChooseCode(ri)"
+                    class="btn action-choose-code"
+                  >
+                    <i class="pi pi-ellipsis-h ml-0"></i>
+                  </button>
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{
+                    checkMultiSelect(rowData.dmQuestionType, rowData.param, ri)
+                  }}
+                </ng-template>
+              </p-cellEditor>
+            </td>
+            <td
+              class="row-input-test-form"
+              [ngClass]="!rowData.number_questions ? 'required-high-color' : ''"
+              style="text-align: center"
+            >
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <input
+                    required
+                    style="text-align: center"
+                    class="input-custom"
+                    placeholder="Bấm vào đây để chọn số lượng câu hỏi"
+                    (ngModelChange)="
+                      changeValueFormAnhVan(
+                        'number_questions',
+                        rowData.number_questions,
+                        false,
+                        ri
+                      )
+                    "
+                    pInputText
+                    type="number"
+                    [(ngModel)]="rowData.number_questions"
+                  />
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{ rowData.number_questions }}
+                </ng-template>
+              </p-cellEditor>
+            </td>
+            <td
+              class="row-input-test-form"
+              [ngClass]="!rowData.last_point ? 'required-high-color' : ''"
+              style="text-align: center"
+            >
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <input
+                    required
+                    style="text-align: center"
+                    class="input-custom"
+                    (ngModelChange)="
+                      changeValueFormAnhVan(
+                        'last_point',
+                        rowData.last_point,
+                        false,
+                        ri
+                      )
+                    "
+                    pInputText
+                    type="number"
+                    [(ngModel)]="rowData.last_point"
+                  />
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{ rowData.last_point }}
+                </ng-template>
+              </p-cellEditor>
+            </td>
+            <td class="row-action-test-form" style="text-align: center">
+              <button (click)="deleteFormDetail(ri)" class="btn btn-danger">
+                <i class="pi pi-trash ml-0"></i>
+              </button>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="footer" let-rowData>
+          <tr>
+            <td colspan="9" class="text-right">
+              <button (click)="addQuestion()" class="btn btn-success">
+                <i class="pi pi-plus" style="font-size: 12px"></i>Thêm mới
+              </button>
+            </td>
+          </tr>
+
+          <div style="text-align: center"></div>
+        </ng-template>
+      </p-table> -->
+    
+    
+        <app-detail-form [form_id]="selectedTestForm.id" [bank_id]="selectedTestForm['bank_id']" [cantAction]="cantAction"></app-detail-form>
+    </div>
+ 
+
+    <!-- <div class="ovic-side-navigation-content__foot">
+      <span class="ovic-side-navigation-content__foot__notice mr-auto"
+        ><mark>(*)</mark> bắt buộc phải nhập</span
+      >
+      <button
+        *ngIf="!cantAction"
+        pButton
+        pRipple
+        type="button"
+        label="Lưu lại"
+        icon="pi pi-save"
+        (click)="addNewFormDetail()"
+        class="p-button-primary"
+      ></button>
+      <button
+        pButton
+        pRipple
+        type="button"
+        label="Làm mới"
+        class="p-button-success ml-3"
+        icon="fa fa-refresh"
+        (click)="reloadFormDetail()"
+      ></button>
+    </div> -->
+  </div>
+</ng-template>
+
+<ng-template #templateChooseCode let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title">Chọn đề thi</h4>
+    <button
+      (click)="closeDialog()"
+      pButton
+      pRipple
+      type="button"
+      icon="pi pi-times"
+      class="p-button-rounded p-button-danger p-button-text close ovic-side-navigation-content__head__btn-close"
+    ></button>
+  </div>
+  <div class="ovic-side-navigation-content__body ovic-scroll-style">
+    <div class="ovic-form-layout">
+      <div class="ovic-input-item">
+        <p-pickList
+          styleClass="tn-pickList-bank-question"
+          [source]="sourceProducts"
+          [target]="targetProducts"
+          sourceHeader="Chưa chọn"
+          targetHeader="Đã chọn"
+          [dragdrop]="true"
+          [showSourceControls]="false"
+          [showTargetControls]="false"
+          (onMoveToTarget)="onMoveToTargetNew($event)"
+          (onMoveToSource)="onMoveToSourceNew($event)"
+          [responsive]="true"
+          [sourceStyle]="{ height: '300px' }"
+          [targetStyle]="{ height: '300px' }"
+          filterBy="question_number,id,code"
+          sourceFilterPlaceholder="Tìm kiếm theo part hoặc id"
+          targetFilterPlaceholder="Tìm kiếm theo code hoặc id"
+        >
+          <ng-template let-product pTemplate="item">
+            <div class="product-item">
+              <div class="product-list-detail">
+                <span>{{
+                  "[#" + product.id + " - " + product.question_number + "]"
+                }}</span>
+                <span>{{
+                  product["code"] ? "(" + product["code"] + ")" : ""
+                }}</span>
+              </div>
+            </div>
+          </ng-template>
+        </p-pickList>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <!-- <p class="ovic-form-notes ovic-over-right-section__foot-ovic-input-line">
+            <i class="pi pi-info-circle"></i>Không chọn đề nào có nghĩa là chọn tất cả
+        </p> -->
+    <button (click)="closeDialog()" type="button" class="btn btn-primary">
+      <i class="fa fa-floppy-o mr-2" ></i>Lưu lại
+    </button>
+  </div>
+</ng-template>

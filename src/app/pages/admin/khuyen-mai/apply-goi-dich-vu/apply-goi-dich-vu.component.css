@@ -1,0 +1,4 @@
+.container-table{
+    overflow-y: scroll;
+    max-height: calc(var(--max-screen-height) - 200px);
+}

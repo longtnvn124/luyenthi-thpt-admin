@@ -1,0 +1,326 @@
+<div class="ket-qua-thi-content-1" [class.ictu-is-loading]="isLoading">
+  <div class="ket-qua-thi-left">
+    <div class="tim-kiem-ca-thi">
+      <!-- <input value="" type="text" placeholder="Tìm kiếm ca thi" (keyup)="findCathi($event)"> -->
+      <div class="search-block__elm same-height">
+        <span class="p-input-icon-right">
+          <i class="pi pi-search"></i>
+          <input
+            class="ovic-table-search--head datatable-input same-height"
+            type="text"
+            pInputText
+            placeholder="Tìm kiếm ca thi..."
+            (input)="handleChangeSearch($event.target['value'], 'cathi')"
+          />
+        </span>
+      </div>
+      <button
+        placement="top"
+        container="body"
+        [pTooltip]="tooltipFilterCathi"
+        (click)="changeCathi()"
+        class="btn action-change-cathi"
+        [ngClass]="cathiStatus === 3 ? 'btn-primary' : 'btn-filter'"
+      >
+        <i
+          class="fa fa-filter ml-0"
+          [ngClass]="
+            cathiStatus === 3 ? 'font-hight-light-color' : 'font-low-color'
+          "
+        ></i>
+      </button>
+    </div>
+    <div class="ket-qua-thi_ca-thi">
+      <div class="content-ca-thi ovic-scroll-style">
+        <div
+          *ngFor="let cathi of dmCathi; index as i"
+          (click)="onSelectedCathi(cathi)"
+          class="intro-y"
+        >
+          <div
+            class="cathi-name"
+            [ngClass]="
+              selectedCathi && cathi.id === selectedCathi.id
+                ? 'high-light-cathi'
+                : null
+            "
+          >
+            <div
+              *ngIf="
+                startProgress && selectedCathi && cathi.id === selectedCathi.id
+              "
+              class="tn-add-chamthi-teacher-progressbar ovic-input-line"
+            >
+              <div class="ovic-input-item">
+                <p-progressBar
+                  [value]="progressValue"
+                  mode="dynamic"
+                ></p-progressBar>
+              </div>
+            </div>
+            <div class="d-flex align-items-center justify-content-between">
+              <div class="">
+                <div class="cathi-name-name-1">
+                  <div
+                    placement="top"
+                    container="body"
+                    class="cathi-text"
+                    [pTooltip]="
+                      cathi['name'].length > 30 ? cathi['name'] : null
+                    "
+                  >
+                    <span style="font-weight: 600">{{
+                      cathi["__index_table"] + ". "
+                    }}</span>
+                    <span class="name-cathi-text">
+                      {{
+                        cathi["name"].length > 30
+                          ? cathi["name"].slice(0, 30).concat("...")
+                          : cathi["name"]
+                      }}
+                    </span>
+                  </div>
+                </div>
+                <div class="time-cathi">{{ cathi["time_start_format"] }}</div>
+              </div>
+              <div class="action-right">
+                <span style="font-size: 0.6rem;" *ngIf="cathi.status == 1 " class="badge-green">Đang mở</span>
+                <span style="font-size: 0.6rem;" *ngIf="cathi.status == 2 " class="badge-grey">Đã thi xong</span>
+              </div>
+              <!-- <div class="action-right">
+                <div
+                  *ngIf="cathiStatus === 2"
+                  placement="top"
+                  container="body"
+                  pTooltip="Lưu kết quả"
+                  class="cathi-text-button"
+                >
+                  <button
+                    [disabled]="
+                      isActionDone &&
+                      selectedCathi &&
+                      cathi.id === selectedCathi.id
+                        ? true
+                        : false
+                    "
+                    *ngIf="cathi['status'] === 2"
+                    pButton
+                    pRipple
+                    class="p-button-primary"
+                  >
+                    <i class="fa fa-check"></i>
+                  </button>
+                </div>
+                <div
+                  *ngIf="cathiStatus === 3"
+                  placement="top"
+                  container="body"
+                  pTooltip="Chưa chấm xong"
+                  class="cathi-text-button"
+                >
+                  <button
+                    [disabled]="
+                      isActionDone &&
+                      selectedCathi &&
+                      cathi.id === selectedCathi.id
+                        ? true
+                        : false
+                    "
+                    class="btn btn-primary action-donecathi"
+                  >
+                    <i class="fa fa-undo"></i>
+                  </button>
+                </div>
+              </div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ca-thi-footer">
+        <div class="page-layout-set">
+          <p-paginator
+            [rows]="rowsCaThi"
+            [totalRecords]="recordsTotalCathi"
+            [pageLinkSize]="2"
+            (onPageChange)="paginateCathi($event)"
+          >
+          </p-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="ket-qua-thi-right"
+    *ngIf="selectedCathi; else elseNotSelectedCathi"
+  >
+    <div class="ket-qua-thi-right-top">
+      <div class="d-flex justify-content-end">
+        <div class="search-right">
+          <div class="search-block__elm">
+            <span class="p-input-icon-right">
+              <i class="pi pi-search"></i>
+              <input
+                style="min-width: 300px"
+                class="ovic-table-search--head datatable-input"
+                type="text"
+                [(ngModel)]="searchStudent"
+                pInputText
+                placeholder="Nhập tên thí sinh..."
+                (input)="handleChangeSearch($event.target['value'], 'thisinh')"
+              />
+            </span>
+          </div>
+        </div>
+        <button
+          pButton
+          pRipple
+          label="Export Excel"
+          class="p-button-secondary"
+          [matMenuTriggerFor]="menu"
+          icon="pi pi-file-export"
+        ></button>
+
+        <mat-menu #menu="matMenu">
+          <div class="css-1rurzyz">
+            <button (click)="handleExportPointToExcel('all')" mat-menu-item>
+              <div class="btn-action-menu">
+                <div class="icon">
+                  <i class="pi pi-file-export"></i>
+                </div>
+                <div class="value">Xuất tất cả</div>
+              </div>
+            </button>
+            <button (click)="handleExportPointToExcel('selected')" mat-menu-item>
+              <div class="btn-action-menu">
+                <div class="icon">
+                  <i class="pi pi-file-export"></i>
+                </div>
+                <div class="value">Xuất các thí sinh đã chọn</div>
+              </div>
+            </button>
+          </div>
+        </mat-menu>
+      </div>
+    </div>
+
+    <div
+      class="ket-qua-thi-right-bottom content-students-section ovic-scroll-style"
+    >
+      <div class="ket-qua-thi-right-bottom-temp-table" *ngIf="selectedCathi">
+        <div>
+          <p-table
+            #dt
+            styleClass="p-datatable-gridlines"
+            [value]="dmStudentSections"
+            [(selection)]="selectedListStudent"
+            [tableStyle]="{ 'min-width': '50rem' }"
+            (selectionChange)="handleChangeSelectionStudent()"
+          >
+            <ng-template pTemplate="header">
+              <tr class="">
+                <th class="text-center">
+                  <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                </th>
+                <th class="text-center">STT</th>
+                <th class="code-student-point text-center">Mã sinh viên</th>
+                <th class="student-name-point">Họ tên</th>
+                <th class="text-center">Số lần thi</th>
+                <th class="ngaysinh-studentpoint">Ngày sinh</th>
+
+                <th style="text-align: center" class="raw_point">Điểm</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-item>
+              <tr class="intro-x">
+                <td class="text-center">
+                  <p-tableCheckbox [value]="item"></p-tableCheckbox>
+                </td>
+                <td class="text-center">{{ item["__index_table"] }}</td>
+                <td  class="code-student-point text-center">
+                  {{ item?.student?.id }}
+                </td>
+                <td class="student-name-point">
+                  <div
+                    class="d-flex justify-content-between align-items-center"
+                  >
+                    <div>
+                      {{ item.student.hoten }}
+                    </div>
+                    <div [matMenuTriggerFor]="menu" class="icon-action">
+                      <i class="pi pi-ellipsis-v"></i>
+                      <!-- <button  class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium " tabindex="0" type="button"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"  role="img" class="iconify iconify--eva mnl__icon__root MuiBox-root css-cnvj7y" width="1em" height="1em" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2" fill="currentColor"></circle><circle cx="12" cy="5" r="2" fill="currentColor"></circle><circle cx="12" cy="19" r="2" fill="currentColor"></circle></svg><span class="MuiTouchRipple-root css-w0pj6f"></span></button> -->
+                    </div>
+                    <mat-menu #menu="matMenu">
+                      <div class="css-1rurzyz">
+                        <button (click)="showDetailStudent(item)" mat-menu-item>
+                          <div class="btn-action-menu btn-edit">
+                            <div class="icon">
+                              <i class="pi pi-info-circle"></i>
+                            </div>
+                            <div class="value">Xem chi tiết</div>
+                          </div>
+                        </button>
+                      </div>
+                    </mat-menu>
+                  </div>
+                </td>
+                <td class="text-center">{{ item.exam_count }}</td>
+                <td class="ngaysinh-studentpoint">
+                  {{ item.student.ngaysinh_converted }}
+                </td>
+
+                <!-- <td style="text-align: center;" class="gender-student">{{item['chamthi']}}</td> -->
+                <td style="text-align: center; min-width: 80px;" class="raw_point">
+                  <span *ngIf="item.exam_count == 1; else elsePoint">
+                    {{item.total_point}}
+                  </span>
+                  <ng-template #elsePoint>
+                    <span *ngIf="item.pointHighest !== null" >{{item.pointHighest}} | </span>
+                    <span *ngIf="item.total_point !== null" > {{item.total_point}}</span>
+                    <span *ngIf="item.total_point == null" > Bỏ thi</span>
+                  </ng-template>
+                  
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+    </div>
+
+    <div class="student-section-footer">
+      <div class="page-layout-set">
+        <p-paginator
+          [rows]="rowsStudent"
+          [totalRecords]="recordsTotalStudent"
+          [pageLinkSize]="5"
+          (onPageChange)="paginateCathi($event)"
+        >
+        </p-paginator>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #elseNotSelectedCathi>
+    <div
+      class="ket-qua-thi-right"
+      style="
+        height: calc(var(--max-screen-height) - 70px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <div class="d-flex justify-content-center align-items-center">
+        <i class="pi pi-info-circle"></i>
+        <span class="ml-1"> Vui lòng chọn ca thi </span>
+      </div>
+    </div>
+  </ng-template>
+
+  <app-chi-tiet-ket-qua-thi
+    [propsData]="{ student_id: student_id, shift_id: shift_id, student: studentSelected }"
+    [stateDiaglog]="dialogSate"
+  ></app-chi-tiet-ket-qua-thi>
+</div>

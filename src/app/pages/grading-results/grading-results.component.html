@@ -1,0 +1,74 @@
+<div class="grading-results-panel">
+	<ng-container [ngSwitch]="state()">
+
+		<div *ngSwitchCase="'loading'" class="dashboard-component--full-height dashboard-component__loading" style="z-index: 100;">
+			<div class="dashboard-component__loading__content">
+				<h4 class="dashboard-component__loading__heading">Loading...</h4>
+				<mat-progress-bar mode="indeterminate" value="40"></mat-progress-bar>
+			</div>
+		</div>
+
+		<ng-container *ngSwitchCase="'success'">
+			<div class="grading-results-panel__header">
+				<button (click)="btnChangeTab('question')" [ngClass]="tabActive() === 'question' ? '--tab-active':null" class="btn grading-assignment-system__head__tab">Câu hỏi</button>
+				<button (click)="btnChangeTab('answered')" [ngClass]="tabActive() === 'answered' ? '--tab-active':null" class="btn grading-assignment-system__head__tab">Bài làm của thí sinh</button>
+				<button *ngIf="canShowguide" (click)="btnChangeTab('guide')" [ngClass]="tabActive() === 'guide' ? '--tab-active':null" class="btn grading-assignment-system__head__tab">Hướng dẫn chấm</button>
+				<button (click)="backToDashboard()" mat-flat-button class="grading-results-panel__btn-quit btn ictu-badge-btn--primary-reverse">
+					<i style="line-height: 1;display: inline-block;vertical-align: middle;" class="ti ti-arrow-back-up"></i> Trở lại
+				</button>
+			</div>
+			<div class="grading-results-panel__body">
+				<div class="grading-assignment-system__container" [ngSwitch]="tabActive()">
+					<ng-container *ngSwitchCase="'answered'">
+						<div class="grading-assignment-system__presentation">
+							<div class="grading-assignment-system__form">
+								<fieldset>
+									<legend>Điểm</legend>
+									<input disabled="disabled" type="text" #showScore pInputText class="grading-assignment-system__form__input grading-assignment-system__form__input--score" [ngModel]="score()">
+								</fieldset>
+								<fieldset>
+									<legend>Lời phê của giáo viên</legend>
+									<textarea autosize [elementEquationTo]="showScore" pInputTextarea rows="5" cols="100" class="grading-assignment-system__form__input" disabled="disabled" [ngModel]="comments()"></textarea>
+								</fieldset>
+							</div>
+							<textarea autosize disabled="disabled" pInputTextarea class="grading-assignment-system__presentation__textarea" [ngModel]="answer()"></textarea>
+						</div>
+						<div class="grading-assignment-system__word-counter">
+							<p class="grading-assignment-system__word-counter__text">Tổng số đoạn : {{ answer() | paragraphCounter }}</p>
+							<p class="grading-assignment-system__word-counter__text">Tổng số chữ : {{ answer() | wordsCounter }}</p>
+						</div>
+					</ng-container>
+					<ng-container *ngSwitchCase="'guide'">
+						<div style="--grading-assignment-system-present-size: var(--grading-assignment-body-height)" class="grading-assignment-system__presentation__guide" [innerHTML]="scoringGuide() | safeHtml"></div>
+					</ng-container>
+					<ng-container *ngSwitchCase="'question'">
+						<div style="--grading-assignment-system-present-size: var(--grading-assignment-body-height)" class="grading-assignment-system__presentation__guide lock-ck-content" [appLoadMediaOnText]="params.id" [IctuMediaLoader]="params.id" [innerHTML]="questionContent() | safeHtmlSingle"></div>
+					</ng-container>
+				</div>
+			</div>
+		</ng-container>
+
+		<div *ngSwitchCase="'error'" class="admin-table__alert-danger text-center m-auto">Tải dữ liệu thất bại. Vui lòng
+			<a (click)="reload($event)" href="javascript:" class="admin-table__alert-danger__btn-reload">tải lại</a>
+		</div>
+
+		<ng-container *ngSwitchCase="'invalid'">
+			<div class="d-flex flex-column justify-content-center align-items-center m-auto" style="gap:30px">
+				<div class="ictu-badge ictu-badge--danger text-center" style="display: inline-block;font-size: 14px;line-height: 1.5;padding: 10px 15px;">Thông tin bài thi không đúng. Vui lòng kiểm tra lại.</div>
+				<button (click)="backToDashboard($event)" mat-flat-button class="btn ictu-badge-btn--primary-reverse">
+					<i style="line-height: 1;display: inline-block;vertical-align: middle;" class="ti ti-arrow-back-up"></i> Trở về trình quản lý
+				</button>
+			</div>
+		</ng-container>
+
+		<ng-container *ngSwitchCase="'unauthorized'">
+			<div class="d-flex flex-column justify-content-center align-items-center m-auto" style="gap:30px">
+				<div class="ictu-badge ictu-badge--danger text-center" style="display: inline-block;font-size: 14px;line-height: 1.5;padding: 10px 15px;">Bạn không có quyền truy cập nội dung này. Vui lòng kiểm tra lại hoặc liên hệ với quản trị viên.</div>
+				<button (click)="backToDashboard($event)" mat-flat-button class="btn ictu-badge-btn--primary-reverse">
+					<i style="line-height: 1;display: inline-block;vertical-align: middle;" class="ti ti-arrow-back-up"></i> Trở về trình quản lý
+				</button>
+			</div>
+		</ng-container>
+
+	</ng-container>
+</div>

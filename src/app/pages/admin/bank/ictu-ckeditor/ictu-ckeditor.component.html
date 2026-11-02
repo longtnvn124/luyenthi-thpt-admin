@@ -1,0 +1,14 @@
+<div class="main-container">
+	<div *ngIf="isUploading()" class="loading-overlay">
+		<div class="spinner"></div>
+		<p>Uploading image, please wait...</p>
+	</div>
+	<div class="editor-container editor-container_classic-editor editor-container_include-word-count" #editorContainerElement>
+		<div class="editor-container__editor">
+			<div #editorElement>
+				<ckeditor [editor]="Editor" [config]="config" (ready)="onReady($event)" *ngIf="isLayoutReady"/>
+			</div>
+		</div>
+		<div class="editor_container__word-count" #editorWordCountElement></div>
+	</div>
+</div>

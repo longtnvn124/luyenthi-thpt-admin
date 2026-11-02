@@ -1,0 +1,17 @@
+.scoring-assignments {
+    height: var(--ictu-admin-side-layout-side-height);
+}
+
+.scoring-assignments__body {
+    height: calc(100% - 50px);
+    min-height: calc(100% - 50px);
+    max-height: calc(100% - 50px);
+    flex: 1 1 auto;
+    overflow-y: auto;
+}
+
+.scoring-assignments__foot {
+    height: 50px;
+    background-color: #ffffff;
+    box-shadow: 0 -1px 0 0 var(--ictu-admin-side-layout-side-border-color);
+}

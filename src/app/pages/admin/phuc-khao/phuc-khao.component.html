@@ -1,0 +1,688 @@
+<div class="layout-phuc-khao" [class.ictu-is-loading]="isLoading">
+  <div class="layout-phuc-khao-top">
+    <div class="layout-phuc-khao-top-left">
+      <div class="filter-dropdown">
+        <ovic-dropdown
+          (onChange)="onSeletedCathi($event)"
+          *ngIf="dmShift && dmShift.length"
+          [defaultValue]="dmShift[0].id"
+          [showClear]="false"
+          optionLabel="name"
+          [options]="dmShift"
+          optionId="id"
+          [filter]="true"
+        >
+        </ovic-dropdown>
+      </div>
+      <button
+        (click)="closeLeftBottom()"
+        pButton
+        pRipple
+        class="p-button-secondary"
+      >
+        <i
+          [ngClass]="!isCloseButton ? 'fa fa-arrow-left' : 'fa fa-arrow-right'"
+        ></i>
+      </button>
+    </div>
+    <div class="layout-phuc-khao-top-right d-none">
+      <p-button
+        [text]="true"
+        container="body"
+        placement="left"
+        pTooltip="Tải tất cả file lưu trữ"
+        [plain]="true"
+        [matMenuTriggerFor]="menuDownload"
+      >
+        <i class="fa fa-download"></i>
+      </p-button>
+
+      <mat-menu #menuDownload="matMenu">
+        <button mat-menu-item>Tải file đã chọn</button>
+        <button mat-menu-item>Tải file theo vị trí</button>
+      </mat-menu>
+    </div>
+  </div>
+  <div class="layout-phuc-khao-bottom">
+    <div
+      class="layout-phuc-khao-bottom-left"
+      [ngClass]="isCloseButton ? 'is-close-left-phuc-khao' : ''"
+    >
+      <div class="layout-phuc-khao-bottom-left-filter">
+        <!-- <input
+          (keyup)="filterStudent($event)"
+          placeholder="Tìm kiếm theo mã sinh viên hoặc tên"
+          type="text"
+          class="filter-student"
+        /> -->
+
+        <div class="search-block__elm same-height w-100">
+          <span class="p-input-icon-right w-100">
+            <i class="pi pi-search"></i>
+            <input
+              class="ovic-table-search--head datatable-input same-height"
+              type="text"
+              pInputText
+              [(ngModel)]="search.student"
+              placeholder="Tìm kiếm theo mã sinh viên hoặc tên"
+              (input)="handleSearchStudent($event.target['value'])"
+            />
+          </span>
+        </div>
+      </div>
+      <div class="layout-phuc-khao-bottom-left-content">
+        <p-table
+          [value]="dmShiftTestSession"
+          [(selection)]="selectedShiftTestSessions"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th class="text-center">
+                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+              </th>
+              <th class="text-center">STT</th>
+              <th class="text-center">SBD</th>
+              <th>Họ tên</th>
+              <th class="text-center">Lần thi</th>
+              <th class="text-center">Thao tác</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-item let-i="rowIndex">
+            <tr
+            class="intro-y"
+              [ngStyle]="
+                selectedSession && selectedSession.id === item.id
+                  ? { 'background-color': '#e7e7e7' }
+                  : {}
+              "
+            >
+              <!-- phuckhaoSelected -->
+              <td class="text-center">
+                <p-tableCheckbox [value]="item"></p-tableCheckbox>
+              </td>
+              <td class="text-center">{{ item["__index_table"] }}</td>
+              <td class="text-center">{{ item?.student?.id }}</td>
+              <td>{{ item?.student?.hoten }}</td>
+              <td class="text-center">{{ item.exam_count }}</td>
+              <td class="icon-view-detail text-center">
+                <div class="text-center">
+                  <div (click)="showListSesstion(item)" class="icon-action">
+                    <i class="pi pi-arrow-right"></i>
+                    <!-- <button  class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium " tabindex="0" type="button"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"  role="img" class="iconify iconify--eva mnl__icon__root MuiBox-root css-cnvj7y" width="1em" height="1em" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2" fill="currentColor"></circle><circle cx="12" cy="5" r="2" fill="currentColor"></circle><circle cx="12" cy="19" r="2" fill="currentColor"></circle></svg><span class="MuiTouchRipple-root css-w0pj6f"></span></button> -->
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+
+      <div class="page-layout-set">
+        <p-paginator
+          [rows]="rows"
+          [totalRecords]="recordsTotalStudent"
+          [pageLinkSize]="5"
+          (onPageChange)="paginateStudent($event)"
+        >
+        </p-paginator>
+      </div>
+    </div>
+
+    <div
+      class="layout-phuc-khao-bottom-right ovic-scroll-style"
+      [ngClass]="isCloseButton ? 'is-open-rigth-phuc-khao' : ''"
+    >
+      <div
+        *ngIf="
+          dmShiftTestSessionDetail.length > 0 && dmShiftTestQuestion.length <= 0
+        "
+      >
+        <div class="tn-shift-test-session-detail">
+          <div class="content ovic-scroll-style">
+            <div class="student-info d-flex">
+              <div style="font-weight: 500">
+                <span>Họ và tên:</span>
+                <span class="ml-1">{{ selectedSession.student.hoten }}</span>
+              </div>
+              <div class="ml-4" style="font-weight: 500">
+                <span>SBD:</span>
+                <span class="ml-1">{{
+                  selectedSession.student.id
+                }}</span>
+              </div>
+            </div>
+
+            <div class="mt-3">
+              <p-table [value]="dmShiftTestSessionDetail">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <!-- <th class="text-center">
+                      <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                    </th> -->
+                    <th class="text-center">STT</th>
+                    <th class="text-center">Lần thi</th>
+                    <!-- <th class="text-center">Mã đề</th> -->
+                    <th class="text-center">Điểm</th>
+                    <th class="text-center">Ngày thi</th>
+                    <th class="text-center">Thao tác</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-item let-i="rowIndex">
+                  <tr
+                    [ngStyle]="
+                      selectedSession && selectedSession.id === item.id
+                        ? { 'background-color': '#e7e7e7' }
+                        : {}
+                    "
+                  >
+                    <!-- <td class="text-center">
+                      <p-tableCheckbox [value]="item"></p-tableCheckbox>
+                    </td> -->
+                    <td class="text-center">{{ i + 1 }}</td>
+                    <td class="text-center">
+                      Lần {{ dmShiftTestSessionDetail.length - i }}
+                    </td>
+                    <!-- <td class="text-center">{{ item.shift_test?.code }}</td> -->
+                    <td class="text-center">
+                      <!-- {{ item.student_result?.total_point || 0 }} -->
+                      <span *ngIf="item.total_point !== null">
+                        {{ item.total_point }}</span
+                      >
+                      <span *ngIf="item.total_point == null"> Bỏ thi</span>
+                    </td>
+                    <td class="text-center">
+                      {{ item['time_start_converted'] }}
+                    </td>
+                    <td class="text-center">
+                      <span
+                        class="icon-action"
+                        (click)="loadDetailShiftTestSessionAnwser(item)"
+                      >
+                        <i class="pi pi-eye"></i>
+                      </span>
+                      <span
+                        class="icon-action d-none"
+                        [matMenuTriggerFor]="menu"
+                      >
+                        <i class="pi pi-ellipsis-v"></i>
+                      </span>
+                      <mat-menu #menu="matMenu">
+                        <div class="css-1rurzyz">
+                          <button
+                            (click)="loadDetailShiftTestSessionAnwser(item)"
+                            mat-menu-item
+                          >
+                            <div class="btn-action-menu btn-edit">
+                              <div class="icon">
+                                <i class="pi pi-eye"></i>
+                              </div>
+                              <div class="value">Xem bài thi</div>
+                            </div>
+                          </button>
+                          <button (click)="handleDownload(item)" mat-menu-item>
+                            <div class="btn-action-menu">
+                              <div class="icon">
+                                <i class="pi pi-download"></i>
+                              </div>
+                              <div class="value">Tải kết quả thi</div>
+                            </div>
+                          </button>
+                        </div>
+                      </mat-menu>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+              <!-- <div class="d-flex" *ngFor="let item of dmShiftTestSessionDetail; index as i" >
+              <div class="w-50">
+                <span>Lần thi: {{dmShiftTestSessionDetail.length - i}}</span>
+              </div>
+              <div class="w-50">
+                <span>Mã đề: {{item.shift_test?.code}}</span>
+              </div>
+            </div> -->
+            </div>
+          </div>
+
+          <!-- <div class="page-layout-set">
+          <p-paginator [rows]="rowsTotalSessionDetail" [totalRecords]="recordsTotalSessionDetail" [pageLinkSize]="5" (onPageChange)="paginateSessionDetail($event)">
+          </p-paginator>
+        </div> -->
+        </div>
+      </div>
+
+      <!-- start all skill -->
+      <div
+        *ngIf="dmShiftTestQuestion.length > 0"
+        class="tn-chamthi-result"
+        #docx
+      >
+        <div class="student-info">
+          <p
+            class="header_1 header-of-word"
+            style="text-align: center; font-weight: bold"
+          >
+            {{ "BÀI THI" }}
+          </p>
+          <p
+            class="header_1"
+            style="text-align: center; font-weight: bold; margin-bottom: 1cm"
+          >
+            {{
+              "(Ca thi
+                          " +
+                selectedCathi["name"] +
+                ")"
+            }}
+          </p>
+          <p class="header_2" style="">
+            <span>{{
+              "Họ và tên:
+                              " + selectedSession["student"]["hoten"]
+            }}</span
+            >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <span>{{
+              "SBD: " + "_" + selectedSession["student"]["id"]
+            }}</span>
+          </p>
+          <p class="header_2" style="margin-bottom: 1cm">
+            <!-- <span>{{
+              "Mã đề: " + selectedSessionDetail["shift_test"]["code"]
+            }}</span>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
+            <span>{{ "Điểm: " + selectedSessionDetail["total_point"] }}</span>
+          </p>
+          <!-- <P class="header_2">
+              <span>{{
+                "Tổng số câu đúng: " + selectedSession["number_question_correct"]
+              }}</span
+              >
+            </P> -->
+        </div>
+        <div class="tn-chamthi-result-content">
+          <div class="question-student-asnwer">
+            <strong>Đáp án của sinh viên:</strong>
+          </div>
+          <div class="student-answer">
+            <div
+              class="import-questTion-option"
+              *ngFor="let quest of dmShiftTestQuestion; index as i"
+            >
+              <div class="import-question-direction-child">
+                <div class="number_question_question-1 lock-ck-content">
+                  <strong style="float: left; margin-right: 4px"
+                    >Câu {{ quest["__index"] }}.</strong
+                  >
+                  <strong
+                    [ngClass]="{
+                      'lesson-file-preview-content_text-input-box ':
+                        quest.question_type === 'complete_word' ||
+                        quest.question_type === 'inputbox'
+                    }"
+                    [innerHTML]="quest.question_direction | safeHtml"
+                    [IctuMediaLoader]="i"
+                  ></strong>
+                </div>
+                <div [ngSwitch]="quest.question_type">
+                  <div *ngSwitchCase="'radio'">
+                    <ovic-groups-radio
+                      [disabled]="true"
+                      [verticalMode]="true"
+                      [rawHtml]="true"
+                      [options]="quest.answer_option"
+                      optionLabel="value"
+                      optionId="id"
+                      [classOrther]="
+                        !quest['is_correct'] ? 'has-other-answer' : ''
+                      "
+                      [ortherDefault]="quest.answer"
+                      [default]="quest.answer_correct.split('|')[1]"
+                    >
+                    </ovic-groups-radio>
+                  </div>
+                  <div *ngSwitchCase="'group-radio'">
+                    <div
+                      *ngFor="
+                        let subQuest of quest['subQuestions'];
+                        let subIndex = index
+                      "
+                    >
+                      <div class="number_question_question lock-ck-content">
+                        <strong
+                          style="font-family: 'Times New Roman, Times, serif'"
+                          >{{ getalphabetletter(subIndex) }}.</strong
+                        >&nbsp;
+                        <div
+                          [ngClass]="{
+                            'lesson-file-preview-content_text-input-box ':
+                              quest.question_type === 'complete_word' ||
+                              quest.question_type === 'inputbox'
+                          }"
+                          [IctuMediaLoader]="subIndex"
+                          [innerHTML]="subQuest.question_direction | safeHtml"
+                        ></div>
+                        &nbsp;
+                      </div>
+                      <ovic-groups-radio
+                        [disabled]="true"
+                        [verticalMode]="true"
+                        [rawHtml]="true"
+                        [options]="subQuest.answer_option"
+                        optionLabel="value"
+                        optionId="id"
+                        [ortherDefault]="subQuest.answer"
+                        [default]="subQuest.answer_correct.split('|')[1]"
+                        [classOrther]="
+                          !subQuest['is_correct'] ? 'has-other-answer' : ''
+                        "
+                      >
+                      </ovic-groups-radio>
+                    </div>
+                  </div>
+                  <div *ngSwitchCase="'group-input'">
+                    <div>
+                      <div
+                        class="w-100"
+                        *ngFor="
+                          let subQuest of quest['subQuestions'];
+                          let subIndex = index
+                        "
+                      >
+                        <div class="question-title">
+                          <span
+                            style="font-family: 'Times New Roman, Times, serif'"
+                            >{{ subIndex }}. Câu trả lời</span
+                          >&nbsp;
+                        </div>
+                        <div class="w-100 d-flex align-items-center">
+                          <div class="w-50">
+                            <div
+                              class="custom-input"
+                              [ngClass]="{
+                                'has-other-answer-input': !subQuest.is_correct,
+                                checkmark: subQuest.is_correct,
+                                crossmark: !subQuest.is_correct
+                              }"
+                            >
+                              {{ subQuest.answer ?? "" }}
+                            </div>
+                          </div>
+                          <div
+                            class="w-50 checkmark"
+                            *ngIf="!subQuest.is_correct"
+                          >
+                            {{ subQuest.answer_correct.split("|")[1] }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div *ngSwitchCase="'checkbox'">
+                    <ovic-groups-radio-custom
+                      [disabled]="true"
+                      [verticalMode]="true"
+                      [rawHtml]="true"
+                      [options]="quest.answer_option"
+                      optionLabel="value"
+                      optionId="id"
+                      [ortherDefault]="quest.answer"
+                      [default]="quest.answer_correct.split('|')[1]"
+                      [isCorrect]="quest['is_correct']"
+                    >
+                      <!-- [classOrther]="!quest['is_correct'] ? 'has-other-answer' : ''" -->
+                    </ovic-groups-radio-custom>
+                  </div>
+
+                  <div *ngSwitchCase="'drag_drop'">
+                    <app-drag-drop-question-view [question]="quest">
+                    </app-drag-drop-question-view>
+                  </div>
+
+                  <div *ngSwitchCase="'grouping'">
+                    <app-grouping-question-view [question]="quest">
+                    </app-grouping-question-view>
+                  </div>
+
+                  <div *ngSwitchCase="'input'">
+                    <div class="w-100 d-flex align-items-center">
+                      <div class="w-50">
+                        <div
+                          class="custom-input"
+                          [ngClass]="{
+                            'has-other-answer-input': !quest['is_correct'],
+                            checkmark: quest['is_correct'],
+                            crossmark: !quest['is_correct']
+                          }"
+                        >
+                          {{ quest['answer'] ?? "" }}
+                        </div>
+                      </div>
+                      <div class="w-50 checkmark" *ngIf="!quest['is_correct']">
+                        {{ quest.answer_correct.split("|")[1] }}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div *ngSwitchCase="'group'">
+                    <div
+                      class="import-questTion-option"
+                      *ngFor="let questChild of quest['subQuestions']; index as i2"
+                    >
+                      <div class="import-question-direction-child">
+                        <div class="number_question_question-1 lock-ck-content">
+                          <strong style="float: left; margin-right: 4px"
+                            >Câu {{ quest["__index"] | incrementNodeNumber : i2 }}.</strong
+                          >
+                          <div
+                            [ngClass]="{
+                              'lesson-file-preview-content_text-input-box ':
+                                questChild.question_type === 'complete_word' ||
+                                questChild.question_type === 'inputbox'
+                            }"
+                            [innerHTML]="questChild.question_direction | safeHtml"
+                            [IctuMediaLoader]="i"
+                          ></div>
+                        </div>
+                        <div [ngSwitch]="questChild.question_type">
+                          <div *ngSwitchCase="'radio'">
+                            <ovic-groups-radio
+                              [disabled]="true"
+                              [verticalMode]="true"
+                              [rawHtml]="true"
+                              [options]="questChild.answer_option"
+                              optionLabel="value"
+                              optionId="id"
+                              [classOrther]="
+                                !questChild['is_correct'] ? 'has-other-answer' : ''
+                              "
+                              [ortherDefault]="questChild.answer"
+                              [default]="questChild.answer_correct.split('|')[1]"
+                            >
+                            </ovic-groups-radio>
+                          </div>
+                          <div *ngSwitchCase="'group-radio'">
+                            <div
+                              *ngFor="
+                                let subQuest of questChild['subQuestions'];
+                                let subIndex = index
+                              "
+                            >
+                              <div class="number_question_question">
+                                <strong
+                                  style="
+                                    font-family: 'Times New Roman, Times, serif';
+                                  "
+                                  >{{ getalphabetletter(subIndex) }}.</strong
+                                >&nbsp;
+                                <div
+                                  [ngClass]="{
+                                    'lesson-file-preview-content_text-input-box':
+                                      questChild.question_type === 'complete_word' ||
+                                      questChild.question_type === 'inputbox'
+                                  }"
+                                  [innerHTML]="
+                                    trustHtml(subQuest.question_direction)
+                                  "
+                                ></div>
+                                &nbsp;
+                              </div>
+                              <ovic-groups-radio
+                                [disabled]="true"
+                                [verticalMode]="true"
+                                [rawHtml]="true"
+                                [options]="subQuest.answer_option"
+                                optionLabel="value"
+                                optionId="id"
+                                [ortherDefault]="subQuest.answer"
+                                [default]="
+                                  subQuest.answer_correct.split('|')[1]
+                                "
+                                [classOrther]="
+                                  !subQuest['is_correct']
+                                    ? 'has-other-answer'
+                                    : ''
+                                "
+                              >
+                              </ovic-groups-radio>
+                            </div>
+                          </div>
+                          <div *ngSwitchCase="'group-input'">
+                            <div>
+                              <div
+                                class="w-100"
+                                *ngFor="
+                                  let subQuest of questChild['subQuestions'];
+                                  let subIndex = index
+                                "
+                              >
+                                <div class="question-title">
+                                  <span
+                                    style="
+                                      font-family: 'Times New Roman, Times, serif';
+                                    "
+                                    >{{ subIndex }}. Câu trả lời</span
+                                  >&nbsp;
+                                </div>
+                                <div class="w-100 d-flex align-items-center">
+                                  <div class="w-50">
+                                    <div
+                                      class="custom-input"
+                                      [ngClass]="{
+                                        'has-other-answer-input':
+                                          !subQuest.is_correct,
+                                        checkmark: subQuest.is_correct,
+                                        crossmark: !subQuest.is_correct
+                                      }"
+                                    >
+                                      {{ subQuest.answer ?? "" }}
+                                    </div>
+                                  </div>
+                                  <div
+                                    class="w-50 checkmark"
+                                    *ngIf="!subQuest.is_correct"
+                                  >
+                                    {{ subQuest.answer_correct.split("|")[1] }}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div *ngSwitchCase="'checkbox'">
+                            <ovic-groups-radio-custom
+                              [disabled]="true"
+                              [verticalMode]="true"
+                              [rawHtml]="true"
+                              [options]="questChild.answer_option"
+                              optionLabel="value"
+                              optionId="id"
+                              [ortherDefault]="questChild.answer"
+                              [default]="questChild.answer_correct.split('|')[1]"
+                              [isCorrect]="questChild['is_correct']"
+                            >
+                              <!-- [classOrther]="!quest['is_correct'] ? 'has-other-answer' : ''" -->
+                            </ovic-groups-radio-custom>
+                          </div>
+
+                          <div *ngSwitchCase="'drag_drop'">
+                            <app-drag-drop-question-view [question]="questChild">
+                            </app-drag-drop-question-view>
+                          </div>
+
+                          <div *ngSwitchCase="'grouping'">
+                            <app-grouping-question-view [question]="questChild">
+                            </app-grouping-question-view>
+                          </div>
+
+                          <div *ngSwitchCase="'input'">
+                            <div class="w-100 d-flex align-items-center">
+                              <div class="w-50">
+                                <div
+                                  class="custom-input"
+                                  [ngClass]="{
+                                    'has-other-answer-input': !questChild['is_correct'],
+                                    checkmark: questChild['is_correct'],
+                                    crossmark: !questChild['is_correct']
+                                  }"
+                                >
+                                  {{ quest['answer'] ?? "" }}
+                                </div>
+                              </div>
+                              <div class="w-50 checkmark" *ngIf="!questChild['is_correct']">
+                                {{ questChild.answer_correct.split("|")[1] }}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- end all skill -->
+    </div>
+  </div>
+</div>
+
+<!-- <ng-template #templateDownload let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title">Nhập vào vị trí và số lượng</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d(true)">
+      <span >&times;</span>
+    </button>
+  </div>
+  <div class="modal-body ovic-modal-body">
+    <div class="ovic-input-line ">
+      <div class=" ovic-form-layout ovic-input-item w-1-2-elm">
+        <label>Vị trí bắt đầu:</label>
+        <input
+          [(ngModel)]="startNumber"
+          type="number"
+          class="ovic-input-field"
+        />
+      </div>
+      <div class=" ovic-form-layout ovic-input-item w-1-2-elm">
+        <label>Vị trí kết thúc:</label>
+        <input [(ngModel)]="endNumber" type="number" class="ovic-input-field" />
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button pButton pRipple  class="p-button-primary" label="Bắt đầu tải" icon="fa fa-download" (click)="readyDownloadAll(d)">
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #templateWaiting let-c="close" let-d="dismiss">
+  <div class="popup-waiting-loading">
+    <label>Xin vui lòng chờ...</label>
+    <div *ngIf="startDonwload" class="tn-import-student-progressbar">
+      <p-progressBar [value]="valueDownload" mode="dynamic"></p-progressBar>
+    </div>
+  </div>
+</ng-template> -->

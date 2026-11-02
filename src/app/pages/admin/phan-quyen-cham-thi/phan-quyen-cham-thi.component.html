@@ -1,0 +1,73 @@
+<div class="scoring-assignments position-relative test-results-side d-flex flex-column">
+	<div class="scoring-assignments__body admin-wrap-table ovic-scroll-style">
+		<ng-container *ngIf="state() !== 'error'; else errorTemplate">
+			<div class="admin-wrap-table__head d-flex">
+				<h4 class="admin-wrap-table__heading">
+					<svg>
+						<use href="assets/fonts/custom-icon.svg#custom-folder-open-2"></use>
+					</svg>
+					Danh sách bài thi chờ chấm
+				</h4>
+				<div class="admin-wrap-table__head-actions" style="--font-family: var(--primary-font) , sans-serif;">
+					<div class="ovic-vertical__inputs ovic-vertical__inputs--layout-2 p-0">
+						<p-dropdown [(ngModel)]="teacher_id" appendTo="body" class="ictu-dropdown-style" panelStyleClass="ictu-dropdown-panel" [options]="teacherList" placeholder="Chọn giáo viên" emptyMessage="Không có giáo viên"></p-dropdown>
+					</div>
+					<button (click)="submitData()" [disabled]="!dataTable.someItemsChecked() || !teacher_id" mat-flat-button class="btn p-0 ictu-badge-btn--primary-reverse" matTooltip="Phân quyền chấm thi" matTooltipPosition="above">
+						<i class="ti ti-check"></i>
+					</button>
+				</div>
+			</div>
+			<div class="admin-wrap-table__body">
+				<table class="tbl admin-table table-hover">
+					<thead>
+						<tr>
+							<th class="col-checkbox">
+								<mat-checkbox [checked]="dataTable.totalChecked()" [indeterminate]="dataTable.partiallyChecked()" (change)="dataTable.selectRow($event.checked)" [disabled]="!dataTable.data().length"></mat-checkbox>
+							</th>
+							<th class="col-index text-center">#</th>
+							<th>Thí sinh</th>
+							<th class="text-center" style="width: 300px;">Email</th>
+							<th class="text-center wid-150">Sdt</th>
+							<th class="text-center wid-150">Môn</th>
+							<th class="text-center wid-120">Thời gian thi</th>
+						</tr>
+					</thead>
+					<tbody>
+						<ng-container *ngFor="let row of dataTable.data(); index as i; trackBy:identify">
+							<tr>
+								<td class="col-checkbox">
+									<mat-checkbox [checked]="!!row['_ictuDataTableRowChecked']" (change)="dataTable.selectRow($event.checked, i)"></mat-checkbox>
+								</td>
+								<td class="col-index text-center">{{ dataTable.paginator.startIndex() + i }}</td>
+								<td class="text-left">{{ row.registers?.hoten }}</td>
+								<td class="text-left" style="width: 300px;">{{ row.registers?.email }}</td>
+								<td class="text-left wid-150">{{ row.registers?.phone }}</td>
+								<td class="text-left wid-150">{{ row._subjectName }}</td>
+								<td class="text-center wid-120">{{ row.created_at | date : 'dd-MM-yyyy' }}</td>
+							</tr>
+						</ng-container>
+						<tr *ngIf="dataTable.data().length===0">
+							<td colspan="7" class="text-center">Không có bản ghi nào.</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="admin-wrap-table__foot">
+				<div class="d-flex justify-content-center align-items-center w-100">
+					<ictu-paginator [control]="dataTable.paginator" (onChangePage)="onChangePage($event)"></ictu-paginator>
+				</div>
+			</div>
+		</ng-container>
+	</div>
+	<div *ngIf="state() === 'loading'" class="animation-typing-dots w-100 h-100" style="position: absolute;z-index: 5;top: 0;left: 0;background-color: rgb(255 255 255 / 61%);">
+		<div class="animation-typing-dots__element"></div>
+		<div class="animation-typing-dots__element"></div>
+		<div class="animation-typing-dots__element"></div>
+	</div>
+</div>
+
+<ng-template #errorTemplate>
+	<div class="admin-table__alert-danger text-center w-100">Tải dữ liệu thất bại. Vui lòng chọn
+		<a (click)="reload($event)" href="javascript:" class="admin-table__alert-danger__btn-reload">tải lại</a>
+	</div>
+</ng-template>

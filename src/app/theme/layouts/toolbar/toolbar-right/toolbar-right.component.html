@@ -1,0 +1,220 @@
+<div class="header-button">
+    <button mat-button [matMenuTriggerFor]="Notification" aria-label="mode" class="header-item">
+        <span class="pc-head-link badge-on-button" [matBadge]="listData.length" matBadgeColor="primary" matBadgeOverlap="false">
+            <svg class="pc-icon">
+                <use href="assets/fonts/custom-icon.svg#custom-notification"></use>
+            </svg>
+        </span>
+    </button>
+
+    <mat-menu #Notification="matMenu" xPosition="before" class="dropdown-notification">
+        <div class="dropdown-header flex align-item-center justify-content-between">
+            <div class="d-flex align-item-center">
+                <img style="width: 16px; height: 16px" src="assets/images/client/icon/ic-mail.svg" alt="">
+                <h5 class="m-b-0 ml-1">Thông báo</h5>
+            </div>
+            <a href="javascript:" class="mat-body text-primary-500">Đánh dấu là đã đọc</a>
+        </div>
+        <ng-scrollbar style="height: calc(var(--max-screen-height) - 215px)" visibility="hover">
+            <div class="dropdown-body notification-section">
+                <div *ngFor="let item of listData" class="item-message">
+                    <div class="content w-100 d-flex align-item-top">
+                        <div class="avatar-left">
+                            <img class="pt-1" style="width: 30px; height: 30px; object-fit: contain; border-radius: 50%;" [src]="item.sender_avatar" alt="">
+                        </div>
+                        <div class="content-right ml-2">
+                            <div class="item-notifi-top">
+                                <b>{{item.sender_name}}</b>
+                                <span class="ml-1 mr-1">đã gửi một</span>
+                                <b>{{item.title}}</b>
+                                <div class="time d-none d-md-block">
+                                    <div class="d-flex align-items-center">
+                                        <i class="pi pi-stopwatch"></i>
+                                        <span class="ml-1">2 giờ trước</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="time-sm d-block d-md-none">
+                                <div class="d-flex align-items-center">
+                                    <i class="pi pi-stopwatch"></i>
+                                    <span class="ml-1">2 giờ trước</span>
+                                </div>
+                            </div>
+                            <div class="message-value">
+
+                                <span>{{item.message}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+
+                
+                <!-- <h6 class="m-b-10">Today</h6> -->
+                <!-- <app-card [showHeader]="false" cardClass="notification-card m-b-10" [padding]="16"
+                    *ngFor="let card of cards">
+                    <div class="flex">
+                        <div class="topic-icon flex-shrink-0">
+                            <svg class="pc-icon text-primary-500">
+                                <use [attr.href]="'assets/fonts/custom-icon.svg#'+card.icon"></use>
+                            </svg>
+                        </div>
+                        <div class="topic-description flex-grow-1 m-l-15">
+                            <span class="mat-small float-end text-muted">{{ card.time }}</span>
+                            <h5 class="m-b-10">{{ card.position }}</h5>
+                            <p class="m-b-0 mat-body">{{ card.description }}</p>
+                        </div>
+                    </div>
+                </app-card> -->
+                <!-- <h6 class="m-b-10">Yesterday</h6>
+                <app-card [showHeader]="false" cardClass="notification-card m-b-10" [padding]="16"
+                    *ngFor="let card of cards2">
+                    <div class="flex">
+                        <div class="topic-icon">
+                            <svg class="pc-icon text-primary-500">
+                                <use [attr.href]="'assets/fonts/custom-icon.svg#'+card.icon"></use>
+                            </svg>
+                        </div>
+                        <div class="topic-description m-l-15">
+                            <span class="mat-small float-end text-muted">{{ card.time }}</span>
+                            <h5 class="m-b-10">{{ card.position }}</h5>
+                            <p class="m-b-0 mat-body">{{ card.description }}</p>
+                        </div>
+                    </div>
+                </app-card>
+                <app-card [showHeader]="false" cardClass="notification-card m-b-10" [padding]="16">
+                    <div class="flex">
+                        <div class="topic-icon">
+                            <svg class="pc-icon text-primary-500">
+                                <use href="assets/fonts/custom-icon.svg#custom-user-bold"></use>
+                            </svg>
+                        </div>
+                        <div class="topic-description m-l-15">
+                            <span class="mat-small float-end text-muted">15 hour ago</span>
+                            <h5 class="m-b-10">Challenge invitation</h5>
+                            <p class="m-b-2 mat-body"> Jonny aber invites to join the challenge </p>
+                            <button mat-stroked-button class="m-r-10">Decline</button>
+                            <button mat-raised-button color="primary">Accept</button>
+                        </div>
+                    </div>
+                </app-card> -->
+            </div>
+        </ng-scrollbar>
+
+        <!-- <div class="dropdown-header flex align-item-center justify-content-between">
+            <h5 class="m-b-0">Notification online</h5>
+            <a href="javascript:" class="mat-body text-primary-500">Mark all read</a>
+        </div>
+        <ng-scrollbar style="height: calc(var(--max-screen-height) - 215px)" visibility="hover">
+            <div class="dropdown-body">
+                <h6 class="m-b-10">Today</h6>
+                <app-card [showHeader]="false" cardClass="notification-card m-b-10" [padding]="16"
+                    *ngFor="let card of cards">
+                    <div class="flex">
+                        <div class="topic-icon flex-shrink-0">
+                            <svg class="pc-icon text-primary-500">
+                                <use [attr.href]="'assets/fonts/custom-icon.svg#'+card.icon"></use>
+                            </svg>
+                        </div>
+                        <div class="topic-description flex-grow-1 m-l-15">
+                            <span class="mat-small float-end text-muted">{{ card.time }}</span>
+                            <h5 class="m-b-10">{{ card.position }}</h5>
+                            <p class="m-b-0 mat-body">{{ card.description }}</p>
+                        </div>
+                    </div>
+                </app-card>
+                <h6 class="m-b-10">Yesterday</h6>
+                <app-card [showHeader]="false" cardClass="notification-card m-b-10" [padding]="16"
+                    *ngFor="let card of cards2">
+                    <div class="flex">
+                        <div class="topic-icon">
+                            <svg class="pc-icon text-primary-500">
+                                <use [attr.href]="'assets/fonts/custom-icon.svg#'+card.icon"></use>
+                            </svg>
+                        </div>
+                        <div class="topic-description m-l-15">
+                            <span class="mat-small float-end text-muted">{{ card.time }}</span>
+                            <h5 class="m-b-10">{{ card.position }}</h5>
+                            <p class="m-b-0 mat-body">{{ card.description }}</p>
+                        </div>
+                    </div>
+                </app-card>
+                <app-card [showHeader]="false" cardClass="notification-card m-b-10" [padding]="16">
+                    <div class="flex">
+                        <div class="topic-icon">
+                            <svg class="pc-icon text-primary-500">
+                                <use href="assets/fonts/custom-icon.svg#custom-user-bold"></use>
+                            </svg>
+                        </div>
+                        <div class="topic-description m-l-15">
+                            <span class="mat-small float-end text-muted">15 hour ago</span>
+                            <h5 class="m-b-10">Challenge invitation</h5>
+                            <p class="m-b-2 mat-body"> Jonny aber invites to join the challenge </p>
+                            <button mat-stroked-button class="m-r-10">Decline</button>
+                            <button mat-raised-button color="primary">Accept</button>
+                        </div>
+                    </div>
+                </app-card>
+            </div>
+        </ng-scrollbar> -->
+    </mat-menu>
+    <button mat-button [matMenuTriggerFor]="user" aria-label="mode" class="header-item">
+        <img [src]="avatar | safeUrl" alt="user-image" class="user-avatar" style="position: relative;z-index: 10;" />
+    </button>
+</div>
+
+<mat-menu #user="matMenu" xPosition="before" class="dropdown-user-profile">
+    <div class="dropdown-body">
+        <div class="flex m-b-5">
+            <div class="topic-icon">
+                <img [src]="avatar | safeUrl" alt="user-image" class="user-avatar" />
+            </div>
+            <div class="topic-description m-l-15">
+                <h6 class="font-roboto user-name">{{ displayName }} 🔥</h6>
+                <p class="font-roboto mat-body mb-0">{{ email }}</p>
+            </div>
+        </div>
+        <mat-divider class="m-b-15 m-t-15"></mat-divider>
+        <a routerLink="/admin/he-thong/thong-tin-tai-khoan" class="dropdown-item text-muted" 
+            routerLinkActive="topbar-right-menu-active">
+            <svg class="pc-icon m-r-10">
+                <use href="assets/fonts/custom-icon.svg#custom-setting-outline"></use>
+            </svg>
+            <h6 class="font-roboto m-b-0 f-14 f-w-400">Cài đặt</h6>
+        </a>
+        <a href="javascript:" class="dropdown-item text-muted" routerLink="helps"
+            routerLinkActive="topbar-right-menu-active">
+            <svg class="pc-icon m-r-10">
+                <use href="assets/fonts/custom-icon.svg#phone-volume"></use>
+            </svg>
+            <h6 class="font-roboto m-b-0 f-14 f-w-400">Trợ giúp</h6>
+        </a>
+        <a routerLink="/admin/he-thong/thong-tin-tai-khoan" class="dropdown-item text-muted" 
+            routerLinkActive="topbar-right-menu-active">
+            <svg class="pc-icon m-r-10">
+                <use href="assets/fonts/custom-icon.svg#custom-lock-outline"></use>
+            </svg>
+            <h6 class="font-roboto m-b-0 f-14 f-w-400">Cập nhật mật khẩu</h6>
+        </a>
+        <!--<mat-divider class="m-b-15 m-t-15"></mat-divider>-->
+        <div class="grid m-t-15">
+            <button mat-flat-button color="primary" class="user-logout lh-1" (click)="confirmSignOut()">
+                <div class="font-roboto flex-inline align-item-center bn-logout f-w-400">
+                    <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+                        <g>
+                            <g>
+                                <g>
+                                    <path
+                                        d="m238.1 33.2c0 18.3-14.9 33.2-33.2 33.2h-130v379.3h130.1c18.3 0 33.2 14.9 33.2 33.2s-14.9 33.1-33.2 33.2h-163.3c-18.3 0-33.2-14.8-33.2-33.2v-445.7c0-18.3 14.8-33.2 33.2-33.2h163.3c18.3 0 33.1 14.8 33.1 33.2z" />
+                                    <path
+                                        d="m493.8 279.4c.4-.4.8-.8 1.1-1.2l.2-.2c.3-.3.6-.7.9-1l.2-.2c.3-.4.6-.7.8-1.1l.1-.1c.3-.4.6-.8.8-1.2 3-4.5 4.8-9.6 5.4-15 0-.1 0-.1 0-.2 0-.5.1-.9.1-1.4s0-1.1 0-1.6 0-1.1 0-1.6-.1-.9-.1-1.4c0-.1 0-.1 0-.2-.5-5.4-2.4-10.5-5.4-15v-.1c-.3-.4-.5-.8-.8-1.1l-.1-.2c-.2-.3-.5-.6-.8-1l-.3-.3c-.2-.3-.5-.6-.7-.8l-.4-.4c-.2-.3-.5-.5-.8-.8l-.4-.4-108.7-109.1c-12.9-12.9-33.8-12.9-46.7 0s-12.9 33.8 0 46.7l52.6 52.6h-208.9c-18.2 0-33 14.8-33 33s14.8 33 33 33h208.9l-52.6 52.6c-12.7 13.1-12.4 33.9.6 46.7 12.8 12.5 33.2 12.5 46 0z" />
+                                </g>
+                            </g>
+                        </g>
+                    </svg>
+                    Đăng xuất
+                </div>
+            </button>
+        </div>
+    </div>
+</mat-menu>

@@ -1,0 +1,147 @@
+$spacing: 8px;
+
+/**
+ * Content Layout
+ */
+rsz-layout .content {
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+rsz-layout .row {
+    flex: 1;
+    display: flex;
+    flex-flow: row nowrap;
+
+    &.resizable {
+        flex: 0 0 360px;
+    }
+}
+
+rsz-layout .cell {
+    box-sizing: border-box;
+    background: #fff;
+    border: calc($spacing / 2) solid #f0f0f0;
+    flex: 1;
+    min-height: 60px;
+
+    &.resizable {
+        flex: 0 0 360px;
+    }
+}
+
+/**
+ * Resizable Handles
+ */
+.resizable {
+    position: relative;
+
+    &.no-transition {
+        transition: none !important;
+    }
+}
+
+.rg-none {
+    display: none;
+}
+
+.rg-right, .rg-left, .rg-top, .rg-bottom {
+    display: block;
+    width: $spacing;
+    height: $spacing;
+    line-height: $spacing;
+    user-select: none;
+    background: transparent;
+    position: absolute;
+    z-index: 1;
+
+    span {
+        position: absolute;
+        box-sizing: border-box;
+        display: block;
+        border: 1px solid #ccc;
+    }
+}
+
+.rg-right, .rg-left {
+    span {
+        border-width: 0 1px;
+        top: 50%;
+        margin: -10px 0 0 calc($spacing / 4);
+        height: 20px;
+        width: calc($spacing / 2);
+    }
+}
+
+.rg-top, .rg-bottom {
+    span {
+        border-width: 1px 0;
+        left: 50%;
+        margin: calc($spacing / 4) 0 0 -10px;
+        width: 20px;
+        height: calc($spacing / 2);
+    }
+}
+
+.rg-top {
+    cursor: row-resize;
+    width: 100%;
+    top: 0;
+    left: 0;
+    margin-top: calc(-1 * ($spacing / 2));
+}
+
+.rg-right {
+    cursor: col-resize;
+    height: 100%;
+    right: 0;
+    top: 0;
+    margin-right: calc(-1 * $spacing);
+}
+
+.rg-bottom {
+    cursor: row-resize;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    margin-bottom: calc(-1 * ($spacing / 2));
+}
+
+.rg-left {
+    cursor: col-resize;
+    height: 100%;
+    left: 0;
+    top: 0;
+    margin-left: calc(-1 * $spacing);
+}
+
+/**
+ * Column Layout Overrides
+ */
+rsz-layout .content.cols {
+    flex-flow: row nowrap;
+
+    .row {
+        flex-flow: column nowrap;
+    }
+
+    .cell {
+        min-width: 60px;
+    }
+
+    .rg-top {
+        margin-top: calc(-1 * $spacing);;
+    }
+
+    .rg-right {
+        margin-right: calc(-1 * ($spacing / 2));
+    }
+
+    .rg-bottom {
+        margin-bottom: calc(-1 * $spacing);
+    }
+
+    .rg-left {
+        margin-left: calc(-1 * ($spacing / 2));
+    }
+}

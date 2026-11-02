@@ -1,0 +1,28 @@
+<ng-container>
+    <app-card [cardTitle]="'Phổ điểm '+shift.name">
+        
+        <ng-container *ngIf="!isLoading; else chartLoading">
+            
+            <apx-chart
+                [series]="scoreSpectrumChart.series"
+                [chart]="scoreSpectrumChart.chart"
+                [dataLabels]="scoreSpectrumChart.dataLabels"
+                [plotOptions]="scoreSpectrumChart.plotOptions"
+                [yaxis]="scoreSpectrumChart.yaxis"
+                [xaxis]="scoreSpectrumChart.xaxis"
+                [stroke]="scoreSpectrumChart.stroke"
+                [grid]="scoreSpectrumChart.grid"
+                [fill]="scoreSpectrumChart.fill"
+                [annotations]="scoreSpectrumChart.annotations"
+            ></apx-chart>
+        </ng-container>
+        
+        
+    </app-card>
+</ng-container>
+
+
+<ng-template #chartLoading>
+    <app-chart-loading></app-chart-loading>
+</ng-template>
+

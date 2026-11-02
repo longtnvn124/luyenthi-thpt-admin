@@ -1,0 +1,190 @@
+{
+    "$schema"        : "./node_modules/@angular/cli/lib/config/schema.json" ,
+    "version"        : 1 ,
+    "newProjectRoot" : "projects" ,
+    "projects"       : {
+        "luyen-thi-thpt-admin" : {
+            "projectType" : "application" ,
+            "schematics"  : { } ,
+            "root"        : "" ,
+            "sourceRoot"  : "src" ,
+            "prefix"      : "app" ,
+            "architect"   : {
+                "build"        : {
+                    "builder"              : "@angular-devkit/build-angular:browser" ,
+                    "options"              : {
+                        "allowedCommonJsDependencies" : [
+                            "apexcharts" ,
+                            "crypto-js" ,
+                            "pdfjs-dist/web/pdf_viewer" ,
+                            "pdfjs-dist" ,
+                            "file-saver" ,
+                            "plyr" ,
+                            "moment" ,
+                            "moment-timezone" ,
+                            "jszip" ,
+                            "pdfmake" ,
+                            "exceljs" ,
+                            "fuzzysort" ,
+                            "color-convert"
+                        ] ,
+                        "outputPath"                  : "dist/luyen-thi-thpt-admin" ,
+                        "index"                       : "src/index.html" ,
+                        "main"                        : "src/main.ts" ,
+                        "polyfills"                   : [
+                            "zone.js"
+                        ] ,
+                        "tsConfig"                    : "tsconfig.app.json" ,
+                        "assets"                      : [
+                            "src/favicon.ico" ,
+                            "src/assets"
+                        ] ,
+                        "styles"                      : [
+                            "node_modules/ckeditor5/dist/ckeditor5.css" ,
+                            "src/assets/css/lock-ck-content.css" ,
+                            "node_modules/plyr/dist/plyr.css" ,
+                            "src/assets/css/font-awesome.min.css" ,
+                            "src/assets/css/font-alarm-clock.css" ,
+                            "src/assets/css/bootstrap.min.css" ,
+                            "src/assets/fonts/phosphor-duotone/style.css" ,
+                            "src/custom-theme.scss" ,
+                            "src/app/theme/styles/material-overrides.scss" ,
+                            "src/assets/css/style-preset.css" ,
+                            "src/assets/css/lara-light-blue-theme.css" ,
+                            "src/assets/css/style.css" ,
+                            "src/assets/css/primeng.min.css" ,
+                            "node_modules/primeicons/primeicons.css" ,
+                            "src/assets/css/admin-dashboard.css" ,
+                            "src/assets/css/base.css" ,
+                            "src/assets/css/animation-loading.css" ,
+                            "node_modules/swiper/swiper-bundle.min.css" ,
+                            "src/assets/css/custom-button.css" ,
+                            "src/styles.css" ,
+                            "src/assets/css/secondary.css"
+                        ] ,
+                        "scripts"                     : [
+                            "node_modules/apexcharts/dist/apexcharts.min.js"
+                        ]
+                    } ,
+                    "configurations"       : {
+                        "production"  : {
+                            "budgets"          : [
+                                {
+                                    "type"           : "initial" ,
+                                    "maximumWarning" : "5mb" ,
+                                    "maximumError"   : "10mb"
+                                } ,
+                                {
+                                    "type"           : "anyComponentStyle" ,
+                                    "maximumWarning" : "20kb" ,
+                                    "maximumError"   : "40kb"
+                                }
+                            ] ,
+                            "fileReplacements" : [
+                                {
+                                    "replace" : "src/environments/environment.ts" ,
+                                    "with"    : "src/environments/environment.prod.ts"
+                                }
+                            ] ,
+                            "outputHashing"    : "all" ,
+                            "sourceMap"        : false ,
+                            "namedChunks"      : false ,
+                            "aot"              : true ,
+                            "extractLicenses"  : false ,
+                            "vendorChunk"      : false ,
+                            "buildOptimizer"   : true
+                        } ,
+                        "development" : {
+                            "buildOptimizer"  : false ,
+                            "optimization"    : false ,
+                            "vendorChunk"     : true ,
+                            "extractLicenses" : false ,
+                            "sourceMap"       : true ,
+                            "namedChunks"     : true
+                        }
+                    } ,
+                    "defaultConfiguration" : "production"
+                } ,
+                "serve"        : {
+                    "builder"              : "@angular-devkit/build-angular:dev-server" ,
+                    "options"              : {
+                        "port"       : 8008 ,
+                        "publicHost" : "https://localhost:8008/" ,
+                        "ssl"        : true
+                    } ,
+                    "configurations"       : {
+                        "production"  : {
+                            "browserTarget" : "luyen-thi-thpt-admin:build:production"
+                        } ,
+                        "development" : {
+                            "browserTarget" : "luyen-thi-thpt-admin:build:development" ,
+                            "sslKey"        : "localhost.key" ,
+                            "sslCert"       : "localhost.crt"
+                        }
+                    } ,
+                    "defaultConfiguration" : "development"
+                } ,
+                "extract-i18n" : {
+                    "builder" : "@angular-devkit/build-angular:extract-i18n" ,
+                    "options" : {
+                        "browserTarget" : "luyen-thi-thpt-admin:build"
+                    }
+                } ,
+                "test"         : {
+                    "builder" : "@angular-devkit/build-angular:karma" ,
+                    "options" : {
+                        "polyfills" : [
+                            "zone.js" ,
+                            "zone.js/testing"
+                        ] ,
+                        "tsConfig"  : "tsconfig.spec.json" ,
+                        "assets"    : [
+                            "src/favicon.ico" ,
+                            "src/assets"
+                        ] ,
+                        "styles"    : [
+                            "src/styles.css"
+                        ] ,
+                        "scripts"   : [ ]
+                    }
+                }
+            }
+        },
+        "ngx-text-blank-form": {
+          "projectType": "library",
+          "root": "projects/ngx-text-blank-form",
+          "sourceRoot": "projects/ngx-text-blank-form/src",
+          "prefix": "lib",
+          "architect": {
+            "build": {
+              "builder": "@angular-devkit/build-angular:ng-packagr",
+              "options": {
+                "project": "projects/ngx-text-blank-form/ng-package.json"
+              },
+              "configurations": {
+                "production": {
+                  "tsConfig": "projects/ngx-text-blank-form/tsconfig.lib.prod.json"
+                },
+                "development": {
+                  "tsConfig": "projects/ngx-text-blank-form/tsconfig.lib.json"
+                }
+              },
+              "defaultConfiguration": "production"
+            },
+            "test": {
+              "builder": "@angular-devkit/build-angular:karma",
+              "options": {
+                "tsConfig": "projects/ngx-text-blank-form/tsconfig.spec.json",
+                "polyfills": [
+                  "zone.js",
+                  "zone.js/testing"
+                ]
+              }
+            }
+          }
+        }
+    },
+    "cli": {
+      "analytics": false
+    }
+}

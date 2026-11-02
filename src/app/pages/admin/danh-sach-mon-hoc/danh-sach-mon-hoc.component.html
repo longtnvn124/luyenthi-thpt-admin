@@ -1,0 +1,62 @@
+<div class=" table-card intro-y">
+	<div [class.ictu-is-loading]="isLoading">
+		<div class="layout_component_container intro-x">
+			<div class="scroll-table-layout-set">
+				<ovic-table [data]="dmMonHoc" [styleClass]="'tbl-danh-muc-truong'" dataKey="id" [rowHover]="false" [index]="index" [rows]="rows" [tableName]="'Danh sách môn học'" [tblStructure]="tblCols" [enableSearch]="true" [globalFilterFields]="['name', 'asc']" (onButtonClick)="handleClickOnTable($event)" [headerButtons]="headButtons" [enableSearchLocal]="false" (onSearch)="onSearch($event)" [searchDebounceTime]="800"></ovic-table>
+			</div>
+			<div class="page-layout-set">
+				<p-paginator [rows]="rows" [totalRecords]="recordsTotal" [pageLinkSize]="5" (onPageChange)="paginate($event)"></p-paginator>
+			</div>
+		</div>
+	</div>
+</div>
+
+<ng-template #fromUpdate>
+	<div class="ovic-side-navigation-content">
+		<div class="ovic-side-navigation-content__head">
+			<h4 class="ovic-side-navigation-content__head__title">
+				{{ formActive ? formActive.title : "" }} </h4>
+			<button (click)="closeForm()" pButton pRipple type="button" icon="pi pi-times" class="p-button-rounded p-button-danger p-button-text close ovic-side-navigation-content__head__btn-close"></button>
+		</div>
+		<div class="ovic-side-navigation-content__body ovic-scroll-style">
+			<div class="ovic-vertical__inputs ovic-vertical__inputs--layout-2">
+				<form [formGroup]="formData" autocomplete="off">
+					<div class="row">
+						<div class="col-6">
+							<p class="form-row">
+								<label>Tên môn học<span class="ovic-mark">*</span></label>
+								<input pInputText type="text" placeholder="Nhập môn học" formControlName="name" autocomplete="off" (focusout)="onChangeTitle()"/>
+							</p>
+						</div>
+
+						<div class="col-6">
+							<p class="form-row">
+								<label>Ký hiệu<span class="ovic-mark">*</span></label>
+								<input [ngClass]="inputErrors.slug ? 'ng-invalid ng-dirty': ''" type="text" pInputText placeholder="Vd: vat-ly,..." formControlName="slug" autocomplete="off" (focusout)="onchangeSlug()"/>
+								<small *ngIf="inputErrors.slug" style="color: #e94560;"> Ký hiệu đã tồn tại </small>
+							</p>
+						</div>
+
+						<div class="col-12">
+							<p class="form-row">
+								<label>Mô tả</label>
+
+								<textarea formControlName="desc" placeholder="Mô tả..." autocomplete="off" id="mota" cols="30" rows="2"></textarea>
+							</p>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="ovic-side-navigation-content__foot">
+        <span class="ovic-side-navigation-content__foot__notice mr-auto"><mark>(*)</mark> bắt buộc phải nhập</span>
+			<button pButton pRipple type="button" [label]="btn_checkAdd" icon="pi pi-save" (click)="saveFormData()" class="p-button-success"></button>
+			<button pButton pRipple type="button" label="Đóng" class="p-button-secondary ml-3" icon="pi pi-times" (click)="closeForm()"></button>
+		</div>
+	</div>
+	<div class="ovic-side-navigation-content__foot">
+		<span class="ovic-side-navigation-content__foot__notice mr-auto"><mark>(*)</mark> bắt buộc phải nhập</span>
+		<button pButton pRipple type="button" [label]="btn_checkAdd" icon="pi pi-save" (click)="saveFormData()" class="p-button-success"></button>
+		<button pButton pRipple type="button" label="Đóng" class="p-button-secondary ml-3" icon="pi pi-times" (click)="closeForm()"></button>
+	</div>
+</ng-template>

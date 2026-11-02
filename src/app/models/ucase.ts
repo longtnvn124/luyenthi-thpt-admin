@@ -1,0 +1,17 @@
+import { IctuNavigationItemPms } from "@model/auth";
+
+export interface Ucase {
+	id : string;
+	icon : string;
+	title : string;
+	pms : IctuNavigationItemPms; //[1, 0, 0, 0]
+	position : string; // 'left' | 'top'
+	child? : Ucase[];
+}
+
+export interface UcaseAdvance extends Ucase {
+	canAccess : boolean,
+	canAdd : boolean,
+	canEdit : boolean,
+	canDelete : boolean,
+}

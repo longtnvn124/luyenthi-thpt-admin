@@ -1,0 +1,16 @@
+<div class="d-flex w-100 h-100 justify-content-center align-items-center position-relative">
+    <ng-container [ngSwitch]="state">
+        <div class="unauthorized-message intro-y" *ngSwitchCase="'show'">
+            <svg class="pc-icon">
+                <use href="assets/fonts/custom-icon.svg#un-authorized"></use>
+            </svg>
+            <p class="unauthorized-message__heading">Tài khoản của bạn không có quyền truy cập nội dung trên hệ thống này.
+                <br/>Vui lòng kiểm tra lại hoặc liên hệ với quản trị viên</p>
+            <button pButton pRipple class="unauthorized-message__button theme-button p-button-rounded" label="Đăng xuất" icon="pi pi-sign-out" (click)="logout()"></button>
+        </div>
+        <div class="ictu-indicator-loading-panel loading-progress-bar" *ngSwitchCase="'loading'">
+            <span class="ictu-indicator-loading-panel__label">Processing...</span>
+            <mat-progress-bar class="loader" mode="indeterminate" value="40"></mat-progress-bar>
+        </div>
+    </ng-container>
+</div>

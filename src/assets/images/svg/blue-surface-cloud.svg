@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1310px" height="505px" viewBox="0 0 1310 505" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.1 (47250) - http://www.bohemiancoding.com/sketch -->
+    <title>bg_1</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="97.0899389%" y1="42.7172807%" x2="3.18793161%" y2="82.167356%" id="linearGradient-1">
+            <stop stop-color="#6C5EFE" stop-opacity="0" offset="0%"></stop>
+            <stop stop-color="#7260FD" stop-opacity="0.715306833" offset="83.0596301%"></stop>
+            <stop stop-color="#B6ACFF" stop-opacity="0.546846694" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="sf_design_v1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-130.000000, 0.000000)">
+        <g id="bg_1" transform="translate(86.000000, -287.000000)">
+            <path d="M226.490025,11.2778043 L1362,0 L1362,792 L152.167153,670.985891 C86.2220556,664.389701 38.11026,605.583368 44.7064499,539.638271 C45.6539322,530.165861 47.7252133,520.839846 50.8766083,511.856919 L226.490025,11.2778043 Z" id="Rectangle" fill="#4650FF"></path>
+            <path d="M183.496933,285 L1356,285 L1356,736.332952 L167.736177,619.408733 C124.865014,615.190245 93.5308307,577.01654 97.7493192,534.145378 C98.3662562,527.875641 99.7405156,521.70374 101.84206,515.764572 L183.496933,285 Z" id="Rectangle" fill="url(#linearGradient-1)" opacity="0.200000003"></path>
+            <path d="M236.741498,287 L1354,287 L1354,689.777337 L209.360805,575.888778 C177.485678,572.717287 154.216784,544.306391 157.388274,512.431264 C157.860971,507.680414 158.918456,503.006104 160.536727,498.51442 L236.741498,287 Z" id="Rectangle" fill="url(#linearGradient-1)" opacity="0.200000003"></path>
+        </g>
+    </g>
+</svg>

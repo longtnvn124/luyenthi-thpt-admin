@@ -1,0 +1,78 @@
+.content-table-custom .table-header {
+    border: 1px solid #dee2e6;
+    background-color: #fff;
+}
+
+.content-table-custom .title-left {
+    margin: 0 auto 0 0;
+    font-size: 16px;
+    line-height: 1;
+    font-weight: 700;
+    padding: 5px;
+
+    /* color: '#118d57';
+      background-color: '#22c55e29';
+      color: #006c9c
+      backgroundColor:#00b8d929 */
+}
+
+/* .dialog{
+    max-height: var(--max-screen-height);
+  }
+
+  .dialog .table-item{
+    height: auto;
+    max-height: calc(var(--max-screen-height) - 140px);
+    overflow-y: scroll !important;
+  } */
+
+.dialog .p-dropdown {
+    width: 100%;
+}
+
+.btn-delete-giang-vien {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-delete-giang-vien .icon-delete {
+    color: #e94560;
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-delete-giang-vien .icon-delete:hover {
+    background-color: #d6a2ab33;
+}
+
+.delete-multiple-teacher {
+    width: 100px;
+}
+
+.icon-menu-bar {
+    min-height: 36px;
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #303030;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.icon-menu-bar:hover {
+    border-color: #22C55E;
+}
+
+.content-list-student-import {
+    overflow: auto;
+    height: calc(var(--max-screen-height) - 180px - 60px);
+}

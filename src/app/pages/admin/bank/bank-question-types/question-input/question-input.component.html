@@ -1,0 +1,13 @@
+<div class="question-type-input-box" *ngIf="question()">
+	<div class="row">
+		<div class="col-12">
+			<div class="ovic-vertical__inputs ovic-vertical__inputs--layout-2">
+				<p class="form-row m-0">
+					<label for="answer" style="position: static;margin: 0 0 10px 0;font-size: 15px;color: #000;font-weight: 700;">Đáp án</label>
+					<input id="answer" class="ovic-input-field" [(ngModel)]="raw_answer" (ngModelChange)="updateAnswer()">
+					<small class="question-type-input-box__guide text-secondary">Trường hợp câu hỏi có nhiều đáp án đúng, thì các đáp án được phân cách nhau bởi dấu chấm phẩy( ";") và không phân biệt chữ hoa, chữ thường. Ví dụ : 1; one; first</small>
+				</p>
+			</div>
+		</div>
+	</div>
+</div>

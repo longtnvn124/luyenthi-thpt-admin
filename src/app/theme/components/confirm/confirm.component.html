@@ -1,0 +1,12 @@
+<div class="app-confirm-wrap">
+    <h3 class="app-confirm-wrap__heading--title" *ngIf="title">{{ title }}</h3>
+    <h4 class="app-confirm-wrap__heading" *ngIf="heading">{{ heading }}</h4>
+    <div class="app-confirm-wrap__body">
+        <div class="app-confirm-wrap__body__message" *ngIf="message" [innerHTML]="message | safeHtml "></div>
+        <div class="app-confirm-wrap__body__buttons d-flex justify-content-center align-items-center" style="margin: 15px 0 0">
+            <ng-container *ngFor="let btn of buttons">
+                <button (click)="dialogRef.close(btn)" pButton pRipple [icon]="btn.icon" [label]="btn.label" [class]="btn.class" [disabled]="btn.readonly"></button>
+            </ng-container>
+        </div>
+    </div>
+</div>

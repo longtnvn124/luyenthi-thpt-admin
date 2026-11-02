@@ -1,0 +1,244 @@
+<div class="ictu-dashboard-wrap" [class.ictu-dashboard-wrap-loading-size]="loading">
+    <div class="ictu-dashboard-wrap__body d-flex flex-column flex-fill">
+        <div class="row m-b-30 d-flex">
+            <div class="col-lg-6 intro-y">
+                <div class="intro-x card">
+                    <div class="card-header p-y-20">
+                        <h5 class="f-16 font-roboto ">Thông tin tài khoản</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-12 text-center mb-3">
+                                <div class="user-upload wid-70 rounded-circle overflow-hidden position-relative d-inline-flex mx-auto">
+                                    <img class="rounded-circle img-fluid" [src]="avatar | safeUrl" [alt]="displayName">
+                                    <button (click)="callChangesAvatar()" type="button" class="img-avtar-upload">
+                                        <i class="ti ti-camera f-24 mb-1"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <form class="theme-form" [formGroup]="formAccount">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                      <!-- form-label--readonly -->
+                                        <label class="form-label ">Tên tài khoản</label>
+                                        <input type="text" class="form-control" formControlName="username">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="form-label form-label--required">Tên hiển thị</label>
+                                        <input type="text" class="form-control" formControlName="display_name">
+                                        <small class="form-notice text-danger" *ngIf="fAccount['display_name'].touched && fAccount['display_name'].invalid">Tên hiển thị phải có tối thiểu 3 ký tự và tối đa không quá 25 ký tự</small>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="form-label form-label--required">Email</label>
+                                        <input type="email" class="form-control" formControlName="email">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="form-label form-label--required">Số điện thoại</label>
+                                        <input type="tel" class="form-control" formControlName="phone">
+                                    </div>
+                                </div>
+                                <!-- <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="form-label form-label--required">Họ và tên</label>
+                                        <input type="tel" class="form-control" formControlName="ho_va_ten">
+                                    </div>
+                                </div> -->
+                                <!-- <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="form-label form-label--required">Số điện thoại liên hệ</label>
+                                        <input type="tel" class="form-control" formControlName="sdt_lienhe">
+                                    </div>
+                                </div> -->
+                                <!-- <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="form-label form-label--required">Số tài khoản cá nhân</label>
+                                        <input type="tel" class="form-control" formControlName="stk_canhan">
+                                    </div>
+                                </div> -->
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-footer p-y-20 d-flex justify-content-end">
+                        <button (click)="refreshForm('FORM_ACCOUNT')" type="button" class="theme-button app-form-button p-button-rounded p-button-raised p-button-text m-r-15" pRipple pButton icon="pi pi-refresh" label="Làm mới"></button>
+                        <button (click)="updateFormAccount()" [disabled]="!(formAccount.valid && formAccount.touched)" type="button" class="theme-button app-form-button p-button-rounded" pRipple pButton icon="pi pi-save" label="Cập nhật"></button>
+                    </div>
+                </div>
+                <!-- <div class="intro-x card">
+                    <div class="card-header p-y-20">
+                        <h5 class="f-16 font-roboto ">Mạng xã hội</h5>
+                    </div>
+                    <div class="card-body">
+                        <form class="theme-form form-social">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-shrink-0">
+                                            <div class="avtar avtar-xs">
+                                                <svg viewBox="0 0 1227 1227" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="m654.53 592.55 276.12 394.95h-113.32l-225.32-322.28v-.02l-33.08-47.31-263.21-376.5h113.32l212.41 303.85z"/>
+                                                    <path d="m1094.42 0h-961.84c-73.22 0-132.58 59.36-132.58 132.58v961.84c0 73.22 59.36 132.58 132.58 132.58h961.84c73.22 0 132.58-59.36 132.58-132.58v-961.84c0-73.22-59.36-132.58-132.58-132.58zm-311.8 1040.52-228.01-331.84-285.47 331.84h-73.78l326.49-379.5-326.49-475.17h249.02l215.91 314.23 270.32-314.23h73.78l-311.33 361.9h-.02l338.6 492.77z"/>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <div class="form-group">
+                                                <input type="email" class="form-control" formControlName="twitter" placeholder="https://twitter.com/">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-shrink-0">
+                                            <div class="avtar avtar-xs">
+                                                <svg height="512" viewBox="0 0 64 64" width="512" xmlns="http://www.w3.org/2000/svg">
+                                                    <g fill-rule="evenodd">
+                                                        <path d="m32 64h-16a16.0007 16.0007 0 0 1 -16-16v-32a16.0007 16.0007 0 0 1 16-16h32a16 16 0 0 1 16 16v32a16 16 0 0 1 -16 16h-6a5 5 0 0 0 -10 0z" fill="#3764b9"/>
+                                                        <path d="m30 18h18a9.0006 9.0006 0 0 0 .92-17.954c-.306-.017-.609-.046-.92-.046h-32a16.0007 16.0007 0 0 0 -16 16v32a30.0007 30.0007 0 0 1 30-30" fill="#507dd2"/>
+                                                        <path d="m48 32a16 16 0 1 0 16 16v-32a16 16 0 0 1 -16 16" fill="#1e4ba0"/>
+                                                        <path d="m52 18a2 2 0 0 1 -2 2h-6a2 2 0 0 0 -2 2v8h7.56a2 2 0 0 1 1.9612 2.392c-.3713 1.857-.8757 4.379-1.2 6a2 2 0 0 1 -1.9612 1.608h-6.36v24h-10v-24h-6a2 2 0 0 1 -2-2v-6a2 2 0 0 1 2-2h6v-8a12 12 0 0 1 12-12h6a2 2 0 0 1 2 2z" fill="#fff"/>
+                                                    </g>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <div class="form-group">
+                                                <input type="email" class="form-control" formControlName="facebook" placeholder="https://www.facebook.com/">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-shrink-0">
+                                            <div class="avtar avtar-xs">
+                                                <svg height="512pt" viewBox="0 0 512 512.00038" width="512pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                                    <linearGradient id="a" gradientUnits="userSpaceOnUse" x1="169.9940010834" x2="299.4934135904" y1="71.98622701" y2="349.0548448864">
+                                                        <stop offset="0" stop-color="#0077b5"/>
+                                                        <stop offset="1" stop-color="#0066b2"/>
+                                                    </linearGradient>
+                                                    <linearGradient id="b">
+                                                        <stop offset="0" stop-color="#0066b2" stop-opacity="0"/>
+                                                        <stop offset="1" stop-color="#07485e"/>
+                                                    </linearGradient>
+                                                    <linearGradient id="c" gradientUnits="userSpaceOnUse" x1="364.2825237824" x2="-379.5864327114" xlink:href="#b" y1="314.0868361356" y2="-84.9521808166"/>
+                                                    <linearGradient id="d" gradientUnits="userSpaceOnUse" x1="256.0003" x2="256.0003" xlink:href="#b" y1="415.8267010284" y2="522.8344458318"/>
+                                                    <linearGradient id="e" gradientUnits="userSpaceOnUse" x1="271.3543834602" x2="79.916898849" xlink:href="#b" y1="273.7754525398" y2="82.3380683208"/>
+                                                    <linearGradient id="f" gradientUnits="userSpaceOnUse" x1="383.7494748922" x2="-1.7565731078" xlink:href="#b" y1="451.630876413" y2="270.924916413"/>
+                                                    <linearGradient id="g" gradientUnits="userSpaceOnUse" x1="477.5305473456" x2="208.9696664582" xlink:href="#b" y1="491.2543726544" y2="222.693491767"/>
+                                                    <path d="m420.421875 503.234375c-109.503906 11.6875-219.339844 11.6875-328.84375 0-43.664063-4.660156-78.152344-39.148437-82.8125-82.816406-11.6875-109.503907-11.6875-219.335938 0-328.839844 4.660156-43.664063 39.148437-78.152344 82.8125-82.8125 109.503906-11.6875 219.335937-11.6875 328.839844 0 43.667969 4.660156 78.15625 39.148437 82.816406 82.8125 11.6875 109.503906 11.6875 219.335937 0 328.839844-4.660156 43.667969-39.144531 78.15625-82.8125 82.816406zm0 0" fill="url(#a)"/>
+                                                    <path d="m475.386719 110.097656c-4.132813-38.746094-34.734375-69.351562-73.484375-73.488281-97.171875-10.367187-194.632813-10.367187-291.804688 0-38.746094 4.136719-69.351562 34.742187-73.488281 73.488281-10.367187 97.171875-10.367187 194.632813 0 291.800782 4.136719 38.75 34.742187 69.355468 73.488281 73.488281 97.171875 10.371093 194.632813 10.371093 291.800782 0 38.75-4.132813 69.355468-34.738281 73.488281-73.488281 10.371093-97.167969 10.371093-194.628907 0-291.800782zm0 0" fill="url(#c)"/>
+                                                    <path d="m7.671875 409.804688c.351563 3.539062.714844 7.078124 1.09375 10.617187 4.660156 43.664063 39.148437 78.152344 82.816406 82.8125 109.503907 11.6875 219.335938 11.6875 328.839844 0 43.667969-4.660156 78.152344-39.148437 82.8125-82.8125.378906-3.539063.742187-7.078125 1.097656-10.617187zm0 0" fill="url(#d)"/>
+                                                    <path d="m497.714844 443.570312-330.40625-330.410156c-7.378906-9.628906-18.988282-15.84375-32.054688-15.84375-22.289062 0-40.359375 18.066406-40.359375 40.355469 0 13.070313 6.21875 24.679687 15.847657 32.054687l329.257812 329.261719c26.613281-8.855469 47.824219-29.304687 57.714844-55.417969zm0 0" fill="url(#e)"/>
+                                                    <path d="m169.152344 204.503906h-67.800782v210.179688l96.203126 96.203125c74.304687 2.8125 148.660156.269531 222.863281-7.652344 12.972656-1.382813 25.125-5.417969 35.9375-11.527344zm0 0" fill="url(#f)"/>
+                                                    <path d="m399.410156 222.109375c-12.402344-13.597656-30.257812-22.128906-50.105468-22.128906-31.394532 0-51.65625 11.027343-63.714844 21.265625l-13.285156-16.742188h-62.472657v210.179688l96.492188 96.492187c38.054687-1.238281 76.09375-3.886719 114.097656-7.941406 43.667969-4.660156 78.152344-39.148437 82.8125-82.8125 3.117187-29.195313 5.394531-58.414063 6.847656-87.640625zm0 0" fill="url(#g)"/>
+                                                    <g fill="#fff">
+                                                        <path d="m101.355469 204.503906h67.796875v210.179688h-67.796875zm0 0"/>
+                                                        <path d="m349.304688 199.980469c-49.683594 0-71.507813 27.613281-77 36.019531v-31.496094h-62.472657v210.179688h67.800781v-105.574219c0-30.507813 14.042969-54.238281 40.679688-54.238281 26.632812 0 30.992188 29.539062 30.992188 65.863281v93.949219h67.800781v-146.902344c0-37.445312-30.355469-67.800781-67.800781-67.800781zm0 0"/>
+                                                        <path d="m175.609375 137.675781c0 22.289063-18.066406 40.355469-40.355469 40.355469-22.289062 0-40.359375-18.066406-40.359375-40.355469 0-22.289062 18.070313-40.359375 40.359375-40.359375 22.289063 0 40.355469 18.070313 40.355469 40.359375zm0 0"/>
+                                                    </g>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <div class="form-group">
+                                                <input type="email" class="form-control" formControlName="linkedin" placeholder="https://www.linkedin.com/">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-shrink-0">
+                                            <div class="avtar avtar-xs">
+                                                <svg height="512" viewBox="0 0 24 24" width="512" xmlns="http://www.w3.org/2000/svg">
+                                                    <linearGradient id="SVGID_1_" gradientTransform="matrix(0 -1.982 -1.844 0 -132.522 -51.077)" gradientUnits="userSpaceOnUse" x1="-37.106" x2="-26.555" y1="-72.705" y2="-84.047">
+                                                        <stop offset="0" stop-color="#fd5"/>
+                                                        <stop offset=".5" stop-color="#ff543e"/>
+                                                        <stop offset="1" stop-color="#c837ab"/>
+                                                    </linearGradient>
+                                                    <path d="m1.5 1.633c-1.886 1.959-1.5 4.04-1.5 10.362 0 5.25-.916 10.513 3.878 11.752 1.497.385 14.761.385 16.256-.002 1.996-.515 3.62-2.134 3.842-4.957.031-.394.031-13.185-.001-13.587-.236-3.007-2.087-4.74-4.526-5.091-.559-.081-.671-.105-3.539-.11-10.173.005-12.403-.448-14.41 1.633z" fill="url(#SVGID_1_)"/>
+                                                    <path d="m11.998 3.139c-3.631 0-7.079-.323-8.396 3.057-.544 1.396-.465 3.209-.465 5.805 0 2.278-.073 4.419.465 5.804 1.314 3.382 4.79 3.058 8.394 3.058 3.477 0 7.062.362 8.395-3.058.545-1.41.465-3.196.465-5.804 0-3.462.191-5.697-1.488-7.375-1.7-1.7-3.999-1.487-7.374-1.487zm-.794 1.597c7.574-.012 8.538-.854 8.006 10.843-.189 4.137-3.339 3.683-7.211 3.683-7.06 0-7.263-.202-7.263-7.265 0-7.145.56-7.257 6.468-7.263zm5.524 1.471c-.587 0-1.063.476-1.063 1.063s.476 1.063 1.063 1.063 1.063-.476 1.063-1.063-.476-1.063-1.063-1.063zm-4.73 1.243c-2.513 0-4.55 2.038-4.55 4.551s2.037 4.55 4.55 4.55 4.549-2.037 4.549-4.55-2.036-4.551-4.549-4.551zm0 1.597c3.905 0 3.91 5.908 0 5.908-3.904 0-3.91-5.908 0-5.908z" fill="#fff"/>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <div class="form-group">
+                                                <input type="email" class="form-control" formControlName="instagram" placeholder="https://www.instagram.com/">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-footer p-y-20 d-flex justify-content-end">
+                        <button type="button" class="p-element p-ripple theme-button app-form-button p-button-rounded p-button-text m-r-10 p-button-raised" pRipple pButton icon="pi pi-refresh" label="Làm mới"></button>
+                        <button type="button" class="theme-button app-form-button p-button-rounded" pRipple pButton icon="pi pi-save" label="Cập nhật"></button>
+                    </div>
+                </div> -->
+            </div>
+            <div class="col-lg-6 intro-y">
+              <app-password></app-password> 
+                <!-- <div class="intro-x card position-relative">
+                    <div class="card-header p-y-20">
+                        <h5 class="f-16 font-roboto ">Thông tin người dùng</h5>
+                    </div>
+                    <div class="card-body">
+                        <form class="theme-form">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="form-label form-label--required">Họ và tên</label>
+                                        <input type="text" class="form-control" formControlName="full_name">
+                                        <small class="form-notice text-danger" *ngIf="fInfo['full_name'].touched && fInfo['full_name'].invalid">Họ và tên phải có tối thiểu 3 ký tự và tối đa không quá 25 ký tự</small>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="form-label form-label--required">Giới tính</label>
+                                        <div class="dsh-btn-input__btn-group" [class.invalid]="fInfo['gender'].touched && fInfo['gender'].invalid">
+                                            <button (click)="changeUserSex('Nam')" class="btn btn-link-primary" [class.focus]="fInfo['gender'].value === 'Nam'">Nam</button>
+                                            <button (click)="changeUserSex('Nữ')" class="btn btn-link-primary" [class.focus]="fInfo['gender'].value === 'Nữ'">Nữ</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label form-label--required">Ngày sinh</label>
+                                        <p-inputMask mask="99/99/9999" placeholder="dd/mm/yyyy" class="w-100 wrap-form-control d-block" formControlName="birthday" [autoClear]="false"></p-inputMask>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label class="form-label">Địa chỉ</label>
+                                        <textarea class="form-control" formControlName="address"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-footer p-y-20 d-flex justify-content-end">
+                        <button type="button" class="theme-button app-form-button p-button-rounded p-button-raised p-button-text m-r-15" pRipple pButton icon="pi pi-refresh" label="Làm mới"></button>
+                        <button [disabled]="formInfo.invalid || !formInfo.touched" type="button" class="theme-button app-form-button p-button-rounded" pRipple pButton icon="pi pi-save" label="Cập nhật"></button>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+    </div>
+    <!-- <app-dashboard-loading *ngIf="loading"></app-dashboard-loading> -->
+  </div>
+  

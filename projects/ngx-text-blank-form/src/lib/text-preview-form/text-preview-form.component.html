@@ -1,0 +1,12 @@
+<form [formGroup]="form" class="p-4 space-y-4 border rounded bg-white">
+	<p>
+		<ng-container *ngFor="let part of template">
+			<ng-container *ngIf="isStringType(part); else inputTpl">
+				{{ part }}
+			</ng-container>
+			<ng-template #inputTpl>
+				<input type="text" class="border px-2 py-1 mx-1 rounded" [placeholder]="part['placeholder']" [formControlName]="part['id']"/>
+			</ng-template>
+		</ng-container>
+	</p>
+</form>

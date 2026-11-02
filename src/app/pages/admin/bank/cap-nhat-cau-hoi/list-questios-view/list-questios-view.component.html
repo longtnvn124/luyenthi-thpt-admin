@@ -1,0 +1,546 @@
+<div class="list-questions ovic-is-loading--size-normal d-flex flex-column h-100">
+	<div *ngIf="!listQuestions || !listQuestions.length; else showQuestions" class="list-questions__alert alert alert-secondary m-auto" role="alert">
+		Không có câu hỏi
+	</div>
+</div>
+<ng-template #showQuestions>
+	<div class="list-questions__contents d-flex flex-fill">
+		<ul class="list-questions__contents__list">
+			<ng-container *ngIf="testFormat === 'tienganh'; else tplTestNormalSubjectType">
+				<ng-container *ngFor="let q of listQuestions; index as i">
+					<li class="list-questions__contents__list__elements">
+						<div class="list-questions__contents__block list-questions__contents__block--head d-flex align-items-center flex-wrap">
+							<small class="list-questions__contents__block__code">Câu {{ i }}</small>
+							<!--                            <span class="question-status" [ngSwitch]="q['status']">-->
+							<!--                                <span *ngSwitchCase="0" class="action-icon status-is-deactive">-->
+							<!--                                    Chờ duyệt-->
+							<!--                                </span>-->
+							<!--                                <span *ngSwitchCase="1" class="action-icon status-is-active">-->
+							<!--                                    Đạt-->
+							<!--                                </span>-->
+							<!--                                <span *ngSwitchCase="-1" class="action-icon status-is-redo">-->
+							<!--                                    Chưa đạt-->
+							<!--                                </span>-->
+							<!--                                <span *ngSwitchCase="-2" class="action-icon status-is-require">-->
+							<!--                                    Yêu cầu duyệt-->
+							<!--                                </span>-->
+							<!--                            </span>-->
+							<!-- <button *ngIf="q['status'] !== 1" (click)="btnEdit(q)" pButton pRipple
+											  class="p-button-rounded" icon="pi pi-file-edit" tooltipStyleClass="ictu-p-tooltip"
+											  pTooltip="Cập nhật câu hỏi" tooltipPosition="top"></button> -->
+							<button *ngIf="q['status'] !== 1" (click)="btnDelete(q)" pButton pRipple class="p-button-danger p-button-rounded" icon="pi pi-trash" tooltipStyleClass="ictu-p-tooltip" pTooltip="Xóa câu hỏi" tooltipPosition="top"></button>
+							<span class="list-questions__contents__block__q-info__separator">|</span>
+							<small class="list-questions__contents__block__code">#{{ q.code }}</small>
+							<div class="list-questions__contents__block__q-info ml-auto d-inline-flex align-items-center">
+								<ng-container *ngIf="
+                    [
+                      'group-input',
+                      'group-radio',
+                      'checkbox',
+                     'radio'
+                    ].includes(q.question_type)
+                  ">
+									<p class="list-questions__contents__block__q-info__inverted-answer">
+										<i class="pi" [ngClass]="
+                        q.config['invertedAnswer'] ? 'pi-check' : 'pi-times'
+                      "></i> Đảo vị trí của phương án trả lời </p>
+									<span class="list-questions__contents__block__q-info__separator">|</span>
+								</ng-container>
+								<span class="list-questions__contents__block__q-info__cdr" [ngClass]="
+                    'list-questions__contents__block__q-info__cdr--' + q.level
+                  ">{{ q["__level_converted"] }}</span>
+							</div>
+						</div>
+						<div class="list-questions__contents__block">
+							<div class="lqc-present-single-question__direction lock-ck-content" [appLoadMediaOnText]="q.id" [innerHTML]="q.question_direction | safeHtmlSingle"></div>
+							<div class="lqc-present-single-question__direction lock-ck-content__media mt-3" *ngIf="q.media">
+								<audio controls>
+									<source [src]="
+                      q.media.path
+                        | ictuMediaLink : q.media.source : token
+                        | safeUrl
+                    "/>
+								</audio>
+							</div>
+						</div>
+					</li>
+					<li class="list-questions__contents__list__elements" *ngIf="q.question_type === 'drag_drop'">
+						<div class="list-questions__contents__block">
+							<div class="list-questions__contents__list__elements__av_drag_and_drop" *ngFor="let child of q.children">
+								<div class="list-questions__contents__list__elements__av_drag_and_drop__index">
+									{{ child.question_number }}
+								</div>
+								<div class="list-questions__contents__list__elements__av_drag_and_drop__direction lqc-present-single-question__direction lock-ck-content" [appLoadMediaOnText]="child.id" [innerHTML]="child.question_direction | safeHtmlSingle"></div>
+								<div class="list-questions__contents__list__elements__av_drag_and_drop__answer">
+									{{ child.answer_correct | extractCorrectAnswer }}
+								</div>
+							</div>
+						</div>
+					</li>
+					<ng-container *ngIf="q.question_type !== 'drag_drop'">
+						<li class="list-questions__contents__list__elements" *ngFor="let child of q.children">
+							<div class="list-questions__contents__block list-questions__contents__block--head d-flex align-items-center flex-wrap">
+								<small class="list-questions__contents__block__code">#{{ child.id }}</small>
+								<!-- <button (click)="btnEdit(child)" pButton pRipple class="p-button-rounded"
+													icon="pi pi-file-edit" tooltipStyleClass="ictu-p-tooltip"
+													pTooltip="Cập nhật câu hỏi" tooltipPosition="top"></button> -->
+								<button (click)="btnDelete(child)" pButton pRipple class="p-button-danger p-button-rounded" icon="pi pi-trash" tooltipStyleClass="ictu-p-tooltip" pTooltip="Xóa câu hỏi" tooltipPosition="top"></button>
+								<div class="list-questions__contents__block__q-info ml-auto d-inline-flex align-items-center">
+									<ng-container *ngIf="
+                      [
+                        'group-input',
+                        'group-radio',
+                        'checkbox',
+                        'radio'
+                      ].includes(child.question_type)
+                    ">
+										<p class="list-questions__contents__block__q-info__inverted-answer">
+											<i class="pi" [ngClass]="
+                          child.config['invertedAnswer']
+                            ? 'pi-check'
+                            : 'pi-times'
+                        "></i> Đảo vị trí của phương án trả lời </p>
+										<span class="list-questions__contents__block__q-info__separator">|</span>
+									</ng-container>
+									<span class="list-questions__contents__block__q-info__cdr" [ngClass]="
+                      'list-questions__contents__block__q-info__cdr--' +
+                      child.level
+                    ">{{ child["__level_converted"] }}</span>
+								</div>
+							</div>
+							<div class="list-questions__contents__block">
+								<div class="lqc-present-single-question__direction lock-ck-content" [appLoadMediaOnText]="child.id" [innerHTML]="child.question_direction | safeHtmlSingle"></div>
+							</div>
+							<div class="list-questions__contents__block list-questions__contents__block--body" [ngSwitch]="child.question_type">
+								<group-input-question *ngSwitchCase="'group-input'" [present]="child"></group-input-question>
+								<group-radio-question-editor *ngSwitchCase="'group-radio'" [present]="child"></group-radio-question-editor>
+								<question-type-radio-editor *ngSwitchCase="'checkbox'" [multiple]="true" [present]="child"></question-type-radio-editor>
+								<ng-container *ngSwitchCase="'drag_drop'"></ng-container>
+								<ng-container *ngSwitchCase="'radio'">
+									<div class="question-type-radio">
+										<ul class="question-type-radio__list">
+											<li class="question-type-radio__list__element" [ngClass]="
+                          'question-type-radio__list__element--size-' +
+                          child.config?.cols
+                        " *ngFor="let o of child.answer_option; index as i">
+												<!--                                            <span class="question-type-radio__radio-button" [class.question-type-radio__radio-button--highlight]="o.id | isAnswerCorrect : child.answer_correct"></span>-->
+												<span class="question-type-radio__radio-button__index" [class.question-type-radio__radio-button__index--highlight]="
+                            o.id | isAnswerCorrect : child.answer_correct
+                          ">{{ i | questionPrefix }}</span>
+												<div class="question-type-radio__option" [appLoadMediaOnText]="o.id" [innerHTML]="o.value | safeHtmlSingle"></div>
+											</li>
+										</ul>
+									</div>
+								</ng-container>
+								<ng-container *ngSwitchCase="'grouping'">
+									<div class="list-questions__contents__block__grouping d-flex justify-content-center align-items-center flex-wrap">
+										<span class="list-questions__contents__block__grouping__choice" *ngFor="let o of child.answer_option">{{ o.value }}</span>
+									</div>
+									<div class="list-questions__contents__block__grouping__pairs d-flex align-items-start flex-wrap">
+										<div class="list-questions__contents__block__grouping__pairs__elm" *ngFor="let c of child['children']">
+											<b class="list-questions__contents__block__grouping__pairs__elm__heading">{{ c.question_direction }}</b>
+											<textarea [rows]="5" [cols]="30" [disabled]="true" placeholder="Các đáp án..." class="list-questions__contents__block__grouping__pairs__elm__body" pInputTextarea [autoResize]="true">{{
+													c.answer_correct | answerLabel : child.answer_option
+												}}</textarea>
+										</div>
+									</div>
+								</ng-container>
+								<ng-container *ngSwitchCase="'inputbox'">
+									<ng-container *ngFor="let c of child['children']">
+										<span class="list-questions__contents__block__separator"></span>
+										<div class="list-questions__contents__block list-questions__contents__input-box">
+											<span class="list-questions__contents__input-box__number" *ngIf="c.question_number">{{ c.question_number }}</span>
+											<div class="list-questions__contents__input-box__direction lqc-present-single-question__direction lock-ck-content" *ngIf="c.question_direction" [appLoadMediaOnText]="c.id" [innerHTML]="c.question_direction | safeHtmlSingle"></div>
+											<div class="list-questions__contents__input-box__correct-answer">
+												{{ c.answer_correct | json }}
+											</div>
+										</div>
+									</ng-container>
+								</ng-container>
+								<ng-container *ngSwitchCase="'reorder_words'">
+									<div class="list-questions__contents__block__drag_drop__pairs d-flex align-items-start flex-wrap">
+										<div class="list-questions__contents__block__drag_drop__pairs__elm m-0 w-100">
+											<input [disabled]="true" class="list-questions__contents__block__drag_drop__pairs__elm__answer-correct w-100" type="text" pInputText [value]="child.answer_correct | extractCorrectAnswer" placeholder="Đáp án..."/>
+										</div>
+									</div>
+								</ng-container>
+								<ng-container *ngSwitchCase="'matching'"></ng-container>
+								<ng-container *ngSwitchCase="'group'">
+									<!-- <h1>hello</h1> -->
+									<div *ngFor="let child2 of child['children']">
+										<div class="list-questions__contents__block">
+											<div class="lqc-present-single-question__direction lock-ck-content lock-ck-content-p-mb-0" [appLoadMediaOnText]="child2.id" [innerHTML]="child2.question_direction | safeHtmlSingle"></div>
+										</div>
+										<div class="list-questions__contents__block list-questions__contents__block--body" [ngSwitch]="child2.question_type">
+											<group-input-question *ngSwitchCase="'group-input'" [present]="child2"></group-input-question>
+											<group-radio-question-editor *ngSwitchCase="'group-radio'" [present]="child2"></group-radio-question-editor>
+											<question-type-radio-editor *ngSwitchCase="'checkbox'" [multiple]="true" [present]="child2"></question-type-radio-editor>
+											<ng-container *ngSwitchCase="'drag_drop'"></ng-container>
+											<ng-container *ngSwitchCase="'radio'">
+												<div class="question-type-radio">
+													<ul class="question-type-radio__list">
+														<li class="question-type-radio__list__element" [ngClass]="
+                                'question-type-radio__list__element--size-' +
+                                child2.config?.cols
+                              " *ngFor="let o of child2.answer_option; index as i">
+															<!--                                            <span class="question-type-radio__radio-button" [class.question-type-radio__radio-button--highlight]="o.id | isAnswerCorrect : child2.answer_correct"></span>-->
+															<span class="question-type-radio__radio-button__index" [class.question-type-radio__radio-button__index--highlight]="
+                                  o.id | isAnswerCorrect : child2.answer_correct
+                                ">{{ i | questionPrefix }}</span>
+															<div class="question-type-radio__option" [appLoadMediaOnText]="o.id" [innerHTML]="o.value | safeHtmlSingle"></div>
+														</li>
+													</ul>
+												</div>
+											</ng-container>
+											<ng-container *ngSwitchCase="'grouping'">
+												<div class="list-questions__contents__block__grouping d-flex justify-content-center align-items-center flex-wrap">
+													<span class="list-questions__contents__block__grouping__choice" *ngFor="let o of child2.answer_option">{{ o.value }}</span>
+												</div>
+												<div class="list-questions__contents__block__grouping__pairs d-flex align-items-start flex-wrap">
+													<div class="list-questions__contents__block__grouping__pairs__elm" *ngFor="let c of child2['children']">
+														<b class="list-questions__contents__block__grouping__pairs__elm__heading">{{ c.question_direction }}</b>
+														<textarea [rows]="5" [cols]="30" [disabled]="true" placeholder="Các đáp án..." class="list-questions__contents__block__grouping__pairs__elm__body" pInputTextarea [autoResize]="true">{{
+																c.answer_correct
+																	| answerLabel : child2.answer_option
+															}}</textarea>
+													</div>
+												</div>
+											</ng-container>
+											<ng-container *ngSwitchCase="'inputbox'">
+												<ng-container *ngFor="let c of child2['children']">
+													<span class="list-questions__contents__block__separator"></span>
+													<div class="list-questions__contents__block list-questions__contents__input-box">
+														<span class="list-questions__contents__input-box__number" *ngIf="c.question_number">{{ c.question_number }}</span>
+														<div class="list-questions__contents__input-box__direction lqc-present-single-question__direction lock-ck-content" *ngIf="c.question_direction" [appLoadMediaOnText]="c.id" [innerHTML]="
+                                c.question_direction | safeHtmlSingle
+                              "></div>
+														<div class="list-questions__contents__input-box__correct-answer">
+															{{ c.answer_correct | json }}
+														</div>
+													</div>
+												</ng-container>
+											</ng-container>
+											<ng-container *ngSwitchCase="'reorder_words'">
+												<div class="list-questions__contents__block__drag_drop__pairs d-flex align-items-start flex-wrap">
+													<div class="list-questions__contents__block__drag_drop__pairs__elm m-0 w-100">
+														<input [disabled]="true" class="list-questions__contents__block__drag_drop__pairs__elm__answer-correct w-100" type="text" pInputText [value]="
+                                child2.answer_correct | extractCorrectAnswer
+                              " placeholder="Đáp án..."/>
+													</div>
+												</div>
+											</ng-container>
+											<ng-container *ngSwitchCase="'matching'"></ng-container>
+
+											<div *ngSwitchDefault class="d-flex flex-fill w-100 h-100 justify-content-center align-items-center">
+												<p class="alert alert-secondary m-0 primary-font --fs-14">
+													Vui lòng chọn loại câu hỏi </p>
+											</div>
+										</div>
+									</div>
+								</ng-container>
+								<div *ngSwitchDefault class="d-flex flex-fill w-100 h-100 justify-content-center align-items-center">
+									<p class="alert alert-secondary m-0 primary-font --fs-14">
+										Vui lòng chọn loại câu hỏi </p>
+								</div>
+							</div>
+						</li>
+						<!--                        <app-nhanxet-question [question_input]="q"-->
+						<!--                                              [course_input]="courseSelected"></app-nhanxet-question>-->
+					</ng-container>
+				</ng-container>
+			</ng-container>
+			<ng-template #tplTestNormalSubjectType>
+				<li class="list-questions__contents__list__elements" *ngFor="let q of listQuestions; index as i">
+					<!-- <div style="width: 500px; height: 200px;">
+					<img style="width: 100%;" src="https://api-dev.ictu.vn:10091/luyenthi-thpt/api/uploads/14" alt="" srcset="">
+				  </div> -->
+					<div class="list-questions__contents__block list-questions__contents__block--head d-flex align-items-center flex-wrap">
+						<small class="list-questions__contents__block__code">Câu {{ i + 1 }}</small>
+						<!--                        <span class="question-status" [ngSwitch]="q['status']">-->
+						<!--                            <span *ngSwitchCase="0" class="action-icon status-is-deactive">-->
+						<!--                                (Chờ duyệt)-->
+						<!--                            </span>-->
+						<!--                            <span *ngSwitchCase="1" class="action-icon status-is-active">-->
+						<!--                                (Đạt)-->
+						<!--                            </span>-->
+						<!--                            <span *ngSwitchCase="-1" class="action-icon status-is-redo">-->
+						<!--                                (Chưa đạt)-->
+						<!--                            </span>-->
+						<!--                            <span *ngSwitchCase="-2" class="action-icon status-is-require">-->
+						<!--                                (Yêu cầu duyệt)-->
+						<!--                            </span>-->
+						<!--                        </span>-->
+						<!-- <button *ngIf="q['status'] !== 1" (click)="btnEdit(q)" pButton pRipple class="p-button-rounded"
+										icon="pi pi-file-edit" tooltipStyleClass="ictu-p-tooltip" pTooltip="Cập nhật câu hỏi"
+										tooltipPosition="top"></button> -->
+						<button pButton pRipple (click)="btnEdit(q)" class="p-button-warning p-button-rounded" icon="pi pi-file-edit" tooltipStyleClass="ictu-p-tooltip" pTooltip="Cập nhật" tooltipPosition="top"></button>
+						<button pButton pRipple (click)="btnDelete(q)" class="p-button-danger p-button-rounded" icon="pi pi-trash" tooltipStyleClass="ictu-p-tooltip" pTooltip="Xóa câu hỏi" tooltipPosition="top"></button>
+
+						<div class="list-questions__contents__block__q-info ml-auto d-inline-flex align-items-center">
+							<ng-container *ngIf="['group-input', 'group-radio', 'checkbox', 'radio'].includes(q.question_type)">
+								<!--<p-checkbox [disabled]="true" [(ngModel)]="q.config['invertedAnswer']" [binary]="true" label="Đảo vị trí của phương án trả lời"></p-checkbox>-->
+								<p class="list-questions__contents__block__q-info__inverted-answer">
+									<i class="pi" [ngClass]="q.config['invertedAnswer'] ? 'pi-check' : 'pi-times'"></i> Đảo vị trí của phương án trả lời
+								</p>
+								<span class="list-questions__contents__block__q-info__separator">|</span>
+							</ng-container>
+							<span class="list-questions__contents__block__q-info__cdr" [ngClass]="'list-questions__contents__block__q-info__cdr--' + q.level">{{ q["__level_converted"] }}</span>
+						</div>
+					</div>
+					<div class="list-questions__contents__block list-questions__contents__block--body">
+						<div class="lqc-present-single-question__direction lock-ck-content" [appLoadMediaOnText]="q.id" [IctuMediaLoader]="q.id" [innerHTML]="q.question_direction | safeHtmlSingle"></div>
+					</div>
+					<div class="list-questions__contents__block">
+						<ng-container [ngSwitch]="q.question_type">
+							<group-input-question *ngSwitchCase="'group-input'" [present]="q"></group-input-question>
+							<div *ngSwitchCase="'input'" class="w-100">
+								<input disabled type="text" pInputText placeholder="Đáp án" class="group-input-question__option__input w-100" [(ngModel)]="q['answer']"/>
+								<div>
+									<!-- {{q['answer']}} -->
+								</div>
+							</div>
+							<group-radio-question-editor *ngSwitchCase="'group-radio'" [present]="q"></group-radio-question-editor>
+							<question-type-radio-editor *ngSwitchCase="'checkbox'" [multiple]="true" [present]="q"></question-type-radio-editor>
+							<ng-container *ngSwitchCase="'drag_drop'">
+								<div class="list-questions__contents__block__grouping d-flex justify-content-center align-items-center flex-wrap">
+									<span class="list-questions__contents__block__grouping__choice lock-ck-content lock-ck-content-p-mb-0" *ngFor="let o of q.answer_option" [IctuMediaLoader]="o.id" [innerHTML]="o.value | safeHtml"></span>
+								</div>
+								<div class="list-questions__contents__block__drag_drop__pairs d-flex align-items-start flex-wrap">
+									<div class="list-questions__contents__block__drag_drop__pairs__elm" *ngFor="let c of q.children">
+										<div class="row w-100">
+											<p class="col-6 question-direction lock-ck-content lock-ck-content-p-mb-0" [IctuMediaLoader]="c.id" [innerHTML]="c.question_direction | safeHtml"></p>
+											<div class="col-6 answer-correct lock-ck-content-p-mb-0" [IctuMediaLoader]="c.id" [innerHTML]="c.answer_correct | answerLabel : q.answer_option | safeHtml"></div>
+										</div>
+										<!-- <span>hello</span> -->
+										<!-- <b
+										  class="list-questions__contents__block__drag_drop__pairs__elm__heading"
+										  >{{ c.question_direction }}</b
+										> -->
+
+										<!-- <input
+										  [disabled]="true"
+										  class="list-questions__contents__block__drag_drop__pairs__elm__answer-correct"
+										  type="text"
+										  pInputText
+										  [value]="c.answer_correct | answerLabel : q.answer_option"
+										  placeholder="Đáp án..."
+										/> -->
+									</div>
+								</div>
+							</ng-container>
+							<ng-container *ngSwitchCase="'radio'">
+								<div class="question-type-radio">
+									<ul class="question-type-radio__list">
+										<li class="question-type-radio__list__element" [ngClass]="'question-type-radio__list__element--size-' +q.config?.cols" *ngFor="let o of q.answer_option; index as i">
+											<!--                                            <span class="question-type-radio__radio-button" [class.question-type-radio__radio-button--highlight]="o.id | isAnswerCorrect : q.answer_correct"></span>-->
+											<span class="question-type-radio__radio-button__index" [class.question-type-radio__radio-button__index--highlight]="o.id | isAnswerCorrect : q.answer_correct">{{ i | questionPrefix }}</span>
+											<div class="question-type-radio__option" [appLoadMediaOnText]="o.id" [innerHTML]="o.value | safeHtmlSingle"></div>
+										</li>
+									</ul>
+								</div>
+							</ng-container>
+							<ng-container *ngSwitchCase="'grouping'">
+								<div class="list-questions__contents__block__grouping d-flex justify-content-center align-items-center flex-wrap">
+									<span class="list-questions__contents__block__grouping__choice" *ngFor="let o of q.answer_option">{{ o.value }}</span>
+								</div>
+								<div class="list-questions__contents__block__grouping__pairs d-flex align-items-start flex-wrap">
+									<div class="list-questions__contents__block__grouping__pairs__elm" *ngFor="let c of q.children">
+										<b class="list-questions__contents__block__grouping__pairs__elm__heading" [IctuMediaLoader]="c.id" [innerHTML]="c.question_direction | safeHtml"></b>
+										<textarea [rows]="5" [cols]="30" [disabled]="true" placeholder="Các đáp án..." class="list-questions__contents__block__grouping__pairs__elm__body" pInputTextarea [autoResize]="true">{{ c.answer_correct | answerLabel : q.answer_option }}</textarea>
+									</div>
+								</div>
+							</ng-container>
+							<ng-container *ngSwitchCase="'inputbox'">
+								<ng-container *ngFor="let child of q.children">
+									<span class="list-questions__contents__block__separator"></span>
+									<div class="list-questions__contents__block list-questions__contents__input-box">
+										<span class="list-questions__contents__input-box__number" *ngIf="child.question_number">{{ child.question_number }}</span>
+										<div class="list-questions__contents__input-box__direction lqc-present-single-question__direction lock-ck-content" *ngIf="child.question_direction" [appLoadMediaOnText]="child.id" [innerHTML]="child.question_direction | safeHtmlSingle"></div>
+										<div class="list-questions__contents__input-box__correct-answer">
+											{{ child.answer_correct | json }}
+										</div>
+									</div>
+								</ng-container>
+							</ng-container>
+							<ng-container *ngSwitchCase="'reorder_words'"></ng-container>
+							<ng-container *ngSwitchCase="'matching'"></ng-container>
+							<ng-container *ngSwitchCase="'group'">
+								<li class="list-questions__contents__list__elements" *ngFor="let children of q.children; index as i2">
+									<div class="list-questions__contents__block list-questions__contents__block--head d-flex align-items-center flex-wrap">
+										<small class="list-questions__contents__block__code">Câu {{ (i + 1) + '.' + (i2 + 1) }}</small>
+										<button pButton pRipple (click)="btnEdit(children)" class="p-button-warning p-button-rounded" icon="pi pi-file-edit" tooltipStyleClass="ictu-p-tooltip" pTooltip="Cập nhật" tooltipPosition="top"></button>
+										<button pButton pRipple (click)="btnDelete(children)" class="p-button-danger p-button-rounded" icon="pi pi-trash" tooltipStyleClass="ictu-p-tooltip" pTooltip="Xóa câu hỏi" tooltipPosition="top"></button>
+
+										<div class="list-questions__contents__block__q-info ml-auto d-inline-flex align-items-center">
+											<ng-container *ngIf="['group-input','group-radio','checkbox','radio'].includes(children.question_type)">
+												<!--<p-checkbox [disabled]="true" [(ngModel)]="children.config['invertedAnswer']" [binary]="true" label="Đảo vị trí của phương án trả lời"></p-checkbox>-->
+												<p class="list-questions__contents__block__q-info__inverted-answer">
+													<i class="pi" [ngClass]="children.config['invertedAnswer'] ? 'pi-check' : 'pi-times'"></i> Đảo vị trí của phương án trả lời
+												</p>
+												<!-- <span
+												  class="list-questions__contents__block__q-info__separator"
+												  >|</span
+												> -->
+											</ng-container>
+											<!-- <span
+											  class="list-questions__contents__block__q-info__cdr"
+											  [ngClass]="
+												'list-questions__contents__block__q-info__cdr--' +
+												children.level
+											  "
+											  >{{ q["__level_converted"] }}</span
+											> -->
+										</div>
+									</div>
+									<div class="list-questions__contents__block list-questions__contents__block--body">
+										<div class="lqc-present-single-question__direction lock-ck-content lock-ck-content-p-mb-0" [appLoadMediaOnText]="children.id" [innerHTML]="children.question_direction | safeHtmlSingle"></div>
+									</div>
+									<div class="list-questions__contents__block">
+										<ng-container [ngSwitch]="children.question_type">
+											<group-input-question *ngSwitchCase="'group-input'" [present]="children"></group-input-question>
+											<group-radio-question-editor *ngSwitchCase="'group-radio'" [present]="children"></group-radio-question-editor>
+											<question-type-radio-editor *ngSwitchCase="'checkbox'" [multiple]="true" [present]="children"></question-type-radio-editor>
+											<ng-container *ngSwitchCase="'drag_drop'">
+												<div class="list-questions__contents__block__grouping d-flex justify-content-center align-items-center flex-wrap lock-ck-content-p-mb-0">
+													<span class="list-questions__contents__block__grouping__choice" *ngFor="let o of children.answer_option" [IctuMediaLoader]="o.id" [innerHTML]="o.value | safeHtml"><!-- {{ o.value }} --></span>
+												</div>
+												<div class="list-questions__contents__block__drag_drop__pairs d-flex align-items-start flex-wrap">
+													<div class="list-questions__contents__block__drag_drop__pairs__elm" *ngFor="let c of children.children">
+														<div class="row w-100 lock-ck-content-p-mb-0">
+															<p class="col-6 question-direction lock-ck-content mb-0 lock-ck-content-p-mb-0" [IctuMediaLoader]="c.id" [innerHTML]="c.question_direction | safeHtml"></p>
+															<div class="col-6 answer-correct" [IctuMediaLoader]="c.id" [innerHTML]="c.answer_correct | answerLabel : children.answer_option | safeHtml"></div>
+														</div>
+													</div>
+												</div>
+											</ng-container>
+											<ng-container *ngSwitchCase="'radio'">
+												<div class="question-type-radio">
+													<ul class="question-type-radio__list">
+														<li class="question-type-radio__list__element" [ngClass]="
+                                'question-type-radio__list__element--size-' +
+                                children.config?.cols
+                              " *ngFor="
+                                let o of children.answer_option;
+                                index as i
+                              ">
+															<!--                                            <span class="question-type-radio__radio-button" [class.question-type-radio__radio-button--highlight]="o.id | isAnswerCorrect : children.answer_correct"></span>-->
+															<span class="question-type-radio__radio-button__index" [class.question-type-radio__radio-button__index--highlight]="
+                                  o.id
+                                    | isAnswerCorrect : children.answer_correct
+                                ">{{ i | questionPrefix }}</span>
+															<div class="question-type-radio__option" [appLoadMediaOnText]="o.id" [innerHTML]="o.value | safeHtmlSingle"></div>
+														</li>
+													</ul>
+												</div>
+											</ng-container>
+											<ng-container *ngSwitchCase="'grouping'">
+												<div class="list-questions__contents__block__grouping d-flex justify-content-center align-items-center flex-wrap">
+													<span class="list-questions__contents__block__grouping__choice" *ngFor="let o of children.answer_option">{{ o.value }}</span>
+												</div>
+												<div class="list-questions__contents__block__grouping__pairs d-flex align-items-start flex-wrap">
+													<div class="list-questions__contents__block__grouping__pairs__elm" *ngFor="let c of children.children">
+														<b class="list-questions__contents__block__grouping__pairs__elm__heading">{{ c.question_direction }}</b>
+														<textarea [rows]="5" [cols]="30" [disabled]="true" placeholder="Các đáp án..." class="list-questions__contents__block__grouping__pairs__elm__body" pInputTextarea [autoResize]="true">{{
+																c.answer_correct
+																	| answerLabel : children.answer_option
+															}}</textarea>
+													</div>
+												</div>
+											</ng-container>
+											<ng-container *ngSwitchCase="'inputbox'">
+												<ng-container *ngFor="let child of children.children">
+													<span class="list-questions__contents__block__separator"></span>
+													<div class="list-questions__contents__block list-questions__contents__input-box">
+														<span class="list-questions__contents__input-box__number" *ngIf="child.question_number">{{ child.question_number }}</span>
+														<div class="list-questions__contents__input-box__direction lqc-present-single-question__direction lock-ck-content" *ngIf="child.question_direction" [appLoadMediaOnText]="child.id" [innerHTML]="
+                                child.question_direction | safeHtmlSingle
+                              "></div>
+														<div class="list-questions__contents__input-box__correct-answer">
+															{{ child.answer_correct | json }}
+														</div>
+													</div>
+												</ng-container>
+											</ng-container>
+											<ng-container *ngSwitchCase="'input'">
+												<div class="w-100">
+													<input disabled type="text" pInputText placeholder="Đáp án" class="group-input-question__option__input w-100" [(ngModel)]="children['answer']"/>
+													<div>
+														<!-- {{q['answer']}} -->
+													</div>
+												</div>
+											</ng-container>
+											<ng-container *ngSwitchCase="'reorder_words'"></ng-container>
+											<ng-container *ngSwitchCase="'matching'"></ng-container>
+											<div *ngSwitchDefault class="d-flex flex-fill w-100 h-100 justify-content-center align-items-center">
+												<p class="alert alert-secondary m-0 primary-font --fs-14">
+													Vui lòng chọn loại câu hỏi </p>
+											</div>
+										</ng-container>
+									</div>
+									<ng-template #showMultipleRadioChild>
+										<ng-container *ngFor="let child of q.children">
+											<span class="list-questions__contents__block__separator"></span>
+											<div class="list-questions__contents__block">
+												<div class="lqc-present-single-question__direction lock-ck-content" [appLoadMediaOnText]="child.id" [innerHTML]="
+                            child.question_direction | safeHtmlSingle
+                          "></div>
+											</div>
+											<div class="list-questions__contents__block">
+												<ng-container [ngSwitch]="child.question_type">
+													<ng-container *ngSwitchCase="'group-input'"></ng-container>
+													<group-radio-question-editor *ngSwitchCase="'group-radio'" [present]="child"></group-radio-question-editor>
+													<question-type-radio-editor *ngSwitchCase="'checkbox'" [multiple]="true" [present]="child"></question-type-radio-editor>
+													<ng-container *ngSwitchCase="'drag_drop'"></ng-container>
+													<ng-container *ngSwitchCase="'radio'"></ng-container>
+													<ng-container *ngSwitchCase="'grouping'"></ng-container>
+													<ng-container *ngSwitchCase="'inputbox'"></ng-container>
+													<ng-container *ngSwitchCase="'reorder_words'"></ng-container>
+													<ng-container *ngSwitchCase="'matching'"></ng-container>
+													<div *ngSwitchDefault class="d-flex flex-fill w-100 h-100 justify-content-center align-items-center">
+														<p class="alert alert-secondary m-0 primary-font --fs-14">
+															Vui lòng chọn loại câu hỏi </p>
+													</div>
+												</ng-container>
+											</div>
+										</ng-container>
+									</ng-template>
+									<!--                    <app-nhanxet-question [question_input]="q" [course_input]="courseSelected"></app-nhanxet-question>-->
+								</li>
+							</ng-container>
+							<div *ngSwitchDefault class="d-flex flex-fill w-100 h-100 justify-content-center align-items-center">
+								<p class="alert alert-secondary m-0 primary-font --fs-14">
+									Vui lòng chọn loại câu hỏi </p>
+							</div>
+						</ng-container>
+					</div>
+					<ng-template #showMultipleRadio>
+						<ng-container *ngFor="let child of q.children">
+							<span class="list-questions__contents__block__separator"></span>
+							<div class="list-questions__contents__block">
+								<div class="lqc-present-single-question__direction lock-ck-content" [appLoadMediaOnText]="child.id" [innerHTML]="child.question_direction | safeHtmlSingle"></div>
+							</div>
+							<div class="list-questions__contents__block">
+								<ng-container [ngSwitch]="child.question_type">
+									<ng-container *ngSwitchCase="'group-input'"></ng-container>
+									<group-radio-question-editor *ngSwitchCase="'group-radio'" [present]="child"></group-radio-question-editor>
+									<question-type-radio-editor *ngSwitchCase="'checkbox'" [multiple]="true" [present]="child"></question-type-radio-editor>
+									<ng-container *ngSwitchCase="'drag_drop'"></ng-container>
+									<ng-container *ngSwitchCase="'radio'"></ng-container>
+									<ng-container *ngSwitchCase="'grouping'"></ng-container>
+									<ng-container *ngSwitchCase="'inputbox'"></ng-container>
+									<ng-container *ngSwitchCase="'reorder_words'"></ng-container>
+									<ng-container *ngSwitchCase="'matching'"></ng-container>
+									<div *ngSwitchDefault class="d-flex flex-fill w-100 h-100 justify-content-center align-items-center">
+										<p class="alert alert-secondary m-0 primary-font --fs-14">
+											Vui lòng chọn loại câu hỏi </p>
+									</div>
+								</ng-container>
+							</div>
+						</ng-container>
+					</ng-template>
+					<!--                    <app-nhanxet-question [question_input]="q" [course_input]="courseSelected"></app-nhanxet-question>-->
+				</li>
+			</ng-template>
+		</ul>
+	</div>
+</ng-template>

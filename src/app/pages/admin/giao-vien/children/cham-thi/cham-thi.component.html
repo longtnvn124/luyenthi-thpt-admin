@@ -1,0 +1,26 @@
+<div class="giao-vien-cham-thi__contain position-relative">
+	<ng-container [ngSwitch]="state()">
+		<ng-container *ngSwitchCase="'loading'">
+			<div class="dashboard-component--full-height dashboard-component__loading">
+				<div class="dashboard-component__loading__content">
+					<h4 class="dashboard-component__loading__heading">Loading...</h4>
+					<mat-progress-bar mode="indeterminate" value="40"></mat-progress-bar>
+				</div>
+			</div>
+		</ng-container>
+		<ng-container *ngSwitchCase="'success'">
+			<div class="d-flex flex-column justify-content-center align-items-center">
+				<span class="giao-vien-cham-thi__notice ictu-badge ictu-badge--primary mb-2">{{ checkResult().label }}</span>
+				<button (click)="startScoring()" [disabled]="checkResult().disabled" mat-flat-button class="btn ictu-badge-btn--primary-reverse btn-start">Bắt đầu chấm</button>
+			</div>
+		</ng-container>
+		<ng-container *ngSwitchCase="'empty'">
+			<span class="giao-vien-cham-thi__notice ictu-badge ictu-badge--success">Không có bài thi cần chấm.</span>
+		</ng-container>
+		<ng-container *ngSwitchCase="'error'">
+			<div class="admin-table__alert-danger text-center giao-vien-cham-thi__notice">Tải dữ liệu thất bại. Vui lòng
+				<a (click)="reload($event)" href="javascript:" class="admin-table__alert-danger__btn-reload">tải lại</a>
+			</div>
+		</ng-container>
+	</ng-container>
+</div>

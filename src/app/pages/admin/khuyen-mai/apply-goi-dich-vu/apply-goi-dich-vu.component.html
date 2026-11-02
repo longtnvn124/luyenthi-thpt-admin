@@ -1,0 +1,114 @@
+<div></div>
+
+<ng-template #dialogApply>
+  <div class="dialog pt-2 pb-2" style="min-width: 50rem">
+    <div class="container mt-3 mb-3">
+      <div class="title d-flex justify-content-between align-items-center mb-2">
+        <div class="title-left text-xl">
+          <h4 class="ovic-side-navigation-content__head__title mb-0">
+            Gói dịch vụ được áp dụng
+          </h4>
+        </div>
+        <button
+          pButton
+          pRipple
+          (click)="hideDialog()"
+          type="button"
+          icon="pi pi-times"
+          class="p-button-rounded p-button-danger p-button-text close ovic-side-navigation-content__head__btn-close"
+        ></button>
+      </div>
+
+      <div class="container-content" [class.ictu-is-loading]="isLoading">
+        <div class="table-filter mt-2 mb-2 d-flex justify-content-center align-items-center">
+            <div class="search">
+                <div class="search-block__elm">
+                    <span class="p-input-icon-right">
+                      <i class="pi pi-search"></i>
+                      <input
+                        style="min-width: 300px"
+                        class="ovic-table-search--head datatable-input"
+                        type="text"
+                        [(ngModel)]="configComponentENV.search"
+                        pInputText
+                        placeholder="Nhập tên gói..."
+                        (input)="onInputChange($event.target['value'])"
+                      />
+                    </span>
+                  </div>
+            </div>
+        </div>
+        <div class="container-table scroll-table-layout-set">
+          <p-table
+            [value]="listData"
+            styleClass="p-datatable-gridlines"
+            [(selection)]="selectedListPack"
+            (selectionChange)="handleChangeSelectionPack()"
+          >
+            <ng-template pTemplate="header">
+              <tr>
+                <th class="text-center" style="width: 60px">
+                  <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                </th>
+                <th class="text-center" style="width: 60px">STT</th>
+                <th>Tên gói</th>
+                <th class="text-center">Giá tiền</th>
+                <th style="width: 150px" class="text-center">
+                  Thời gian (tháng)
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-item let-i="rowIndex">
+              <tr>
+                <td class="text-center" style="width: 60px">
+                  <p-tableCheckbox [value]="item"></p-tableCheckbox>
+                </td>
+                <td class="text-center" style="width: 60px" class="text-center">
+                  {{ item["__index_table"] }}
+                </td>
+                <td>
+                  <div style="font-weight: 500">
+                    {{ item.name }}
+                  </div>
+                </td>
+                <td class="text-center">
+                  {{ item["price_converted"] }}
+                </td>
+                <td style="width: 150px">
+                  <div class="date text-center">
+                    {{ item.time }}
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+
+      
+    </div>
+
+    <div class="ovic-side-navigation-content__foot">
+        <span class="ovic-side-navigation-content__foot__notice mr-auto">
+          <mark>(*)</mark> bắt buộc phải nhập
+        </span>
+        <button
+          pButton
+          pRipple
+          (click)="applySelection()"
+          [label]="'Áp dụng cho gói đã chọn'"
+          icon="pi pi-check-circle"
+          class="p-button-primary"
+        ></button>
+        <button
+          pButton
+          pRipple
+          (click)="applyAll()"
+          [label]="'Áp dụng cho tất cả'"
+          icon="pi pi-check-circle"
+          class="p-button-success ml-3"
+        ></button>
+        
+      </div>
+  </div>
+</ng-template>

@@ -1,0 +1,966 @@
+<div class="position-relative">
+  <div>
+    <div class="layout_component_container">
+      <div class="scroll-table-layout-set">
+        <div class="content-table-custom">
+          <div class="table-header d-flex justify-content-between p-2">
+            <h3 class="title-left">Danh sách ca thi</h3>
+            <div
+              class="action-right d-flex align-items-center"
+              style="gap: 10px"
+            >
+              <div class="search-block__elm">
+                <span class="p-input-icon-right">
+                  <i class="pi pi-search"></i>
+                  <input
+                    class="ovic-table-search--head datatable-input"
+                    type="text"
+                    pInputText
+                    placeholder="Nhập tên ca thi..."
+                    [disabled]="isLoading"
+                    (input)="onInputChange($event.target['value'])"
+                  />
+                </span>
+              </div>
+              <div>
+                <p-dropdown
+                  [options]="listStatusShiftLabel"
+                  [(ngModel)]="selectedStatusShift"
+                  optionLabel="name"
+                  (onChange)="changeStatusShift($event)"
+                  [showClear]="true"
+                  [disabled]="isLoading"
+                  placeholder="Trạng thái"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="!isLoading; else tableLoading" class="content-table">
+            <p-table
+              [value]="dmCathi"
+              styleClass="p-datatable-gridlines"
+              [tableStyle]="{ 'min-width': '50rem' }"
+            >
+              <ng-template pTemplate="header">
+                <tr>
+                  <th class="text-center">STT</th>
+                  <th>Tên ca thi</th>
+                  <th class="text-center">Trạng thái</th>
+                  <th class="text-center">Số lượng đề</th>
+                  <th class="text-center">Thí sinh đang thi</th>
+                  <th class="text-center">Thí đã thi</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-item>
+                <tr class="intro-y">
+                  <td class="text-center">{{ item.__index_table }}</td>
+                  <td style="font-weight: 500; min-width: 280px">
+                    <div
+                      class="d-flex justify-content-between align-items-center"
+                    >
+                      <div>
+                        {{ item.name }}
+                      </div>
+                      <div [matMenuTriggerFor]="menu" class="icon-action">
+                        <i class="pi pi-ellipsis-v"></i>
+                        <!-- <button  class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium " tabindex="0" type="button"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"  role="img" class="iconify iconify--eva mnl__icon__root MuiBox-root css-cnvj7y" width="1em" height="1em" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2" fill="currentColor"></circle><circle cx="12" cy="5" r="2" fill="currentColor"></circle><circle cx="12" cy="19" r="2" fill="currentColor"></circle></svg><span class="MuiTouchRipple-root css-w0pj6f"></span></button> -->
+                      </div>
+                      <mat-menu #menu="matMenu">
+                        <div class="css-1rurzyz">
+                          <button
+                            mat-menu-item
+                            (click)="setUpFormStudent(item)"
+                          >
+                            <div class="btn-action-menu btn-view">
+                              <div class="icon">
+                                <i class="pi pi-eye"></i>
+                              </div>
+                              <div class="value">Xem thí sinh thi</div>
+                            </div>
+                          </button>
+
+                          <button
+                            *ngIf="isAdmin"
+                            mat-menu-item
+                            (click)="assignExamShiftRoles(item)"
+                          >
+                            <div class="btn-action-menu">
+                              <div class="icon">
+                                <i class="pi pi-plus"></i>
+                              </div>
+                              <div class="value">
+                                Phân quyền theo dõi ca thi
+                              </div>
+                            </div>
+                          </button>
+                        </div>
+                      </mat-menu>
+                    </div>
+                  </td>
+                  <td class="text-center">
+                    <span *ngIf="item.status == 1" class="badge-green">
+                      Kích hoạt
+                    </span>
+                    <span *ngIf="item.status == 2" class="badge-grey">
+                      Đã thi xong
+                    </span>
+                  </td>
+                  <td class="text-center">
+                    <span class="badge-blue">{{ item.test_num }}</span>
+                  </td>
+                  <td class="text-center">
+                    <ng-container *ngIf="item.__ongoing !== null; else loading">
+                      <span class="badge-green">{{ item.__ongoing }}</span>
+                    </ng-container>
+                    <ng-template #loading>
+                      <i class="pi pi-spin pi-spinner loading-point"></i>
+                    </ng-template>
+                  </td>
+                  <td class="text-center">
+                    <ng-container
+                      *ngIf="item.__completed !== null; else loading2"
+                    >
+                      <span class="badge-blue">{{ item.__completed }}</span>
+                    </ng-container>
+                    <ng-template #loading2>
+                      <i class="pi pi-spin pi-spinner loading-point"></i>
+                    </ng-template>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+
+          <ng-template #tableLoading>
+            <app-table-loader [tableRow]="10" [tableCol]="6"></app-table-loader>
+          </ng-template>
+        </div>
+      </div>
+      <div class="page-layout-set">
+        <p-paginator
+          [rows]="rows"
+          [totalRecords]="recordsTotal"
+          [pageLinkSize]="5"
+          (onPageChange)="paginate($event)"
+        >
+        </p-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #templateDisplayStudent>
+  <div class="ovic-side-navigation-content">
+    <div class="ovic-side-navigation-content__head">
+      <h4 class="ovic-side-navigation-content__head__title">{{ titleForm }}</h4>
+      <button
+        (click)="closeDialogParent()"
+        pButton
+        pRipple
+        type="button"
+        icon="pi pi-times"
+        class="p-button-rounded p-button-danger p-button-text close ovic-side-navigation-content__head__btn-close"
+      ></button>
+    </div>
+    <div
+      class="ovic-side-navigation-content__body ovic-scroll-style p-0 max-height"
+    >
+      <div class="ovic-vertical__inputs ovic-vertical__inputs--layout-2">
+        <div class="d-flex">
+          <!-- Right Column: Controls and Grid View -->
+          <div
+            class="col-12 p-2 container-header-right"
+            id="theo-doi-ca-thi-header"
+          >
+            <div class="fixed-header d-flex justify-content-between pb-2 mb-2">
+              <div class="d-flex">
+                <div class="search-block__elm same-height w-100">
+                  <span class="p-input-icon-right w-100">
+                    <i class="pi pi-search"></i>
+                    <input
+                      class="ovic-table-search--head datatable-input same-height"
+                      type="text"
+                      pInputText
+                      (input)="onSearchStudentSesstions($event.target['value'])"
+                      placeholder="Tìm kiếm theo tên"
+                    />
+                  </span>
+                </div>
+
+                <div class="filter-room ml-2" *ngIf="listRoom.length > 0">
+                  <p-dropdown
+                    [options]="listRoom"
+                    [(ngModel)]="roomSelected"
+                    optionLabel="room"
+                    placeholder="Chọn phòng thi"
+                    (onChange)="roomStudentSessionChange()"
+                    [showClear]="true"
+                  />
+                </div>
+
+                <div class="filter-status ml-2">
+                  <p-dropdown
+                    [options]="StatusSessions"
+                    [(ngModel)]="selectedStatus"
+                    (onChange)="studentSessionStatusChange($event)"
+                    optionLabel="name"
+                    placeholder=""
+                  />
+                </div>
+              </div>
+              <div class="d-flex">
+                <span
+                  class="badge-blue"
+                  style="padding: 10px !important; font-size: 0.8rem"
+                >
+                  Tổng số : {{ recordsTotalStudentSession }} lượt thi
+                </span>
+              </div>
+              <div class="d-flex">
+                <!-- <p-button
+                  icon="pi pi-file-excel"
+                  pTooltip="Export excel điểm thi"
+                  tooltipPosition="top"
+                  (onClick)="exportPointAfterTest('excel')"
+                  styleClass="p-button-success p-button-sm mr-2"
+                ></p-button> -->
+                <!-- <p-button
+                  icon="pi pi-key"
+                  pTooltip="Làm mới mật khẩu"
+                  tooltipPosition="top"
+                  (onClick)="resetPass()"
+                  styleClass="p-button-success p-button-sm mr-2"
+                ></p-button>
+                <p-button
+                  icon="fa fa-balance-scale"
+                  pTooltip="Tổng hợp điểm"
+                  tooltipPosition="top"
+                  (onClick)="requestTrueFalsePoint()"
+                  styleClass="p-button-success p-button-sm mr-2"
+                ></p-button> -->
+                <!-- <p-button
+                  icon="pi pi-refresh"
+                  pTooltip="Làm mới"
+                  tooltipPosition="top"
+                  (onClick)="loadStudentSesstion()"
+                  styleClass="p-button-success p-button-sm mr-2"
+                ></p-button> -->
+                <p-button
+                  icon="pi pi-sort"
+                  pTooltip="{{ sort == 'asc' ? 'Mới nhất' : 'Cũ nhất' }}"
+                  tooltipPosition="top"
+                  (onClick)="handleSortStudentSession()"
+                  styleClass="p-button-success p-button-sm mr-2"
+                ></p-button>
+                <p-button
+                  icon="pi pi-bars"
+                  pTooltip="Hiển thị theo danh sách"
+                  tooltipPosition="left"
+                  (onClick)="changeListStyle(true, false, false)"
+                  [ngClass]="!styleShow.list ? 'p-button-outlined' : ''"
+                  styleClass="p-button-primary p-button-sm mr-2"
+                ></p-button>
+                <p-button
+                  icon="pi pi-microsoft"
+                  pTooltip="Hiển thị theo thẻ"
+                  tooltipPosition="left"
+                  (onClick)="changeListStyle(false, true, false)"
+                  [ngClass]="!styleShow.grid ? 'p-button-outlined' : ''"
+                  styleClass="p-button-primary p-button-sm"
+                ></p-button>
+              </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <!-- <div *ngIf="startProgress" class="mb-2">
+              <p-progressBar
+                [value]="progressValue"
+                mode="dynamic"
+              ></p-progressBar>
+            </div> -->
+
+            <!-- Grid View -->
+            <div *ngIf="styleShow.grid">
+              <div class="sinhvien-ca-thi-grid-style" id="theo-doi-ca-thi">
+                <div
+                  class="item-grid-cathi-style"
+                  *ngFor="let studentSession of dmStudentSession"
+                >
+                  <div
+                    class="card student-card {{
+                      studentSession['student_class_status']
+                    }}"
+                    [ngClass]="{
+                      'bg-active': studentSession['status'] === 1,
+                      'bg-stop': studentSession['status'] === -1,
+                      'bg-pause': studentSession['status'] === 3
+                    }"
+                  >
+                    <div
+                      class="card-header d-flex justify-content-between align-items-center"
+                      [ngClass]="{
+                        'bg-active': studentSession['status'] === 1,
+                        'bg-stop': studentSession['status'] === -1,
+                        'bg-pause': studentSession['status'] === 3
+                      }"
+                    >
+                      <h5 class="card-title mb-0 d-flex align-items-center">
+                        <span>{{ studentSession["student"]["hoten"] }}</span>
+                        &nbsp; - &nbsp;
+                        <span>{{
+                          studentSession["student"]["ngay_sinh_converted"]
+                        }}</span>
+
+                        <span
+                          *ngIf="studentSession['status'] === 1"
+                          class="status-online ml-1"
+                          [ngClass]="{ active: studentSession['status'] === 1 }"
+                        ></span>
+                        <span
+                          *ngIf="studentSession['status'] === 2"
+                          class="status-done ml-1"
+                        ></span>
+                        <span
+                          *ngIf="studentSession['status'] === 3"
+                          class="status-pause ml-1"
+                        ></span>
+                        <span
+                          *ngIf="studentSession['status'] === -1"
+                          class="status-delete ml-1"
+                        ></span>
+                      </h5>
+
+                      <p-checkbox
+                        styleClass="checkStudent-grid"
+                        name="groupname"
+                        [value]="studentSession.id"
+                        [(ngModel)]="selectedStudentS"
+                      >
+                      </p-checkbox>
+                    </div>
+                    <div class="card-body d-flex align-items-center">
+                      <img
+                        *ngIf="studentSession['blob']"
+                        [src]="trustHtml(studentSession['blob'])"
+                        class="img-thumbnail student-image"
+                        (click)="showAvatar(studentSession)"
+                      />
+                      <img
+                        *ngIf="!studentSession['blob']"
+                        [src]="studentSession['avatar_temp']"
+                        class="img-thumbnail student-image"
+                      />
+                      <div class="ml-3">
+                        <h6 class="icon-gender mb-1">
+                          <i
+                            [ngClass]="
+                              studentSession['student']['gioitinh'] == 'nam'
+                                ? 'male-gender-icon fa fa-mars'
+                                : 'female-gender-icon fa fa-venus'
+                            "
+                          >
+                          </i>
+                        </h6>
+                        <p class="mb-1">
+                          <strong>SBD:</strong>
+                          {{ studentSession["student"]["user_id"] }}
+                        </p>
+                        <p class="mb-1">
+                          <strong>Email:</strong>
+                          {{ studentSession["student"]["email"] }}
+                        </p>
+                        <ng-container
+                          *ngIf="studentSession['credentials_parse']"
+                        >
+                          <p class="mb-1">
+                            <strong>Ip:</strong>
+                            {{ studentSession["credentials_parse"]["ip"] }}
+                          </p>
+                        </ng-container>
+
+                        <p class="mb-1">
+                          <strong class="mr-1">Trạng thái:</strong>
+                          <span
+                            *ngIf="studentSession['status'] === 0"
+                            class="badge-grey"
+                          >
+                            Chưa thi
+                          </span>
+
+                          <span
+                            *ngIf="studentSession['status'] === 1"
+                            class="badge-green"
+                          >
+                            Đang thi
+                          </span>
+
+                          <span
+                            *ngIf="studentSession['status'] === 2"
+                            class="badge-blue"
+                          >
+                            Đã nộp bài
+                          </span>
+
+                          <span
+                            *ngIf="studentSession['status'] === 3"
+                            class="badge-yellow"
+                          >
+                            Tạm dừng
+                          </span>
+                          <span
+                            *ngIf="studentSession['status'] === -1"
+                            class="badge-red"
+                          >
+                            Hủy bài thi
+                          </span>
+                        </p>
+                        <p class="mb-1">
+                          <strong>Bắt đầu thi:</strong>
+                          {{ studentSession["time_start_converted"] }}
+                        </p>
+                        <p class="mb-1">
+                          <strong>Nộp bài vào:</strong>
+                          {{ studentSession["time_end_converted"] }}
+                        </p>
+                      </div>
+                    </div>
+                    <div
+                      class="card-footer text-center"
+                      [ngClass]="{
+                        'bg-active': studentSession['status'] === 1,
+                        'bg-stop': studentSession['status'] === -1,
+                        'bg-pause': studentSession['status'] === 3
+                      }"
+                    >
+                      <div *ngIf="selectedCathi" class="btn-group">
+                        <p-button
+                          tooltipPosition="top"
+                          *ngIf="
+                            studentSession['status'] === 0 ||
+                            studentSession['status'] === 1
+                          "
+                          icon="pi pi-pause"
+                          (onClick)="pauseAndRedo('pause', studentSession)"
+                          pTooltip="Tạm dừng"
+                          styleClass="p-button-success"
+                        >
+                        </p-button>
+                        <p-button
+                          tooltipPosition="top"
+                          *ngIf="studentSession['status'] == 3"
+                          icon="pi pi-play"
+                          (onClick)="pauseAndRedo('continue', studentSession)"
+                          pTooltip="Tiếp tục"
+                          styleClass="p-button-success"
+                        >
+                        </p-button>
+                        <p-button
+                          tooltipPosition="top"
+                          icon="pi pi-eye"
+                          (onClick)="onViewShiftTest(studentSession)"
+                          pTooltip="Xem"
+                          styleClass="p-button-success"
+                        >
+                        </p-button>
+
+                        <!-- <p-button
+                          tooltipPosition="top"
+                          [disabled]="
+                            studentSession['status'] !== 2 &&
+                            studentSession['status'] !== -1
+                              ? false
+                              : true
+                          "
+                          icon="pi pi-plus"
+                          pTooltip="Thêm thời gian thi"
+                          styleClass="p-button-primary"
+                          (onClick)="addTimeExamShiftStudentTest(studentSession)"
+                        >
+                        </p-button> -->
+
+                        <p-button
+                          tooltipPosition="top"
+                          [disabled]="
+                            studentSession['status'] !== -1 &&
+                            studentSession['status'] !== 0 &&
+                            studentSession['status'] !== 2
+                              ? false
+                              : true
+                          "
+                          icon="pi pi-pencil"
+                          pTooltip="Xử lý vi phạm(trừ điểm)"
+                          (onClick)="violation(studentSession)"
+                          styleClass="p-button-danger"
+                        >
+                        </p-button>
+                        <p-button
+                          tooltipPosition="top"
+                          (onClick)="stopedTest(studentSession)"
+                          [disabled]="
+                            studentSession['status'] !== -1 &&
+                            studentSession['status'] !== 0 &&
+                            studentSession['status'] !== 2
+                              ? false
+                              : true
+                          "
+                          icon="pi pi-stop-circle"
+                          [pTooltip]="
+                            studentSession['status'] === 2
+                              ? 'Đã nộp bài'
+                              : 'Nộp bài'
+                          "
+                          styleClass="p-button-warning"
+                        >
+                        </p-button>
+                        <p-button
+                          tooltipPosition="top"
+                          [disabled]="
+                            studentSession['status'] !== -1 &&
+                            studentSession['status'] !== 2
+                              ? false
+                              : true
+                          "
+                          icon="pi pi-times"
+                          (onClick)="rejectTest(studentSession)"
+                          [pTooltip]="
+                            studentSession['status'] !== -1 ? 'Hủy' : 'Đã hủy'
+                          "
+                          styleClass="p-button-danger"
+                        >
+                        </p-button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="page-layout-set">
+                <p-paginator
+                  [rows]="rowsStudentSession"
+                  [totalRecords]="recordsTotalStudentSession"
+                  [pageLinkSize]="5"
+                  (onPageChange)="paginateStudent($event)"
+                >
+                </p-paginator>
+              </div>
+            </div>
+            <!-- List view -->
+
+            <div *ngIf="styleShow.list" class="sinhvien-ca-thi-list-style">
+              <p-table
+                dataKey="id"
+                [value]="dmStudentSession"
+                [rowHover]="true"
+                [tableStyle]="{ 'min-width': '100rem' }"
+                styleClass="tbl-danhSachUser table-scroll-able table-able-dropdown-p-table table-none-header ovic-ui-table table-reBorder"
+              >
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th [width]="'30px'" [style]="'text-align:center'">
+                      <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                    </th>
+                    <th style="text-align: center">STT</th>
+                    <th>Họ và tên</th>
+                    <th>SBD</th>
+                    <th>Ngày sinh</th>
+                    <th>Trạng thái</th>
+                    <th>Giới tính</th>
+                    <th>SĐT</th>
+                    <th>Email</th>
+                    <th>Bắt đầu thi</th>
+                    <th>Nộp bài vào</th>
+                    <th>Địa chỉ Ip</th>
+                    <th style="width: 100px">Trình duyệt</th>
+                    <th>Thiết bị</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-row let-i="rowIndex">
+                  <tr
+                    class="tr-row-tuyensinh-table {{
+                      row['student_class_status']
+                    }}"
+                  >
+                    <td [style]="'text-align:center'">
+                      <p-checkbox
+                        styleClass="checkStudent-list"
+                        name="groupname"
+                        [value]="row['student']['email']"
+                        [(ngModel)]="selectedStudentS"
+                      >
+                      </p-checkbox>
+                    </td>
+                    <td style="text-align: center">
+                      {{ row["__index_table"] }}
+                    </td>
+                    <td>
+                      <div
+                        class="d-flex justify-content-between align-items-center"
+                      >
+                        <div>
+                          {{ row["student"]["hoten"] }}
+                        </div>
+                        <div
+                          [matMenuTriggerFor]="menuSession"
+                          class="icon-action"
+                        >
+                          <i class="pi pi-ellipsis-v"></i>
+                        </div>
+                        <mat-menu #menuSession="matMenu">
+                          <div class="css-1rurzyz css-1rurzyz-theo_doi_ca_thi">
+                            <button
+                              mat-menu-item
+                              *ngIf="row['status'] !== 3"
+                              [disabled]="
+                                row['status'] == -1 ||
+                                row['status'] == 0 ||
+                                row['status'] == 2
+                              "
+                              (click)="pauseAndRedo('pause', row)"
+                            >
+                              <i style="color: #10ac84" class="pi pi-pause"></i>
+                              <span class="ml-1 lable-btn-action-table"
+                                >Tạm dừng</span
+                              >
+                            </button>
+                            <button
+                              mat-menu-item
+                              *ngIf="row['status'] === 3"
+                              (click)="pauseAndRedo('continue', row)"
+                            >
+                              <i style="color: #10ac84" class="pi pi-play"></i>
+                              <span class="ml-1 lable-btn-action-table"
+                                >Tiếp tục</span
+                              >
+                            </button>
+                            <button
+                              mat-menu-item
+                              (click)="onViewShiftTest(row)"
+                            >
+                              <i style="color: #3b82f6" class="pi pi-eye"></i>
+                              <span class="ml-1 lable-btn-action-table"
+                                >Xem</span
+                              >
+                            </button>
+                            <button
+                              mat-menu-item
+                              class="btn-action-menu-delete"
+                              [disabled]="
+                                row['status'] == -1 || row['status'] == 2
+                              "
+                              (click)="violation(row)"
+                            >
+                              <i
+                                style="color: #ef4444"
+                                class="pi pi-pencil"
+                              ></i>
+                              <span class="ml-1 lable-btn-action-table"
+                                >Xử lý vi phạm (trừ điểm)</span
+                              >
+                            </button>
+                            <button
+                              mat-menu-item
+                              [disabled]="
+                                row['status'] == -1 || row['status'] == 2
+                              "
+                              (click)="stopedTest(row)"
+                            >
+                              <i
+                                style="color: #f59e0b"
+                                class="pi pi-stop-circle"
+                              ></i>
+                              <span class="ml-1 lable-btn-action-table">{{
+                                row["status"] === 2 ? "Đã nộp bài" : "Nộp bài"
+                              }}</span>
+                            </button>
+                            <button
+                              mat-menu-item
+                              class="btn-action-menu-delete"
+                              [disabled]="
+                                row['status'] == -1 || row['status'] == 2
+                              "
+                              (click)="rejectTest(row)"
+                            >
+                              <i style="color: #ef4444" class="pi pi-times"></i>
+                              <span class="ml-1 lable-btn-action-table">{{
+                                row["status"] !== -1 ? "Hủy" : "Đã hủy"
+                              }}</span>
+                            </button>
+                          </div>
+                        </mat-menu>
+                      </div>
+                    </td>
+                    <td>{{ row["student"]["user_id"] }}</td>
+                    <td>{{ row["student"]["ngay_sinh_converted"] }}</td>
+                    <td>
+                      <span *ngIf="row['status'] === 0" class="badge-grey"
+                        >Chưa thi</span
+                      >
+                      <span *ngIf="row['status'] === 1" class="badge-green"
+                        >Đang thi</span
+                      >
+                      <span *ngIf="row['status'] === 2" class="badge-blue"
+                        >Đã nộp bài</span
+                      >
+                      <span *ngIf="row['status'] === 3" class="badge-yellow"
+                        >Tạm dừng</span
+                      >
+                      <span *ngIf="row['status'] === -1" class="badge-red"
+                        >Hủy bài thi</span
+                      >
+                    </td>
+                    <td>{{ row["student"]["gioitinh"] }}</td>
+                    <td>{{ row["student"]["sdt"] }}</td>
+                    <td>{{ row["student"]["email"] }}</td>
+                    <td>{{ row["time_start_converted"] }}</td>
+                    <td>{{ row["time_end_converted"] }}</td>
+                    <!-- <td>{{ row["shift_test"].code }}</td> -->
+                    <td>{{ row["credentials_parse"]?.ip }}</td>
+                    <td style="width: 100px">
+                      {{ row["credentials_parse"]?.browser }}
+                    </td>
+                    <td>{{ row["credentials_parse"]?.device }}</td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                  <tr>
+                    <td colspan="13">
+                      <span> Không có dữ liệu </span>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+
+              <div class="d-flex justify-content-end">
+                <p-paginator
+                  [rows]="rowsStudentSession"
+                  [totalRecords]="recordsTotalStudentSession"
+                  [pageLinkSize]="5"
+                  (onPageChange)="paginateStudent($event)"
+                >
+                </p-paginator>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #dialogAccessControl>
+  <div class="ovic-side-navigation-content">
+    <div class="ovic-side-navigation-content__head">
+      <h4 class="ovic-side-navigation-content__head__title">
+        Phân quyền theo dõi ca thi : {{ selectedCathi.name }}
+      </h4>
+      <button
+        (click)="closeForm()"
+        pButton
+        pRipple
+        type="button"
+        icon="pi pi-times"
+        class="p-button-rounded p-button-danger p-button-text close ovic-side-navigation-content__head__btn-close"
+      ></button>
+    </div>
+
+    <div class="ovic-side-navigation-content__body ovic-scroll-style">
+      <app-assign-exam-shift-roles
+        [shift]="selectedCathi"
+        [shift_id]="selectedCathi.id"
+      ></app-assign-exam-shift-roles>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #templateVipham>
+  <div class="ovic-side-navigation-content">
+    <div class="ovic-side-navigation-content__head">
+      <h4 class="ovic-side-navigation-content__head__title">
+        Xử lý vi phạm(trừ điểm)
+      </h4>
+      <button
+        pButton
+        pRipple
+        (click)="closeDialogByName('violationDialog')"
+        type="button"
+        icon="pi pi-times"
+        class="p-button-rounded p-button-danger p-button-text close ovic-side-navigation-content__head__btn-close"
+      ></button>
+    </div>
+    <div
+      class="ovic-side-navigation-content__body ovic-scroll-style p-0 max-height"
+    >
+      <div class="ovic-vertical__inputs ovic-vertical__inputs--layout-2 p-3">
+        <form [formGroup]="formScontrol" autocomplete="off">
+          <div class="row">
+            <div class="col-12">
+              <p class="form-row">
+                <label>Tiêu đề<span class="ovic-mark">*</span></label>
+                <input
+                  type="text"
+                  placeholder=" Nhập tiêu đề..."
+                  formControlName="object"
+                  autocomplete="off"
+                />
+              </p>
+            </div>
+            <div class="col-12">
+              <p class="form-row">
+                <label
+                  >Số phần trăm bị trừ<span class="ovic-mark">*</span></label
+                >
+                <input
+                  type="number"
+                  placeholder="vd: 20 ..."
+                  formControlName="value"
+                  autocomplete="off"
+                />
+              </p>
+            </div>
+
+            <div class="col-12">
+              <p class="form-row">
+                <label>Ghi chú <span class="ovic-mark">*</span></label>
+                <textarea
+                  formControlName="note"
+                  placeholder="Ghi chú..."
+                  autocomplete="off"
+                  cols="30"
+                  rows="2"
+                ></textarea>
+              </p>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="ovic-side-navigation-content__foot">
+      <span class="ovic-side-navigation-content__foot__notice mr-auto">
+        <mark>(*)</mark> bắt buộc phải nhập
+      </span>
+      <button
+        pButton
+        pRipple
+        [label]="'Lưu lại'"
+        icon="pi pi-save"
+        (click)="saveViolation()"
+        class="p-button-success"
+      ></button>
+      <button
+        pButton
+        pRipple
+        label="Đóng"
+        (click)="closeDialogByName('violationDialog')"
+        class="p-button-secondary ml-3"
+        icon="pi pi-times"
+        (click)="closeForm()"
+      ></button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #templatePauseShiftTest>
+  <div class="ovic-side-navigation-content">
+    <div class="ovic-side-navigation-content__head">
+      <h4 class="ovic-side-navigation-content__head__title">
+        {{ titleDialog }}
+      </h4>
+      <button
+        pButton
+        pRipple
+        (click)="closeDialogByName('pauseShiftTestDialog')"
+        type="button"
+        icon="pi pi-times"
+        class="p-button-rounded p-button-danger p-button-text close ovic-side-navigation-content__head__btn-close"
+      ></button>
+    </div>
+    <div
+      class="ovic-side-navigation-content__body ovic-scroll-style p-0 max-height"
+    >
+      <div class="ovic-vertical__inputs ovic-vertical__inputs--layout-2 p-3">
+        <form [formGroup]="formScontrol" autocomplete="off">
+          <div class="row">
+            <div class="col-12">
+              <p class="form-row">
+                <label>Lý do <span class="ovic-mark">*</span></label>
+                <textarea
+                  formControlName="note"
+                  placeholder="vd: Vi phạm quy chế thi..."
+                  autocomplete="off"
+                  cols="30"
+                  rows="6"
+                ></textarea>
+              </p>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="ovic-side-navigation-content__foot">
+      <span class="ovic-side-navigation-content__foot__notice mr-auto">
+        <mark>(*)</mark> bắt buộc phải nhập
+      </span>
+      <button
+        pButton
+        pRipple
+        [label]="'Lưu lại'"
+        icon="pi pi-save"
+        (click)="submitControl(typeControl)"
+        class="p-button-success"
+      ></button>
+      <button
+        pButton
+        pRipple
+        label="Đóng"
+        (click)="closeDialogByName('pauseShiftTestDialog')"
+        class="p-button-secondary ml-3"
+        icon="pi pi-times"
+        (click)="closeForm()"
+      ></button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #templateViewShiftTest>
+  <div class="ovic-side-navigation-content">
+    <div class="ovic-side-navigation-content__head">
+      <h4 class="ovic-side-navigation-content__head__title">
+        {{ titleDialog }}
+      </h4>
+      <button
+        pButton
+        pRipple
+        (click)="closeDialogByName('viewStudent')"
+        type="button"
+        icon="pi pi-times"
+        class="p-button-rounded p-button-danger p-button-text close ovic-side-navigation-content__head__btn-close"
+      ></button>
+    </div>
+    
+    <app-view-shift-test [selectedStudent]="selectedStudent"></app-view-shift-test>
+    <!-- <div class="ovic-side-navigation-content__foot">
+      <span class="ovic-side-navigation-content__foot__notice mr-auto">
+        <mark>(*)</mark> bắt buộc phải nhập
+      </span>
+      <button
+        pButton
+        pRipple
+        [label]="'Lưu lại'"
+        icon="pi pi-save"
+        (click)="submitControl(typeControl)"
+        class="p-button-success"
+      ></button>
+      <button
+        pButton
+        pRipple
+        label="Đóng"
+        (click)="closeDialogByName('pauseShiftTestDialog')"
+        class="p-button-secondary ml-3"
+        icon="pi pi-times"
+        (click)="closeForm()"
+      ></button>
+    </div> -->
+  </div>
+</ng-template>

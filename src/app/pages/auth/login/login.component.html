@@ -1,0 +1,57 @@
+<div class="auth-main position-relative">
+	<div class="auth-wrapper version-1">
+		<div class="auth-form">
+			<div class="auth-background">
+				<div class="yellow-circle"></div>
+				<div class="red-circle"></div>
+			</div>
+			<div class="main-form intro-y">
+				<app-card [showHeader]="false" class="auth-form-card" [padding]="40">
+					<div class="d-flex flex-column align-items-center text-center m-b-20">
+						<img src="assets/images/client/logo-tnu.png" style="height: auto;width: 90px;" alt="logo"/>
+						<!-- <span class="fw-bold mt-2" style="font-size: 24px;">Hệ thống quản lý luyện thi THPT DHTN</span> -->
+					</div>
+					<h4 class="text-center m-t-10 m-b-5 f-22 f-w-700 f-roboto">Hệ thống quản lý luyện thi THPT DHTN</h4>
+					<h5 class="text-center m-b-25 f-17 f-w-700 f-roboto" style="color:#1A237E;">(Dành cho cán bộ quản lý)</h5>
+					<div class="text-start">
+						<form>
+							<label class="f-15 f-w-500 f-roboto lh-1">Tài khoản</label>
+							<mat-form-field appearance="outline" class="w-100 m-t-0">
+								<input class="f-roboto f-15" matInput [formControl]="username" required placeholder="Tên đăng nhập hoặc email" autocomplete="username"/>
+							</mat-form-field>
+							<label class="f-15 f-w-500 f-roboto lh-1">Mật khẩu</label>
+							<mat-form-field appearance="outline" class="w-100 m-t-0">
+								<input class="f-roboto f-15" matInput [formControl]="password" placeholder="Mật khẩu đăng nhập" [type]="hide ? 'password' : 'text'" (keydown.enter)="loginWithUserPassword()" autocomplete="current-password"/>
+								<button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+									<mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
+								</button>
+							</mat-form-field>
+						</form>
+					</div>
+					<!--                    <div class="check-me">-->
+					<!--                        <mat-checkbox class="float-start" [checked]="true" color="primary">Remember me?</mat-checkbox>-->
+					<!--                        <a class="f-w-400 f-14 text-primary-500 m-b-0" href="javascript:" routerLink="/auth/forget-password">Forgot Password </a>-->
+					<!--                    </div>-->
+					<div class="grid">
+						<button (click)="loginWithUserPassword()" [disabled]="formGroup.invalid" mat-flat-button color="primary" class="b-rad-20 m-t-15 p-10">Đăng nhập</button>
+					</div>
+					<!-- 					<div class="separator"> -->
+					<!-- 						<span class="f-14 f-w-500 f-roboto">Đăng nhập bằng tài khoản google</span> -->
+					<!-- 					</div> -->
+					<!-- 					<div class="google-sign-in-area d-flex justify-content-center" id="google_sign_in_area"></div> -->
+					<div class="d-flex justify-content-center align-items-center m-t-30">
+						<a href="javascript:" class="link-primary f-w-400 f-15 f-roboto text-primary-500 m-b-0 mr-2" routerLink="/auth/forget-password"><i class="ti ti-lock f-18"></i> Bạn quên mật khẩu?</a>
+						<!-- <a href="javascript:" class="link-primary f-w-400 f-15 f-roboto text-primary-500 m-b-0" routerLink="/auth/register-account">Bạn chưa có tài khoản</a> -->
+					</div>
+					<span class="d-block text-center f-w-500 f-14 f-roboto text-secondary" style="margin: 15px 0 -15px;">{{ appVersion }}</span>
+				</app-card>
+			</div>
+		</div>
+	</div>
+	<div class="main-form__wrap-loading position-absolute" *ngIf="loading">
+		<div class="ictu-indicator-loading-panel">
+			<span class="ictu-indicator-loading-panel__label">Loading...</span>
+			<mat-progress-bar class="loader" mode="indeterminate" value="40"></mat-progress-bar>
+		</div>
+	</div>
+</div>

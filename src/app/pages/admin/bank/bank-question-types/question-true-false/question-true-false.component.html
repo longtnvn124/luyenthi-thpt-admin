@@ -1,0 +1,7 @@
+<div class="question-type-radio" *ngIf="question()">
+	<ul class="ictu-logic-question__answers">
+		<li class="ictu-logic-question__answers__element" *ngFor="let btn of question().options">
+			<button class="btn ictu-logic-question__answers__btn" [class.high-light]="isValueInAnswerCorrect(btn.value)" (click)="markAnswerAsCorrectAnswer(btn)">{{ btn.label }}</button>
+		</li>
+	</ul>
+</div>

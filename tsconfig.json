@@ -1,0 +1,55 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
+{
+    "compileOnSave"          : false ,
+    "compilerOptions"        : {
+        "baseUrl"                            : "./" ,
+        "outDir"                             : "./dist/out-tsc" ,
+        "forceConsistentCasingInFileNames"   : true ,
+        "ignoreDeprecations"                 : "5.0" ,
+        "strict"                             : false ,
+        "noImplicitOverride"                 : true ,
+        "noPropertyAccessFromIndexSignature" : true ,
+        "noImplicitReturns"                  : true ,
+        "noFallthroughCasesInSwitch"         : true ,
+        "sourceMap"                          : true ,
+        "declaration"                        : false ,
+        "downlevelIteration"                 : true ,
+        "experimentalDecorators"             : true ,
+        "resolveJsonModule"                  : true ,
+        "allowSyntheticDefaultImports"       : true ,
+        "moduleResolution"                   : "node" ,
+        "importHelpers"                      : true ,
+        "target"                             : "ES2022" ,
+        "module"                             : "ES2022" ,
+        "useDefineForClassFields"            : false ,
+        "lib"                                : [
+            "ES2022" ,
+            "dom"
+        ] ,
+        "paths"                              : {
+            "@utilities/*"        : [ "src/app/utilities/*" ] ,
+            "@model/*"            : [ "src/app/models/*" ] ,
+            "@service/*"          : [ "src/app/services/*" ] ,
+            "@layout/*"           : [ "src/app/layout/*" ] ,
+            "@module/*"           : [ "src/app/modules/*" ] ,
+            "@pages/*"            : [ "src/app/pages/*" ] ,
+            "@learning/*"         : [ "src/app/pages/learning/*" ] ,
+            "@theme/*"            : [ "src/app/theme/*" ] ,
+            "@appNotification"    : [ "src/app/theme/services/notification.service.ts" ] ,
+            "@sharedModule"       : [ "src/app/modules/shared/shared.module.ts" ] ,
+            "@env"                : [
+                "src/environments"
+            ] ,
+            "ngx-text-blank-form" : [
+                "dist/ngx-text-blank-form"
+            ]
+        }
+    } ,
+    "angularCompilerOptions" : {
+        "enableI18nLegacyMessageIdFormat" : false ,
+        "strictInjectionParameters"       : true ,
+        "strictInputAccessModifiers"      : true ,
+        "strictTemplates"                 : true ,
+        "types"                           : [ "node" ]
+    }
+}

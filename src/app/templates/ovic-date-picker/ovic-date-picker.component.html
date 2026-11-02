@@ -1,0 +1,15 @@
+<label *ngIf="label">{{ label }}</label>
+<p-calendar
+  styleClass="calendar-panel"
+  [tabindex]="9999999"
+  [dateFormat]="dateFormat"
+  [locale]="locale"
+  [placeholder]="placeholder"
+  (onInput)="input($event)"
+  (onSelect)="change($event)"
+  [(ngModel)]="value"
+  [showTime]="showTime"
+  [monthNavigator]="monthNavigator"
+  [yearNavigator]="yearNavigator"
+  [yearRange]="yearRange"
+></p-calendar>

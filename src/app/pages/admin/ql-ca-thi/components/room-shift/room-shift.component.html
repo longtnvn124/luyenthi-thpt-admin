@@ -1,0 +1,76 @@
+<div class="room-shift ovic-scroll-style" [class.ictu-is-loading]="isLoading">
+  <div class="action-header w-100 d-flex mb-3">
+    <div class="content-input">
+      <div class="ovic-vertical__inputs ovic-vertical__inputs--layout-2">
+        <div class="">
+          <p class="form-row">
+            <label>Tên phòng<span class="ovic-mark">*</span></label>
+            <input
+              type="text"
+              placeholder=" vd: C6.PM207..."
+              [(ngModel)]="roomName"
+              autocomplete="off"
+            />
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      style="height: 38px; box-sizing: border-box; margin-top: 21px"
+      class="button-action"
+    >
+      <div class="d-flex align-items-center">
+        <p-button
+          *ngIf="!isUpDate ; else updateButon"
+          (onClick)="eventAction('ADD')"
+          [icon]="isLoading ? 'pi pi-spin pi-spinner' : 'pi pi-save'"
+          label="Thêm"
+        />
+        <button
+          pButton
+          pRipple
+          icon="pi pi-times"
+          [disabled]="!isUpDate"
+          (click)="closeUpdate()"
+          class="ml-1 p-button-secondary btn-set-w btn-set-h"
+        ></button>
+
+        <ng-template #updateButon>
+            <p-button
+            (onClick)="eventAction('ADD')"
+            [icon]="isLoading ? 'pi pi-spin pi-spinner' : 'pi pi-save'"
+            label="Lưu"
+            severity="warning"
+            />
+        </ng-template>
+      </div>
+    </div>
+  </div>
+
+  <hr />
+
+  <div class="list-room mt-3">
+    <div
+      *ngFor="let item of listRooms"
+      class="item-room d-flex align-items-center justify-content-between p-2"
+    >
+      <div class="name">
+        {{ item.room }}
+      </div>
+      <div class="action d-flex align-items-center">
+        <p-button 
+        (onClick)="eventAction('UPDATE', item)"
+        severity="warning" 
+        size="small" 
+        icon="pi pi-pencil" />
+        <p-button
+          (onClick)="eventAction('DELETE',item)"
+          class="ml-1"
+          severity="danger"
+          size="small"
+          icon="pi pi-trash"
+        />
+      </div>
+    </div>
+  </div>
+</div>

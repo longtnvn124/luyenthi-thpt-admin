@@ -1,0 +1,18 @@
+<div class="chart-loading" [style.height]="height">
+	<!-- Y-axis labels -->
+	<div class="y-labels">
+		<span *ngFor="let label of yLabels">{{ label }}</span>
+	</div>
+	<!-- Main chart container -->
+	<div class="chart-loader" #chartLoader>
+		<div class="chart-content">
+			<div *ngFor="let bar of bars; let i = index" class="bar" [style.height]="randomHeights[i]" [style.animationDelay]="i * 0.2 + 's'"></div>
+		</div>
+		<!-- X-axis labels -->
+		<div class="x-labels">
+			<span *ngFor="let label of xLabels">{{ label }}</span>
+		</div>
+		<!-- Shimmer effect -->
+		<div class="shimmer"></div>
+	</div>
+</div>

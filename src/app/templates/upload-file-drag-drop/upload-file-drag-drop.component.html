@@ -1,0 +1,50 @@
+<div class="file-container" (drop)="onFileDropped($event)" (dragover)="onDragOver($event)"
+  (dragleave)="onDragLeave($event)" *ngIf="buttonInput == false && !filesList.length">
+  <label for="upload-file" class="custom-label-file" *ngIf="!filesList.length" [style.height]="height"
+    [style.width]="width">
+    <div class="content-file-input">
+      <div class="img">
+        <img src="assets/images/svg/upload-file.svg" alt="">
+      </div>
+      <div class="mt-1"><b>Thả hoặc chọn tệp</b></div>
+      <div class="p-5">
+        <span style="font-size: 14px;">Kéo thả tệp vào đây hoặc nhấp để chọn tệp</span>
+      </div>
+    </div>
+  </label>
+</div>
+
+<label for="upload-file" class="file-container" *ngIf="buttonInput == true && !filesList.length">
+  Click để chọn tệp đính kèm
+</label>
+
+
+
+<ul class="list-file" *ngIf="filesList.length > 0">
+  <li class="list-file--elm" *ngFor="let item of filesList; let i = index">
+    <button class="list-file--elm__info">
+      <div [ngClass]="{
+        'img-icon': item.ext === 'png' || item.ext === 'jpeg'|| item.ext === 'jpg',
+        'pptx-icon': item.ext === 'pptx',
+        'pdf-icon': item.ext === 'pdf',
+        'word-icon': item.ext === 'doc' || item.ext === 'docx',
+        'excel-icon': item.ext === 'xlsx'
+      }" class="mr-2">
+      </div>
+      <!-- {{item.title}} -->
+
+      <span class="list-file--elm__title">
+        {{ item.title | slice: 0: 15 }}
+        <span *ngIf="item.title.length > 15" class="list-file--elm__title--overflow">
+          ...
+        </span>
+      </span>
+
+    </button>
+    <button class="list-file--elm__download" (click)="removeFile(i)"><i class="pi pi-times ovic-mark"></i>
+    </button>
+  </li>
+</ul>
+
+<input id="upload-file" type="file" class="file" accept="image/*" [multiple]="multiple" hidden
+  (change)="onFileSelected($event)">

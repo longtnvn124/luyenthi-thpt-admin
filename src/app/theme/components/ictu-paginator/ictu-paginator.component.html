@@ -1,0 +1,25 @@
+<div class="ictu-paginator ictu-mat-button-custom-size">
+	<button *ngIf="control().showFirstLastIcon()" mat-flat-button class="ictu-paginator__node" [disabled]="isFirstPage() || empty()" [ngClass]="{ 'p-disabled': isFirstPage() || empty() }" (click)="changePageToFirst($event)">
+		<i class="pi pi-angle-double-left"></i>
+	</button>
+	<button (click)="changePageToPrev($event)" [disabled]="isFirstPage() || empty()" [ngClass]="{ 'p-disabled': isFirstPage() || empty() }" class="ictu-paginator__node" mat-flat-button>
+		<i class="pi pi-angle-left"></i>
+	</button>
+	<ng-container *ngIf="elements().length; else emptyNavTemplate">
+		<button *ngFor="let pageNumber of elements(); trackBy:identify" class="ictu-paginator__node" mat-flat-button [disabled]="pageNumber === control().paged()" [ngClass]="{ 'ictu-paginator__node--active' : pageNumber === control().paged() }" (click)="changePage(pageNumber, $event)">
+			<span class="ictu-paginator__label">{{ pageNumber }}</span>
+		</button>
+	</ng-container>
+	<button (click)="changePageToNext($event)" [disabled]="isLastPage() || empty()" [ngClass]="{ 'p-disabled': isLastPage() || empty() }" class="ictu-paginator__node" mat-flat-button>
+		<i class="pi pi-angle-right"></i>
+	</button>
+	<button *ngIf="control().showFirstLastIcon()" mat-flat-button class="ictu-paginator__node" [disabled]="isLastPage() || empty()" [ngClass]="{ 'p-disabled': isLastPage() || empty() }" (click)="changePageToLast($event)">
+		<i class="pi pi-angle-double-right"></i>
+	</button>
+</div>
+
+<ng-template #emptyNavTemplate>
+	<span class="ictu-paginator__node ictu-paginator__node__empty">
+		<i class="pi pi-ellipsis-h"></i>
+	</span>
+</ng-template>

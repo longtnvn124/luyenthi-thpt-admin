@@ -1,0 +1,128 @@
+<div class="question-update-container" [class.ictu-is-loading]="isLoading">
+	<div class="question-update__left">
+		<div class="question-update__left-head">
+			<input pInputText placeholder="Nhập tên ngân hàng đề..." [(ngModel)]="textSearch" (ngModelChange)="onInputChange($event)"/>
+			<button *ngIf="textSearch" pRipple pButton icon="pi pi-times" (click)="btnRemoveTextSearch()" class="p-button-rounded p-button-text p-button-danger btn-times"></button>
+		</div>
+		<div class="question-update__left-content ovic-scroll-style">
+			<ng-container *ngIf="listData.length > 0">
+				<div class="banks-container">
+					<div class="bank-item" *ngFor="let item of listData">
+						<div class="bank-item__head active" (click)="btnSelectBank(item)" *ngIf="item.id !== bank_id_select; else viewchild">
+							<div class="bank-item__head--title">{{ item.name }}</div>
+							<div class="bank-item__head--icon" *ngIf="item['__child'] && item['__child'].length > 0">
+								<i class="pi pi-angle-right"></i>
+							</div>
+						</div>
+						<ng-template #viewchild>
+							<div class="bank-item__head" [ngClass]="item['__child'] && item['__child'].length > 0 ? 'selected' : 'selected'">
+								<div class="bank-item__head--title">{{ item.name }}</div>
+								<div class="bank-item__head--icon" *ngIf="item['__child'] && item['__child'].length > 0">
+									<i class="pi pi-angle-down"></i>
+								</div>
+							</div>
+							<div class="bank-item__content" *ngIf="item['__child'] && item['__child'].length">
+								<div class="bank-item__child-container">
+									<div class="bank-item__child-item" *ngFor="let item2 of item['__child']" (click)="btnChildByItemBank(item2)" [ngClass]="bank_id_select_create_questions === item2['id'] ? 'active' : '' ">
+										<div class="bank-item__child-item-title">
+											{{ item2["name"] }}
+										</div>
+									</div>
+								</div>
+							</div>
+						</ng-template>
+					</div>
+				</div>
+			</ng-container>
+		</div>
+		<div class="question-update__left-footer">
+			<div class="page-layout-set question-footer">
+				<p-paginator [showCurrentPageReport]="false" [rows]="4" [totalRecords]="recordsTotal" [pageLinkSize]="5" (onPageChange)="paginate($event)"></p-paginator>
+			</div>
+		</div>
+	</div>
+	<div class="question-update__right">
+		<ng-container *ngIf="bank_id_select !== 0 && bank_id_select_create_questions !== 0; else notBankSelect">
+			<ng-container [ngSwitch]="stateQuestion">
+				<ng-container *ngSwitchCase="'loading'">
+					<div class="w-100 h-100 d-flex justify-content-center align-items-center flex-column position-relative">
+						<app-loading-progress-bar heading="Đang tải dữ liệu câu hỏi"></app-loading-progress-bar>
+					</div>
+				</ng-container>
+				<ng-container *ngSwitchCase="'present'">
+					<div class="question-update__right-top">
+						<input type="text" pInputText placeholder="Tìm kiếm câu hỏi... " [(ngModel)]="textSearchQuestion" (ngModelChange)="searchNameQuestion($event)"/>
+						<button pButton pRipple icon="pi pi-plus" label="Thêm mới" class="btn-and p-button-success" (click)="btnOpenFormCreateQuestion()"></button>
+						<button pRipple pButton icon="pi pi-trash" disabled class="btn-delete p-button-danger" [ngClass]=""></button>
+					</div>
+					<div class="question-update__right-content ovic-scroll-style">
+						<app-list-questios-view [triggerChange]="triggerChange" [bankQuestions]="bankQuestions" (openEdit)="btnViewEdit($event)" [search]="textSearchQuestion"></app-list-questios-view>
+					</div>
+				</ng-container>
+				<ng-container *ngSwitchCase="'error'">
+					<div class="w-100 h-100 d-flex justify-content-center align-items-center flex-column">
+						<div class="">Đã có lỗi trong quá trình tải xuống dữ liệu</div>
+						<button pButton pRipple class="p-button-text p-button-warning" label="Tải lại" (click)="reLoadQuestion()"></button>
+					</div>
+				</ng-container>
+			</ng-container>
+		</ng-container>
+		<ng-template #notBankSelect>
+			<div class="w-100 h-100 d-flex justify-content-center align-items-center">
+				<div class="not-bank-select">Vui lòng chọn ngân hàng</div>
+			</div>
+		</ng-template>
+	</div>
+</div>
+
+<!--<div class="dashboard-section dashboard-section&#45;&#45;full-size dashboard-section&#45;&#45;schedule position-relative ">--><!--    <div class="dashboard-section__body intro-y position-relative w-100 ">--><!--        <ng-container [ngSwitch]="state">--><!--            <ng-container *ngSwitchCase="'present'">--><!--            </ng-container>--><!--        </ng-container>--><!--    </div>      --><!--</div>-->
+<ng-template #fromUpdateQuestions>
+	<div class="ovic-side-navigation-content child-container">
+		<div class="ovic-side-navigation-content__head">
+			<h4 class="ovic-side-navigation-content__head__title" *ngIf="importQuestion.mode === 'add'; else modeEdit">
+				{{
+					bank_select.name +
+					(bank_select["__child"] && bank_select["__child"].length > 0
+						? " > " + bank_select_create.name
+						: "") +
+					" > Tạo câu hỏi"
+				}} </h4>
+			<ng-template #modeEdit>
+				<h4 class="ovic-side-navigation-content__head__title">
+					{{
+						bank_select.name +
+						(bank_select["__child"] && bank_select["__child"].length > 0
+							? " > " + bank_select_create.name
+							: "") +
+						" > Cập nhật câu hỏi"
+					}} </h4>
+			</ng-template>
+			<button (click)="closeForm()" pButton pRipple icon="pi pi-times" class="p-button-rounded p-button-danger p-button-text close ovic-side-navigation-content__head__btn-close"></button>
+		</div>
+		<div class="ovic-side-navigation-content__body --no-footer">
+			<div class="w-100 h-100 ovic-scroll-style overflow-hidden overflow-y-auto" style="padding: 10px; background: #fbfbfb">
+				<!--                        <app-create-quetions-form></app-create-quetions-form>-->
+
+				<ng-container [ngSwitch]="importQuestion.mode">
+					<app-create-quetions-form *ngSwitchCase="'add'" [typeForm]="importQuestion.mode" [testFormat]="
+              bank_select_create['__mon_converted'] === 'tienganh'
+                ? 'tienganh'
+                : 'monkhac'
+            " [data]="importQuestion.info" (emitCloseForm)="emitCloseNav()"></app-create-quetions-form>
+
+					<app-create-quetions-form *ngSwitchCase="'edit'" [triggerFromParent]="triggerForUpdateQuestion" [typeForm]="importQuestion.mode" [testFormat]="
+              bank_select_create['__mon_converted'] === 'tienganh'
+                ? 'tienganh'
+                : 'monkhac'
+            " [update]="importQuestion.info" (emitCloseForm)="emitCloseNav()"></app-create-quetions-form>
+					<!-- [update]="importQuestion.info" -->
+				</ng-container>
+			</div>
+
+			<!--            <div class="ovic-vertical__inputs ovic-vertical__inputs&#45;&#45;layout-2">-->
+			<!--                -->
+			<!--            </div>-->
+		</div>
+	</div>
+</ng-template>
+

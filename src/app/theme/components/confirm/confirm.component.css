@@ -1,0 +1,35 @@
+.app-confirm-wrap {
+	display: flex;
+	flex-flow: column;
+	padding: 25px;
+	font-family: var(--primary-font), sans-serif;
+}
+
+
+.app-confirm-wrap__heading--title{
+	font-size: 20px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin: 10px 0 15px;
+	text-align: center;
+}
+
+.app-confirm-wrap__heading {
+	font-size: 14px;
+	line-height: 1.2;
+	font-weight: 500;
+	text-align: center;
+	color: #333333;
+	font-family: var(--primary-font), sans-serif;
+	margin: 0;
+}
+
+.app-confirm-wrap__heading + .app-confirm-wrap__body > .app-confirm-wrap__body__message,
+.app-confirm-wrap__heading + .app-confirm-wrap__body > .app-confirm-wrap__body__buttons,
+.app-confirm-wrap__body__message .app-confirm-wrap__body__buttons {
+	margin: 15px 0 0;
+}
+
+.app-confirm-wrap__body__buttons button + button {
+	margin-left: 15px;
+}

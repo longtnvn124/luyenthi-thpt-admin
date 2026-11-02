@@ -1,0 +1,16 @@
+.question-fill-in-blank__text-box {
+    --ck-color-base-background: #fff;
+    --ck-color-base-border: #ccced1;
+    border: 1px solid var(--ck-color-base-border);
+    background-color: var(--ck-color-base-background);
+    padding: 10px;
+    font-family: var(--primary-font), sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    border-radius: 4px;
+    text-align: left;
+    display: block;
+    width: 100%;
+    min-height: 100px;
+    color: #333333;
+}

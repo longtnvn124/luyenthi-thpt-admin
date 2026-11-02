@@ -1,0 +1,29 @@
+<div class="p-6 space-y-4 max-w-3xl mx-auto">
+	<p #editableContent contenteditable="true"
+	   class="border border-gray-300 p-4 rounded min-h-[120px] shadow-sm bg-white">
+		Nhập đoạn văn bản ở đây. Bôi đen rồi nhấn <kbd>Ctrl + R</kbd> để thay bằng input.
+	</p>
+
+	<div class="flex gap-3">
+		<button class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600" (click)="undoLastDelete()">
+			↩️ Hoàn tác xóa input
+		</button>
+
+		<button class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600" (click)="alert(exportText('curly'))">
+			📤 Xuất curly
+		</button>
+
+		<button class="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600" (click)="alert(exportText('brackets'))">
+			📤 Xuất [blank]
+		</button>
+	</div>
+
+	<div>
+		<h4 class="font-semibold">📋 Danh sách các input đã chèn:</h4>
+		<ul class="list-disc list-inside text-sm text-gray-600">
+			<li *ngFor="let item of inputs">
+				Placeholder: <code>{{ item.placeholder }}</code> - ID: {{ item.id }}
+			</li>
+		</ul>
+	</div>
+</div>

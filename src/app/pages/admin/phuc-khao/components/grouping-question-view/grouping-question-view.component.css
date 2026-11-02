@@ -1,0 +1,45 @@
+
+.grouping-question-view .item-data-value{
+    font-weight: 400;
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.5;
+    font-size: 15px;
+    margin: 10px;
+    border: 1px dashed #DBDBDB;
+    padding: 5px 10px;
+}
+
+.grouping-question-view .subquestion{
+    line-height: 1.5;
+
+}
+
+.grouping-question-view .subquestion .value-answer{
+    border: 1px solid #DBDBDB;
+    padding: 5px 10px;
+    font-size: 15px;
+    border-radius: 5px;
+}
+.border-red{
+    border: 1px solid red !important;
+}
+.grouping-question-view .subquestion .value-answer-correct{
+    padding: 5px 10px;
+    font-size: 15px;
+    border-radius: 5px;
+}
+
+.checkmark::before {
+    content: '✓'; /* Dấu tích */
+    color: green; /* Màu xanh */
+    margin-right: 8px; /* Khoảng cách giữa dấu tích và nội dung */
+    font-weight: bold;
+  }
+
+  
+.crossmark::before {
+    content: '✗'; /* Dấu X */
+    color: red; /* Màu đỏ */
+    margin-right: 8px; /* Khoảng cách giữa dấu X và nội dung */
+    font-weight: bold;
+  }

@@ -1,0 +1,247 @@
+<div id="price-mana">
+  <div [class.ictu-is-loading]="isLoading">
+    <div class="layout_component_container intro-x">
+      <div class="scroll-table-layout-set">
+        <div class="content-table-custom">
+          <div class="table-header d-flex justify-content-between p-2">
+            <h3 class="title-left">Danh sách gói dịch vụ</h3>
+            <div
+              class="action-right d-flex align-items-center"
+              style="gap: 10px"
+            >
+              <div class="search-block__elm">
+                <span class="p-input-icon-right">
+                  <i class="pi pi-search"></i>
+                  <input
+                    class="ovic-table-search--head datatable-input"
+                    type="text"
+                    pInputText
+                    placeholder="Nhập tên gói dịch vụ..."
+                    [disabled]="configComponentENV.tableLoading"
+                    (input)="onInputChange($event.target['value'])"
+                  />
+                </span>
+              </div>
+
+              <div>
+                <button
+                  pButton
+                  pRipple
+                  label="Thêm mới"
+                  icon="pi pi-plus"
+                  class="p-button-success"
+                  style="height: 36px"
+                  [disabled]="configComponentENV.tableLoading"
+                  (click)="btnAdd()"
+                ></button>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="!configComponentENV.tableLoading; else tableLoading" class="content-table">
+            <p-table
+              [value]="listData"
+              styleClass="p-datatable-gridlines"
+              [tableStyle]="{ 'min-width': '80rem' }"
+            >
+              <ng-template pTemplate="header">
+                <tr>
+                  <th class="text-center" style="width: 60px">STT</th>
+                  <th>Tên gói</th>
+                  <th class="text-center">Giá tiền</th>
+                  <th style="width: 150px" class="text-center">
+                    Thời gian (tháng)
+                  </th>
+                  <th class="text-center">Đề xuất</th>
+                  <th>Mô tả</th>
+                  <th style="width: 110px" class="text-center">Thao tác</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-item let-i="rowIndex">
+                <tr class="intro-y">
+                  <td
+                    class="text-center"
+                    style="width: 60px"
+                    class="text-center"
+                  >
+                    {{ item["__index_table"] }}
+                  </td>
+                  <td>
+                    <div style="font-weight: 500">
+                      {{ item.name }}
+                    </div>
+                  </td>
+                  <td class="text-center">
+                    {{ item["price_converted"] }}
+                    <!-- <span class="badge-green">
+                      </span> -->
+                  </td>
+                  <td style="width: 150px">
+                    <div class="date text-center">
+                      {{ item.time }}
+                    </div>
+                  </td>
+
+                  <td class="ovic-switch round text-center">
+                    <button
+                      class="ovic-switch-btn"
+                      [class]="item.featured === 1 ? 'on': 'off'"
+                      (click)="changeFeatured(item)"
+                    >
+                      <span class="slider"></span>
+                      <!-- {{ data[col.field[0]] }} -->
+                    </button>
+                  </td>
+
+                  <td>
+                    <div class="desc">
+                      {{ item.des }}
+                    </div>
+                  </td>
+
+                  <td style="width: 110px">
+                    <div class="action d-flex">
+                      <p-button
+                        (onClick)="btnUpdate(item)"
+                        [pTooltip]="'Sửa'"
+                        tooltipPosition="top"
+                        icon="pi pi-pencil"
+                        class="mr-1"
+                        severity="primary"
+                        size="small"
+                      />
+                      <p-button
+                        icon="pi pi-trash"
+                        [pTooltip]="'Xóa'"
+                        (onClick)="btnDelete(item)"
+                        tooltipPosition="top"
+                        severity="danger"
+                        size="small"
+                      />
+                    </div>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+
+          <ng-template #tableLoading>
+            <app-table-loader [tableCol]="7" [tableRow]="5"></app-table-loader>
+          </ng-template>
+        </div>
+      </div>
+
+      <div class="page-layout-set">
+        <p-paginator
+          [rows]="configComponentENV.row"
+          [totalRecords]="configComponentENV.recordsTotal"
+          [pageLinkSize]="5"
+          (onPageChange)="paginate($event)"
+        >
+        </p-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #templateAddAndUpdate>
+  <div class="ovic-side-navigation-content">
+    <div class="ovic-side-navigation-content__head">
+      <h4 class="ovic-side-navigation-content__head__title">
+        {{ configComponentENV.formActive ? configComponentENV.formActive : "" }}
+      </h4>
+      <button
+        (click)="closeForm()"
+        pButton
+        pRipple
+        type="button"
+        icon="pi pi-times"
+        class="p-button-rounded p-button-danger p-button-text close ovic-side-navigation-content__head__btn-close"
+      ></button>
+    </div>
+
+    <div class="ovic-side-navigation-content__body ovic-scroll-style">
+      <div class="ovic-vertical__inputs ovic-vertical__inputs--layout-2">
+        <form [formGroup]="formData" autocomplete="off">
+          <div class="row">
+            <div class="col-12">
+              <p class="form-row">
+                <label>Tên gói<span class="ovic-mark">*</span></label>
+                <input
+                  type="text"
+                  placeholder=" vd: Cơ bản..."
+                  formControlName="name"
+                  autocomplete="off"
+                />
+              </p>
+            </div>
+
+            <div class="col-6">
+              <p class="form-row">
+                <label>Thời gian (tháng)<span class="ovic-mark">*</span></label>
+                <input
+                  type="number"
+                  placeholder=" vd: 3..."
+                  formControlName="time"
+                  autocomplete="off"
+                />
+              </p>
+            </div>
+
+            <div class="col-6">
+              <p class="form-row">
+                <label>Giá<span class="ovic-mark">*</span></label>
+                <input
+                  type="number"
+                  placeholder=" vd: 300000..."
+                  formControlName="price"
+                  autocomplete="off"
+                />
+              </p>
+            </div>
+
+            <div class="col-12">
+              <p class="form-row">
+                <label>Mô tả</label>
+
+                <textarea
+                  formControlName="des"
+                  placeholder="Mô tả..."
+                  autocomplete="off"
+                  id="mota"
+                  cols="30"
+                  rows="2"
+                ></textarea>
+              </p>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="ovic-side-navigation-content__foot">
+      <span class="ovic-side-navigation-content__foot__notice mr-auto"
+        ><mark>(*)</mark> bắt buộc phải nhập</span
+      >
+
+      <button
+        pButton
+        pRipple
+        type="button"
+        [label]="configComponentENV.btn_checkAdd"
+        icon="pi pi-save"
+        class="p-button-success"
+        (click)="saveFormData()"
+      ></button>
+      <button
+        pButton
+        pRipple
+        type="button"
+        label="Đóng"
+        class="p-button-secondary ml-3"
+        icon="pi pi-times"
+        (click)="closeForm()"
+      ></button>
+    </div>
+  </div>
+</ng-template>

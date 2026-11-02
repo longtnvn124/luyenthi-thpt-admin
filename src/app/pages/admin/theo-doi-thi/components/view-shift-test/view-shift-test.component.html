@@ -1,0 +1,83 @@
+
+<div id="view-shift-test">
+    <div
+      class="ovic-side-navigation-content__body ovic-scroll-style pl-1 pr-1 mt-2 view__shift-test"
+    >
+      <div class="short-info mb-2">
+        <div class="avatar-student">
+          <img
+            *ngIf="selectedStudent['blob']"
+            [src]="trustHtml(selectedStudent['blob'])"
+            class="img-thumbnail student-image student-image-lg"
+          />
+          <img
+            *ngIf="!selectedStudent['blob']"
+            [src]="selectedStudent['avatar_temp']"
+            class="img-thumbnail student-image student-image-lg"
+          />
+        </div>
+        <div class="user-info mt-2">
+          <div class="name">
+            {{ selectedStudent['student']['hoten']}}
+          </div>
+          <div class="date mt-1">
+            <b>SBD: </b>  {{selectedStudent['student']['id']}}
+          </div>
+        </div>
+      </div>
+
+      <hr>
+      <div class="detail-shift-test">
+
+      </div>
+
+      <div class="list-image mt-3">
+        <div class="card p-2">
+          <div class="card-header">
+            <div class="tile-list-image">
+              <i style="color: green;" class="fa fa-file-image-o" ></i>
+              <span class="ml-1">Ảnh trước khi vào thi</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="image-befor-exam">
+            
+  
+              <div *ngIf="photo_before_exam" class="mt-1">
+                <p-image [src]="photo_before_exam" alt="Image" width="250" [preview]="true"  [styleClass]="'rounded-image-7'" />
+              </div>
+              <div *ngIf="!photo_before_exam" class="alert alert-light" role="alert">
+                Không có ảnh
+              </div>
+            </div>
+          </div>
+        </div>
+        
+
+        <div class="card p-2">
+          <div class="card-header">
+            <div class="tile-list-image">
+              <i style="color: green;" class="fa fa-file-image-o" ></i>
+              <span class="ml-1">Ảnh trong khi thi</span>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="image-during-exam mt-2">
+              <div *ngIf="photo_during_exam.length > 0" class="content-image">
+                <div *ngFor="let item of photo_during_exam" class="item-image">
+                  <p-image [src]="item" alt="Image" width="100%" [preview]="true"  [styleClass]="'rounded-image-7 w-100'" />
+                </div>
+              </div>
+
+              <div *ngIf="photo_during_exam.length <= 0" class="alert alert-light" role="alert">
+                Không có ảnh
+              </div>
+            </div>
+          </div>
+          
+        </div>
+        
+      </div>
+    </div>
+</div>

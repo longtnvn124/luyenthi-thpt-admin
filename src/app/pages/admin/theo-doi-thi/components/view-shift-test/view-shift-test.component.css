@@ -1,0 +1,58 @@
+
+/* ==================================== templateViewShiftTest=================================== */
+
+
+.student-image {
+    width: 90px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #e9ecef;
+    transition: border-color 0.3s;
+  }
+  
+  .student-image:hover {
+    border-color: #007bff;
+  }
+.view__shift-test{
+    overflow-y: scroll;
+}
+
+.view__shift-test .short-info{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.view__shift-test .short-info .name{
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.view__shift-test .short-info .date{
+    font-size: 0.9rem;
+}
+
+.view__shift-test .short-info .student-image-lg{
+    width: 120px;
+    height: 120px;
+}
+
+.view__shift-test .short-info .user-info{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.view__shift-test .list-image .tile-list-image{
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.view__shift-test .list-image .content-image{
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 5px;
+}

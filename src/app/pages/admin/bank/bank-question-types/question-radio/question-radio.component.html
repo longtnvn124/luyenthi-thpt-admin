@@ -1,0 +1,31 @@
+<div class="question-type-radio" *ngIf="question()">
+	<ul class="question-type-radio__list" *ngIf="question().options">
+		<li class="question-type-radio__list__element" [ngClass]="'question-type-radio__list__element--size-'+question().configs.cols" *ngFor="let option of question().options">
+			<div class="question-type-radio__option" [class.question-type-radio__option--correct]="isValueInAnswerCorrect(option.value)">
+				<ng-container *ngIf="mode === 'edit'">
+					<button (click)="markCorrectAnswer(option)" pButton pRipple [icon]="isValueInAnswerCorrect(option.value) ? 'pi pi-check-circle' : 'pi pi-circle'" class="question-type-radio__option__prefix"></button>
+					<div class="group-radio-question__block__editor">
+						<app-ictu-wrap-editor [initData]="option.label" (resultData)="onChange($event , option)"></app-ictu-wrap-editor>
+					</div>
+					<button (click)="deleteAnswerOption(option)" pButton pRipple icon="pi pi-trash" class="question-type-radio__option__btn-remove p-button-danger p-button-rounded p-button-text p-button-outlined"></button>
+				</ng-container>
+				<ng-container *ngIf="mode === 'preview'">
+					<button pButton pRipple [icon]="(option | isAnswerCorrect : question()) ? 'pi pi-check-circle' : 'pi pi-circle'" class="question-type-radio__option__prefix"></button>
+					<div class="question-type-radio__option__input question-type-radio__option__input--media flex-fill" [appLoadMediaOnText]="option.value" [innerHTML]="option.label | safeHtmlSingle"></div>
+				</ng-container>
+			</div>
+		</li>
+	</ul>
+	<div class="question-type-radio__footer d-flex justify-content-between align-items-center" *ngIf="mode === 'edit'">
+		<p-checkbox [(ngModel)]="question().configs.invertedAnswer" (ngModelChange)="markAsDirty.emit('radio')" [binary]="true" label="Đảo vị trí của phương án trả lời"></p-checkbox>
+		<div class="ovic-vertical__inputs ovic-vertical__inputs--layout-2">
+			<p class="form-row mt-0">
+				<p-dropdown class="input-element ovic-dropdown-style" [filter]="false" [options]="colOptions" [(ngModel)]="question().configs.cols" optionLabel="label" optionValue="value" optionDisabled="disable" placeholder="--Lựa chọn--"></p-dropdown>
+			</p>
+		</div>
+		<button (click)="createNewAnswerOption()" class="typical-question__btn-add">
+			<i class="pi pi-plus-circle"></i>Thêm phương án trả lời
+		</button>
+	</div>
+</div>
+

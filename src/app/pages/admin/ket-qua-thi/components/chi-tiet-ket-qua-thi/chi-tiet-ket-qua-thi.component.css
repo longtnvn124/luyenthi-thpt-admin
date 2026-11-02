@@ -1,0 +1,13 @@
+.content-detail-point{
+    max-height: 80dvh;
+    overflow-y: scroll;
+}
+
+.content-detail-point::-webkit-scrollbar {
+    display: none;
+}
+
+.content-detail-point {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}

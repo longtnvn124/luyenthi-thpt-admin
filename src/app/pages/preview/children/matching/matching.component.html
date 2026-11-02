@@ -1,0 +1,13 @@
+<div #container class="container">
+	<div class="columns">
+		<div class="column">
+			<h3>Câu hỏi</h3>
+			<button [disabled]="point.connected" [class.active]="activePoint && activePoint.id === point.id" *ngFor="let point of leftColumn" (click)="selectPoint(point)" [id]="'left-' + point.id" class="item">{{ point.label }}</button>
+		</div>
+		<div class="column">
+			<h3>Đáp án</h3>
+			<button [disabled]="point.connected" [class.active]="activePoint && activePoint.id === point.id" *ngFor="let point of rightColumn" (click)="selectPoint(point)" [id]="'right-' + point.id" class="item">{{ point.label }}</button>
+		</div>
+	</div>
+	<svg #svg class="svg-connector"></svg>
+</div>

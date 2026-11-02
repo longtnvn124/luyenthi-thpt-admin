@@ -1,0 +1,143 @@
+<ng-scrollbar style="height: calc(var(--max-screen-height) - 88px)" visibility="hover">
+	<app-card [showHeader]="false" cardClass="user-card" [padding]="20">
+		<div class="flex align-items-center">
+			<div class="flex-shrink-0">
+				<img [src]="avatar | safeUrl" alt="user-image" class="user-avatar"/>
+			</div>
+			<div class="flex-grow-1 user-details">
+				<h6>{{ userDisplay }}</h6>
+				<small>{{ roleName }}</small>
+			</div>
+			<div class="user-setting">
+				<a [matMenuTriggerFor]="menu" class="text-muted">
+					<svg class="pc-icon">
+						<use href="assets/fonts/custom-icon.svg#custom-sort-outline"></use>
+					</svg>
+				</a>
+				<mat-menu #menu="matMenu" [overlapTrigger]="false" yPosition="below" xPosition="after">
+					<button mat-menu-item>
+						<a routerLink="/admin/he-thong/thong-tin-tai-khoan" class="text-muted w-100">
+							<i class="ti ti-user f-18 m-r-10"></i> <span class="mat-body">Tài khoản</span> </a>
+					</button>
+					<button mat-menu-item>
+						<a routerLink="/admin/he-thong/thong-tin-tai-khoan" class="text-muted w-100">
+							<i class="ti ti-settings f-18 m-r-10"></i> <span class="mat-body">Cài đặt</span> </a>
+					</button>
+					<button mat-menu-item>
+						<a routerLink="/admin/he-thong/thong-tin-tai-khoan" class="text-muted w-100">
+							<i class="ti ti-lock f-18 m-r-10"></i> <span class="mat-body">Cập nhật mật khẩu</span> </a>
+					</button>
+					<button mat-menu-item (click)="confirmLogout()">
+						<div class="text-muted">
+							<i class="ti ti-power f-18 m-r-10"></i> <span class="mat-body">Đăng xuất</span>
+						</div>
+					</button>
+				</mat-menu>
+			</div>
+		</div>
+	</app-card>
+	<div class="navbar-content">
+		<ul class="nav coded-inner-navbar" (click)="fireOutClick()">
+			<!-- <ng-container *ngFor="let item of menus">
+				<ng-container [ngSwitch]="item.type">
+					<app-menu-group-vertical *ngSwitchCase="'group'" [item]="item"></app-menu-group-vertical>
+					<app-menu-collapse *ngSwitchCase="'collapse'" [item]="item"></app-menu-collapse>
+					<app-menu-item *ngSwitchDefault [item]="item"></app-menu-item>
+				</ng-container>
+			</ng-container> -->
+			<!-- menu 1 -->
+			<ng-container *ngFor="let item of dashboardMenu">
+				<ng-container [ngSwitch]="item.type">
+					<app-menu-group-vertical *ngSwitchCase="'group'" [item]="item"></app-menu-group-vertical>
+					<app-menu-collapse *ngSwitchCase="'collapse'" [item]="item"></app-menu-collapse>
+					<app-menu-item *ngSwitchDefault [item]="item"></app-menu-item>
+				</ng-container>
+			</ng-container>
+
+			<!-- menu 2 -->
+			<div *ngIf="bankMenu.length > 0" class="nav-item coded-menu-caption">Ngân hàng</div>
+			<ng-container *ngFor="let item of bankMenu">
+				<ng-container [ngSwitch]="item.type">
+					<app-menu-group-vertical *ngSwitchCase="'group'" [item]="item"></app-menu-group-vertical>
+					<app-menu-collapse *ngSwitchCase="'collapse'" [item]="item"></app-menu-collapse>
+					<app-menu-item *ngSwitchDefault [item]="item"></app-menu-item>
+				</ng-container>
+			</ng-container>
+
+			<!-- menu 3 -->
+			<div *ngIf="shiftMenu.length > 0" class="nav-item coded-menu-caption">Quản lý thi</div>
+			<ng-container *ngFor="let item of shiftMenu">
+				<ng-container [ngSwitch]="item.type">
+					<app-menu-group-vertical *ngSwitchCase="'group'" [item]="item"></app-menu-group-vertical>
+					<app-menu-collapse *ngSwitchCase="'collapse'" [item]="item"></app-menu-collapse>
+					<app-menu-item *ngSwitchDefault [item]="item"></app-menu-item>
+				</ng-container>
+			</ng-container>
+
+			<!-- menu 4 -->
+			<div *ngIf="paymentMenu.length > 0" class="nav-item coded-menu-caption">Thanh toán</div>
+			<ng-container *ngFor="let item of paymentMenu">
+				<ng-container [ngSwitch]="item.type">
+					<app-menu-group-vertical *ngSwitchCase="'group'" [item]="item"></app-menu-group-vertical>
+					<app-menu-collapse *ngSwitchCase="'collapse'" [item]="item"></app-menu-collapse>
+					<app-menu-item *ngSwitchDefault [item]="item"></app-menu-item>
+				</ng-container>
+			</ng-container>
+
+			<div *ngIf="doitacMenu.length > 0" class="nav-item coded-menu-caption">Đối tác</div>
+			<ng-container *ngFor="let item of doitacMenu">
+				<ng-container [ngSwitch]="item.type">
+					<app-menu-group-vertical *ngSwitchCase="'group'" [item]="item"></app-menu-group-vertical>
+					<app-menu-collapse *ngSwitchCase="'collapse'" [item]="item"></app-menu-collapse>
+					<app-menu-item *ngSwitchDefault [item]="item"></app-menu-item>
+				</ng-container>
+			</ng-container>
+
+			<div *ngIf="teacher.length > 0" class="nav-item coded-menu-caption">Giáo viên</div>
+			<ng-container *ngFor="let item of teacher">
+				<ng-container [ngSwitch]="item.type">
+					<app-menu-group-vertical *ngSwitchCase="'group'" [item]="item"></app-menu-group-vertical>
+					<app-menu-collapse *ngSwitchCase="'collapse'" [item]="item"></app-menu-collapse>
+					<app-menu-item *ngSwitchDefault [item]="item"></app-menu-item>
+				</ng-container>
+			</ng-container>
+
+			<ng-container *ngIf="assignments.length > 0">
+				<div class="nav-item coded-menu-caption">Chấm thi</div>
+				<ng-container *ngFor="let item of assignments">
+					<ng-container [ngSwitch]="item.type">
+						<app-menu-group-vertical *ngSwitchCase="'group'" [item]="item"></app-menu-group-vertical>
+						<app-menu-collapse *ngSwitchCase="'collapse'" [item]="item"></app-menu-collapse>
+						<app-menu-item *ngSwitchDefault [item]="item"></app-menu-item>
+					</ng-container>
+				</ng-container>
+			</ng-container>
+
+			<!-- menu 5 -->
+			<div *ngIf="systemMenu.length > 0" class="nav-item coded-menu-caption">Hệ thống</div>
+			<ng-container *ngFor="let item of systemMenu">
+				<ng-container [ngSwitch]="item.type">
+					<app-menu-group-vertical *ngSwitchCase="'group'" [item]="item"></app-menu-group-vertical>
+					<app-menu-collapse *ngSwitchCase="'collapse'" [item]="item"></app-menu-collapse>
+					<app-menu-item *ngSwitchDefault [item]="item"></app-menu-item>
+				</ng-container>
+			</ng-container>
+		</ul>
+	</div>
+
+	<!-- <app-card [showHeader]="false" cardClass="pro-card m-15 bg-accent-200" [padding]="20">
+		<div class="text-center">
+			<img src="assets/images/application/img-coupon.png" alt="img" class="img-fluid w-50"/>
+			<h5 class="m-b-0 f-16 f-w-600 m-t-5">Able Pro</h5>
+			<p>Checkout pro features</p>
+			<button mat-flat-button class="upgrade-button hei-45">
+				<a href="#" class="flex-inline align-item-center">
+					<svg class="pc-icon m-r-10">
+						<use xlink:href="assets/fonts/custom-icon.svg#custom-logout-1-outline"></use>
+					</svg>
+					Upgrade to Pro
+				</a>
+			</button>
+		</div>
+	</app-card> -->
+</ng-scrollbar>

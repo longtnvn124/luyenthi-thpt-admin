@@ -1,0 +1,26 @@
+@import '../../../styles/theme-palette-colors.scss';
+
+.w-50 {
+    width: 50%;
+}
+
+.vertical-menu-active {
+    color: var(--primary-500) !important;
+}
+
+.coded-inner-navbar:hover li{
+    background-color: aqua;
+}
+
+div.coded-menu-caption {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.5;
+    margin: 0 10px;
+    padding: 24px 10px 8px;
+    position: relative;
+    color: var(--accent-700);
+    font-family: var(--primary-font), sans-serif;
+    text-transform: uppercase;
+
+}

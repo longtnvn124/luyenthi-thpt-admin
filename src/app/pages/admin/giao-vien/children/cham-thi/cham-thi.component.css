@@ -1,0 +1,122 @@
+.giao-vien-cham-thi__contain {
+    --scoring-template-size-height: calc(var(--dashboard-min-height) - var(--dashboard-padding-top-2));
+    min-height: var(--scoring-template-size-height);
+    height: var(--scoring-template-size-height);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.giao-vien-cham-thi {
+    --scoring-template-size-height: calc(var(--dashboard-min-height) - var(--dashboard-padding-top-2));
+    min-height: var(--scoring-template-size-height);
+    height: var(--scoring-template-size-height);
+    display: flex;
+    flex-direction: column;
+}
+
+.giao-vien-cham-thi__head {
+    height: 50px;
+    box-shadow: 0 1px 0 0 #e2e2e2;
+    background-color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    z-index: 10;
+}
+
+.giao-vien-cham-thi__body {
+    flex: 1 1 auto;
+    max-height: calc(var(--scoring-template-size-height) - 50px - 50px);
+    background-color: #fafafc;
+}
+
+.giao-vien-cham-thi__foot {
+    display: block;
+    height: calc(50px + var(--dashboard-padding-top-2));
+    /*padding-bottom: var(--dashboard-padding-top-2);*/
+}
+
+.giao-vien-cham-thi__foot__inner {
+    border-top: 1px solid #e2e2e2;
+    display: flex;
+    height: 100%;
+    width: 100%;
+    background-color: #ffffff;
+    justify-content: center;
+    align-items: center;
+}
+
+.giao-vien-cham-thi__head__tab {
+    padding: 0 10px;
+    font-size: 15px;
+    color: #666666;
+    display: inline-flex;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0;
+    position: relative;
+    outline: none !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.giao-vien-cham-thi__head__tab:hover,
+.--tab-active {
+    color: #e4432d;
+}
+
+.--tab-active::before {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    border-top: 1px solid #e4432d;
+}
+
+.giao-vien-cham-thi__foot__element {
+    margin: 0;
+    position: relative;
+    --font-family: var(--primary-font);
+}
+
+.giao-vien-cham-thi__foot__element label {
+    margin: 0;
+    font-family: var(--primary-font), sans-serif;
+    background-color: #ffffff;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333333;
+    line-height: 1;
+    position: absolute;
+    top: -5px;
+    left: 10px;
+    padding: 0 5px;
+}
+
+.giao-vien-cham-thi__foot__element input {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1;
+    padding: 11px 15px;
+    border-radius: 4px;
+    color: #333333;
+    background-color: #ffffff;
+}
+
+.giao-vien-cham-thi__notice {
+    display: inline-block;
+    padding: 10px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.btn-start {
+    font-size: 14px;
+}

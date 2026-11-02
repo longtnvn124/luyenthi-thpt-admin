@@ -1,0 +1,30 @@
+<div class="grouping-question-view">
+    <div class="grouping-question-view-content">
+        <div class="data-value w-100 d-flex flex-wrap justify-content-center">
+            <div class="item-data-value" *ngFor="let item of questionData.answer_option">
+                {{item.value}}
+            </div>
+        </div>
+        <div class="data-answer mt-2 w-100">
+            <div class="subquestion row mb-2" *ngFor="let item of questionData.subQuestions">
+                <div class="col-4">
+                    {{item.question_direction}} : 
+                </div>
+                <div class="value-answer col-4" [ngClass]="!item.is_correct ? 'border-red' : ''">
+                    <div class="value-answer-content" [ngClass]="getStyleClass(item)">
+                        <span class="" *ngFor="let itemAnswer of item['arrAnswer']">
+                            {{itemAnswer.value}};
+                        </span>
+                    </div>
+                </div>
+                <div class="col-4" *ngIf="!item.is_correct">
+                    <div class="value-answer-correct checkmark">
+                        <span *ngFor="let itemAnswerCorrect of item['arrAnswerCorrect']">
+                            {{itemAnswerCorrect.value}};
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

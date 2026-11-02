@@ -1,0 +1,35 @@
+<div class="course-curriculum-wrap loading--size-standard" [class.ictu-is-loading--circle-black]="loading">
+    <ul class="course-curriculum__list" *ngIf="lessons" [class.--user-is-owner]="isOwner">
+        <ng-container *ngFor="let section of lessons">
+            <li class="course-curriculum__list__elm course-curriculum__list__elm--head">
+                <div class="course-curriculum__lesson">
+                    <b class="course-curriculum__lesson__title course-curriculum__lesson__title--section">{{ section.title }}</b>
+                </div>
+                <ul class="course-curriculum__list--child">
+                    <ng-container *ngFor="let lesson of section.child ">
+                        <li class="course-curriculum__list__elm course-curriculum__list__elm--child">
+                            <div class="course-curriculum__lesson" [class.--lesson-trailer]="lesson.trailer === 1">
+                                <button (click)="openLesson(lesson)" [disabled]="!isOwner && lesson.trailer !== 1" type="button" class="course-curriculum__lesson__title course-curriculum__lesson__title--btn">
+                                    <svg class="pc-icon">
+                                        <use [attr.href]="'assets/fonts/custom-icon.svg#'+( lesson.type === 'TEST' ? 'custom-note-1' : 'circle-play-button')"></use>
+                                    </svg>
+                                    {{ lesson.title }}
+                                </button>
+                                <div class="course-curriculum__lesson__right-info">
+                                    <a href="#" (click)="showPreview($event, lesson)" class="font-roboto f-14 text-muted course-curriculum__lesson__preview-btn" *ngIf="!isOwner && lesson.trailer === 1">Xem trước</a>
+                                    <span class="course-curriculum__lesson__duration" *ngIf="lesson.duration">{{ lesson.duration }}</span>
+                                    <svg class="pc-icon">
+                                        <use [attr.href]="'assets/fonts/custom-icon.svg#'+ (lesson.trailer === 1 || isOwner ? 'pad-unlock' : 'lock-pad')"></use>
+                                    </svg>
+                                </div>
+                            </div>
+                        </li>
+                    </ng-container>
+                </ul>
+            </li>
+        </ng-container>
+    </ul>
+    <div class="ictu-error-overlay" *ngIf="error">
+        <button class="ictu-error-overlay__btn-circle btn" (click)="loadData()"><i class="ti ti-refresh"></i></button>
+    </div>
+</div>

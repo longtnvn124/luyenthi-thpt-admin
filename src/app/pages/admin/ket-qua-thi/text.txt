@@ -1,0 +1,2678 @@
+import { Component, ElementRef, ViewChild } from "@angular/core";
+import { CommonModule, formatDate } from "@angular/common";
+import { User } from "@model/user";
+import {
+  KEY_ANSWER_new,
+  LARGE_MODAL_OPTIONS,
+  NORMAL_MODAL_OPTIONS,
+  pointBank,
+  READ_NUMBER,
+  SKILL_TEST_RESUTL,
+  SKILL_TEST_TOTAL_OBJECT,
+  TITLE_LEFT,
+} from "@utilities/syscats";
+import { TnQLCathi } from "@model/tn-ql-ca-thi";
+import { HelperService } from "@service/core/helper.service";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { TnTestFormService } from "@service/luyenthithpt/tn-test-form.service";
+import { FormBuilder } from "@angular/forms";
+import { AuthService } from "@service/core/auth.service";
+import { TnBank } from "@model/tn-bank";
+import { TnChamThi } from "@model/tn-cham-thi";
+import { TnShiftTest } from "@model/tn-shift-test";
+import { TnShiftTestQuestion } from "@model/tn-shift-test-question";
+import { TnTestForm, TnFormDetail } from "@model/tn-test-form";
+import { FileService } from "@service/core/file.service";
+import { UserService } from "@service/core/user.service";
+import { TnBankService } from "@service/luyenthithpt/tn-bank.service";
+import { TnChamThiService } from "@service/luyenthithpt/tn-cham-thi.service";
+import { TnFormDetailService } from "@service/luyenthithpt/tn-form-detail.service";
+import { TnQLCathiService } from "@service/luyenthithpt/tn-ql-ca-thi.service";
+import { TnShiftTestQuestionService } from "@service/luyenthithpt/tn-shift-test-question.service";
+import { TnShiftTestService } from "@service/luyenthithpt/tn-shift-test.service";
+import { TnStudentService } from "@service/luyenthithpt/tn-student.service";
+import JSZip from "jszip";
+import * as pdfMake from "pdfmake/build/pdfmake";
+import * as pdfFonts from "pdfmake/build/vfs_fonts";
+import * as fs from "file-saver";
+import * as XLSX from "xlsx";
+import { forkJoin, Observable, mergeMap, of } from "rxjs";
+import { DocumentCreator } from "./export-word";
+import { TnStudentResultService } from "@service/luyenthithpt/tn-student-result.service";
+import { ExportPointWritingService } from "@service/luyenthithpt/export-point-writing.service";
+import { TnShiftTestControlService } from "@service/luyenthithpt/tn-shift-test-control.service";
+import { ExportExcelNewService } from "@service/luyenthithpt/export-excel-new.service";
+import { IctuQueryCondition } from "@model/dto";
+import { HttpParamsHeplerService } from "@service/core/http-params-hepler.service";
+import { TnStudentResult } from "@model/tn-student-result";
+import { NotificationService } from "@theme/services/notification.service";
+import { ProgressBarModule } from "primeng/progressbar";
+import { TooltipModule } from "primeng/tooltip";
+import { MatMenuModule } from "@angular/material/menu";
+import { TableModule } from "primeng/table";
+import { ButtonModule } from "primeng/button";
+
+@Component({
+  selector: "app-ket-qua-thi",
+  standalone: true,
+  imports: [
+    CommonModule,
+    ProgressBarModule,
+    TooltipModule,
+    MatMenuModule,
+    TableModule,
+    ButtonModule
+  ],
+  templateUrl: "./ket-qua-thi.component.html",
+  styleUrls: ["./ket-qua-thi.component.css"],
+})
+export class KetQuaThiComponent {
+  @ViewChild("pointTable") pointTable: ElementRef;
+  @ViewChild("templateChooseTeacher") templateChooseTeacher: ElementRef;
+  read_number = READ_NUMBER;
+  dmCathi: TnQLCathi[] = [];
+  dmCathiFull = [];
+  dmShiftTest = [];
+  dmShiftTestFull = [];
+  dmShiftTest_0 = [];
+  dmShiftTest_0Full = [];
+  dmTeacher = [];
+  dmChamthi = [];
+  dmStudentResult = [];
+  dmStudentResultFull = [];
+  selectedCathi: TnQLCathi;
+  formTitle = "Thêm Ca thi mới";
+  isAdmin = false;
+  canAdded = false;
+  canImport = false;
+  canUpdate = false;
+  canDelete = false;
+  isUpdated = false;
+  cathiStatus = 2;
+  donviId: number;
+  userId: number;
+  skillTest = SKILL_TEST_RESUTL;
+  optionSkill: any;
+  point_bank = pointBank;
+  bank_id: number;
+  selectionTest: any;
+  teacherFull = [];
+  teacherTable = [];
+  teacherTabletop = [];
+  violationObject = {};
+  startProgress = false;
+  progressValue = 0;
+  teacherByTeam = [];
+  flagTeam = false;
+  formTeam = "Chọn giáo viên giám khảo";
+  selectedTeam = { teacher_1: null, teacher_2: null };
+  showAllTeam = true;
+  dmTeacherTeam = [];
+  searchString: string;
+  isActionDone = false;
+  isActionAdd = false;
+  keyAnswer = KEY_ANSWER_new;
+  exportExcelArray = [
+    // { id: 1, label: "Export theo cặp" },
+    { id: 2, label: "Export kết quả thi" },
+    // { id: 3, label: "Export Tổng kết số lượng bài chấm" },
+    // { id: 4, label: "Export bài thi" }
+  ];
+
+  SKILLTESTTOTALOBJECT = SKILL_TEST_TOTAL_OBJECT;
+  title_left = TITLE_LEFT;
+  constructor(
+    private helperService: HelperService,
+    private modalService: NgbModal,
+    private tnTestFormService: TnTestFormService,
+    public formBuilder: FormBuilder,
+    private auth: AuthService,
+    private tnQLCathiService: TnQLCathiService,
+    private userService: UserService,
+    private tnShiftTestService: TnShiftTestService,
+    private tnStudentService: TnStudentService,
+    private tnShiftTestQuestionService: TnShiftTestQuestionService,
+    private tnChamThiService: TnChamThiService,
+    private tnFormDetailService: TnFormDetailService,
+    private tnStudentResultService: TnStudentResultService,
+    private tnBankService: TnBankService,
+    private tnShiftTestControlService: TnShiftTestControlService,
+    private fileService: FileService,
+
+    private exportPointWritingService: ExportPointWritingService,
+    private exportExcelNewService: ExportExcelNewService,
+
+    private httpParamsHelper: HttpParamsHeplerService,
+    private notificationService: NotificationService //private donViService : DonViService ,
+  ) {
+  }
+
+  ngOnInit(): void {
+    this.loadCathi(this.cathiStatus.toString());
+  }
+
+  loadCathi(status: string) {
+    this.showAllTeam = true;
+    let condition = this.httpParamsHelper.paramsConditionBuilder([
+      // { conditionName: 'status', condition: IctuQueryCondition.equal, value: status },
+      {
+        conditionName: "status",
+        condition: IctuQueryCondition.notEqual,
+        value: "4",
+        orWhere: "and",
+      },
+      {
+        conditionName: "status",
+        condition: IctuQueryCondition.notEqual,
+        value: "1",
+        orWhere: "and",
+      },
+      {
+        conditionName: "status",
+        condition: IctuQueryCondition.notEqual,
+        value: "0",
+        orWhere: "and",
+      },
+      {
+        conditionName: "status",
+        condition: IctuQueryCondition.notEqual,
+        value: "-1",
+        orWhere: "and",
+      },
+      // { conditionName: 'user_id', condition: IctuQueryCondition.equal, value: this.userId.toString(), orWhere: 'and' }
+    ]);
+    if (Number(status) === 3) {
+      condition = this.httpParamsHelper.paramsConditionBuilder([
+        {
+          conditionName: "status",
+          condition: IctuQueryCondition.equal,
+          value: status,
+        },
+        // { conditionName: 'user_id', condition: IctuQueryCondition.equal, value: this.userId.toString(), orWhere: 'and' }
+      ]);
+    }
+    forkJoin([
+      this.tnQLCathiService.getTnQLCathiByCols(condition),
+      this.userService.getUserByCol("role_ids", "2,6,7"),
+    ]).subscribe(([res, teacher]) => {
+      this.teacherFull = teacher.filter(
+        (m) => m.status !== -1 && m.role_ids.findIndex((i) => i == "1") === -1
+      );
+      this.teacherTabletop = [...this.teacherFull];
+      if (res && res.length !== 0) {
+        this.reset();
+        const tmpCathi = [];
+        res.forEach((m) => {
+          if (m.type_bank === "THI") {
+            /* update */
+            const d = new Date(m.time_start);
+            const dateString = d.toLocaleString("en-GB");
+            m["time_start_format"] = dateString;
+            tmpCathi.push(m);
+          }
+        });
+        this.dmCathiFull = this.helperService.sort(tmpCathi, "id", -1);
+        this.dmCathi = [...this.dmCathiFull];
+      } else {
+        this.reset();
+      }
+    });
+  }
+
+  loadShiftTest(object: TnQLCathi) {
+    const condition = this.httpParamsHelper.paramsConditionBuilder([
+      {
+        conditionName: "form_id",
+        condition: IctuQueryCondition.equal,
+        value: object.form_id.toString(),
+      },
+      // { conditionName: 'skill', condition: IctuQueryCondition.equal, value: skill, orWhere: 'and' }, /* update */
+    ]);
+    const condition_1 = this.httpParamsHelper.paramsConditionBuilder([
+      {
+        conditionName: "shift_id",
+        condition: IctuQueryCondition.equal,
+        value: object.id.toString(),
+      },
+      {
+        conditionName: "student_id",
+        condition: IctuQueryCondition.notEqual,
+        value: "0",
+        orWhere: "and",
+      },
+      {
+        conditionName: "code",
+        condition: IctuQueryCondition.notEqual,
+        value: null,
+        orWhere: "and",
+      },
+    ]);
+
+    const conditionChamthi = this.httpParamsHelper.paramsConditionBuilder([
+      {
+        conditionName: "shift_id",
+        condition: IctuQueryCondition.equal,
+        value: object.id.toString(),
+      },
+      // { conditionName: 'skill', condition: IctuQueryCondition.equal, value: skill, orWhere: 'and' },/* update */
+    ]);
+    forkJoin([
+      this.tnShiftTestService.getTnShiftTestByCols(condition_1),
+      this.tnTestFormService.getTnTestFormByCol("id", object.form_id),
+      this.tnFormDetailService.getTnFormDetailByCols(condition),
+      this.tnChamThiService.getTnChamThiByCols(conditionChamthi),
+    ]).subscribe(
+      ([_resShiftTest, _resTestForm, _resFormDetail, _resChamthi]) => {
+        // fork 0 => shifttest, fork 1 => form, fork 2 => form detail, fork 3 =>chamthi
+        const shiftTestArray = [];
+        const shiftTest_id = [];
+        const student_ids = [];
+        const idTeacher = [];
+        const rawTeacherTeam = {};
+        const newChamthi = [];
+        const objectChamthi = {};
+        this.dmChamthi = _resChamthi;
+        _resChamthi.forEach((f, key) => {
+          if (!objectChamthi[f.shift_test_id]) {
+            objectChamthi[f.shift_test_id] = f;
+          }
+
+          idTeacher.push(f["teacher_id"]);
+          if (!rawTeacherTeam[f.shift_test_id]) {
+            rawTeacherTeam[f.shift_test_id] = {};
+            rawTeacherTeam[f.shift_test_id]["shiftTest"] = [];
+            rawTeacherTeam[f.shift_test_id]["shiftTest"].push(f);
+            if (f["ordering"] === 1) {
+              rawTeacherTeam[f.shift_test_id]["teacher_1"] = f.teacher_id;
+            } else if (f["ordering"] === 2) {
+              rawTeacherTeam[f.shift_test_id]["teacher_2"] = f.teacher_id;
+            }
+          } else {
+            rawTeacherTeam[f.shift_test_id]["shiftTest"].push(f);
+            if (f["ordering"] === 1) {
+              rawTeacherTeam[f.shift_test_id]["teacher_1"] = f.teacher_id;
+            } else if (f["ordering"] === 2) {
+              rawTeacherTeam[f.shift_test_id]["teacher_2"] = f.teacher_id;
+            } else {
+              // if (skill !== 'speaking') {
+              rawTeacherTeam[f.shift_test_id]["teacher_3"] = f.teacher_id;
+              // } else {
+
+              // }
+            }
+          }
+        });
+        _resShiftTest.forEach((f) => {
+          shiftTest_id.push(f.id);
+          student_ids.push(f.student_id);
+          if (rawTeacherTeam[f.id]) {
+            const tmp = { ...rawTeacherTeam[f.id] };
+            const index = newChamthi.findIndex(
+              (m) =>
+                m.teacher_1 &&
+                m.teacher_2 &&
+                m.teacher_1 === tmp["teacher_1"] &&
+                m.teacher_2 === tmp["teacher_2"]
+            );
+            if (index === -1) {
+              tmp["shift_test_ids"] = [f.id];
+              newChamthi.push(tmp);
+            } else {
+              newChamthi[index]["shift_test_ids"].push(f.id);
+              newChamthi[index]["shiftTest"] = newChamthi[index][
+                "shiftTest"
+              ].concat(tmp["shiftTest"]);
+            }
+          }
+        });
+
+        const ids = idTeacher.length === 0 ? [0] : [...new Set(idTeacher)];
+
+        const condition_skill = this.httpParamsHelper
+          .paramsConditionBuilder([
+            // {
+            //     conditionName: 'question_number',
+            //     condition: IctuQueryCondition.notEqual,
+            //     value: null,
+            //     orWhere: 'and'
+            // },
+            // { conditionName: 'skill', condition: IctuQueryCondition.equal, value: skill, orWhere: 'and' },
+            {
+              conditionName: "grading_teacher",
+              condition: IctuQueryCondition.equal,
+              value: "0",
+              orWhere: "and",
+            },
+          ])
+          .set(
+            "select",
+            "id,shift_test_id,result,ordering,group_id,bank_question_id"
+          )
+          .set("include_by", "shift_test_id")
+          .set("include", shiftTest_id.toString());
+        // .set('pluck', 'id,shift_test_id,result,ordering,group_id,bank_question_id')
+        forkJoin([
+          this.tnShiftTestQuestionService.getTnShiftTestQuestionByCols(
+            condition_skill
+          ),
+          this.tnStudentService.getUserByIds(
+            student_ids
+          ),
+          this.userService.getUserByIds(ids),
+        ]).subscribe(([_resShiftTestQuest, _resStudent, _resTeacher]) => {
+          this.dmTeacher = this.helperService.sort(_resTeacher, "id");
+          this.dmTeacherTeam = [...this.dmTeacher];
+          const tmpTBT = {};
+          _resTeacher.forEach((r, key) => {
+            if (!tmpTBT[r.id]) {
+              tmpTBT[r.id] = r;
+            }
+          });
+          newChamthi.forEach((f, key) => {
+            if (f["teacher_1"]) {
+              f[f["teacher_1"]] = tmpTBT[f["teacher_1"]];
+            }
+            if (f["teacher_2"]) {
+              f[f["teacher_2"]] = tmpTBT[f["teacher_2"]];
+            }
+            if (f["teacher_3"]) {
+              f[f["teacher_3"]] = tmpTBT[f["teacher_3"]];
+            }
+          });
+          this.teacherByTeam = newChamthi;
+          _resShiftTest.forEach((f, key) => {
+            f["rawPoint"] = 0;
+            f["computerPoint"] = 0;
+            f["chamthi"] = 0;
+            const shift_test = this.helperService
+              .sort(_resChamthi, "teacher_id")
+              .filter((m) => m.shift_test_id === f.id);
+            const orderingKey = {};
+            shift_test.forEach((s, k) => {
+              if (!orderingKey[s["ordering"]]) {
+                orderingKey[s["ordering"]] = s;
+              }
+              if (s["ordering"] === 1) {
+                f["teacher_1"] = s.teacher_id;
+              } else if (s["ordering"] === 2) {
+                f["teacher_2"] = s.teacher_id;
+              } else {
+                // if (skill !== 'speaking') { /// sửa lỗi hiển thị
+                f["teacher_3"] = s.teacher_id;
+                // } else {
+                //     _resTeacher.forEach((t, tkey) => {
+                //         f['teacher_'.concat((tkey +1).toString())] = s.teacher_id
+                //     })
+                // }
+              }
+              if (s.teacher_id) {
+                f[s.teacher_id] =
+                  s.point || s.point === 0 ? this.financial(s.point) : null;
+              }
+            });
+
+            // if (skill !== 'speaking') {/* update */
+            if (Object.keys(orderingKey).length) {
+              if (
+                orderingKey[1]["point"] !== null &&
+                orderingKey[2]["point"] !== null &&
+                orderingKey[1]["point"] === orderingKey[2]["point"]
+              ) {
+                f["hasSelected"] = orderingKey[1]["teacher_id"];
+                f["chamthi"] = this.financial(orderingKey[1]["point"]);
+                if (!orderingKey[1]["selected_point"]) {
+                  setTimeout(() => {
+                    this.updateSelectedPoint(orderingKey[1]["id"]);
+                  }, 30 * key);
+                }
+              } else if (
+                !orderingKey[3] &&
+                orderingKey[1]["point"] !== null &&
+                orderingKey[2]["point"] !== null &&
+                orderingKey[1]["point"] !== orderingKey[2]["point"]
+              ) {
+                f["noPoint"] = true;
+              } else if (
+                orderingKey[1]["point"] === null ||
+                orderingKey[2]["point"] === null
+              ) {
+                f["noPoint"] = true;
+                f["notYet"] = true;
+              } else if (
+                orderingKey[3] &&
+                orderingKey[1]["point"] !== null &&
+                orderingKey[2]["point"] !== null &&
+                orderingKey[1]["point"] !== orderingKey[2]["point"]
+              ) {
+                if (orderingKey[3]["point"] === null) {
+                  f["noPoint"] = true;
+                } else {
+                  let lP =
+                    (orderingKey[1]["point"] +
+                      orderingKey[2]["point"] +
+                      orderingKey[3]["point"]) /
+                    3;
+                  if (orderingKey[1]["point"] === orderingKey[3]["point"]) {
+                    lP = orderingKey[1]["point"];
+                    f["hasSelected"] = orderingKey[1]["teacher_id"];
+                    if (!orderingKey[1]["selected_point"]) {
+                      setTimeout(() => {
+                        this.updateSelectedPoint(orderingKey[1]["id"]);
+                      }, 30 * key);
+                    }
+                  } else if (
+                    orderingKey[2]["point"] === orderingKey[3]["point"]
+                  ) {
+                    lP = orderingKey[2]["point"];
+                    f["hasSelected"] = orderingKey[2]["teacher_id"];
+                    if (!orderingKey[2]["selected_point"]) {
+                      setTimeout(() => {
+                        this.updateSelectedPoint(orderingKey[2]["id"]);
+                      }, 30 * key);
+                    }
+                  }
+                  f["chamthi"] = this.financial(lP);
+                }
+              }
+            } else {
+              f["notSetChamthi"] = true;
+            }
+            // } else {/* update */
+            //     // this.dmTeacherTeam = [];
+            //     if (orderingKey[3] && orderingKey[3]['point'] !== null) {
+            //         f['hasSelected'] = orderingKey[3]['teacher_id'];
+            //         f['chamthi'] = this.financial(orderingKey[3]['point']);
+            //         if (!orderingKey[3]['selected_point']) {
+            //             setTimeout(() => {
+            //                 this.updateSelectedPoint(orderingKey[3]['id']);
+            //             }, 30 * key);
+            //         }
+            //         if (!this.dmTeacherTeam.length)
+            //             this.dmTeacherTeam = [...this.dmTeacher].filter(m => m.id === orderingKey[3]['teacher_id']);
+            //     } else if (orderingKey[3] && orderingKey[3]['point'] === null) {
+            //         f['noPoint'] = true;
+            //         if (!this.dmTeacherTeam.length)
+            //             this.dmTeacherTeam = [...this.dmTeacher].filter(m => m.id === orderingKey[3]['teacher_id']);;
+            //     } else {
+            //         f['noPoint'] = true;
+            //     }
+            // }
+            if (_resTestForm[0] && f["status"] !== 0) {
+              _resFormDetail.forEach((fdt, fdtKey) => {
+                const eachPartTrue = _resShiftTestQuest.filter(
+                  (m) =>
+                    m.shift_test_id === f.id &&
+                    m.group_id !== 0 &&
+                    m["ordering"] === fdt.ordering &&
+                    m.result === 1
+                );
+                const questionNum = _resShiftTestQuest.filter(
+                  (m) =>
+                    m.shift_test_id === f.id &&
+                    m.group_id !== 0 &&
+                    m["ordering"] === fdt.ordering
+                );
+                if (questionNum.length) {
+                  f["rawPoint"] += eachPartTrue.length;
+                  f["computerPoint"] +=
+                    (fdt.last_point / questionNum.length) * eachPartTrue.length;
+                }
+
+                /* update */
+                // const eachPartTrue = _resShiftTestQuest.filter(m => m.shift_test_id === f.id && m.group_id !== 0 && m['ordering'] === fdt.ordering && m.result === 1);
+                // const questionNum = _resShiftTestQuest.filter(m => m.shift_test_id === f.id && m.group_id !== 0 && m['ordering'] === fdt.ordering);
+                // if (questionNum.length) {
+                //     f['rawPoint'] += eachPartTrue.length;
+                //     f['computerPoint'] += fdt.last_point / questionNum.length * eachPartTrue.length;
+                // }
+              });
+              f["computerPoint"] = this.financial(f["computerPoint"]);
+              f["totalPoint"] = this.financial(
+                Number(f["computerPoint"]) + Number(f["chamthi"])
+              );
+            } else {
+              if (!f["chamthi"]) {
+                f["computerPoint"] = "Bỏ thi";
+                f["totalPoint"] = "Bỏ thi";
+                f["bothi"] = true;
+              } else {
+                f["totalPoint"] = this.financial(Number(f["chamthi"]));
+              }
+            }
+            const index = _resStudent.findIndex((m) => m.id === f.student_id);
+            if (index !== -1) {
+              f["display_name"] = _resStudent[index]["hoten"];
+              f["name"] = _resStudent[index]["ten"];
+              f["gender"] = _resStudent[index]["gioitinh"];
+              f["student_code"] = _resStudent[index]["student_code"];
+              f["phongthi"] = f["room"];
+              f["newCode"] = Number(f["code"].replace(/\D/g, ""));
+              const d = new Date(_resStudent[index]["ngaysinh"]);
+              const dateString = d.toLocaleString("en-GB");
+              f["ngaysinh"] = dateString.slice(0, dateString.length - 10);
+            }
+            shiftTestArray.push({ ...f });
+          });
+          this.dmShiftTestFull = [...shiftTestArray];
+          this.dmShiftTest = this.helperService.sort(shiftTestArray, "newCode");
+        });
+      },
+      (er) => console.log(er)
+    );
+  }
+
+  loadChamthi(object: TnQLCathi, skill: string) {
+    this.showAllTeam = true;
+    const condition = this.httpParamsHelper.paramsConditionBuilder([
+      {
+        conditionName: "shift_id",
+        condition: IctuQueryCondition.equal,
+        value: object.id.toString(),
+      },
+      {
+        conditionName: "skill",
+        condition: IctuQueryCondition.equal,
+        value: skill,
+        orWhere: "and",
+      },
+    ]);
+    forkJoin([
+      this.tnChamThiService.getTnChamThiByCols(condition),
+      this.tnShiftTestService.getTnShiftTestByCol("shift_id", object.id),
+    ]).subscribe((forkRes) => {
+      const idStudent = [];
+      const idTeacher = [];
+      const newData = [];
+      this.dmChamthi = forkRes[0];
+      const shiftTest_id = [];
+      const rawTeacherTeam = {};
+      const newChamthi = [];
+      forkRes[0].forEach((f, key) => {
+        idTeacher.push(f["teacher_id"]);
+        if (!rawTeacherTeam[f.shift_test_id]) {
+          rawTeacherTeam[f.shift_test_id] = {};
+          rawTeacherTeam[f.shift_test_id]["shiftTest"] = [];
+          rawTeacherTeam[f.shift_test_id]["shiftTest"].push(f);
+          if (f["ordering"] === 1) {
+            rawTeacherTeam[f.shift_test_id]["teacher_1"] = f.teacher_id;
+          } else if (f["ordering"] === 2) {
+            rawTeacherTeam[f.shift_test_id]["teacher_2"] = f.teacher_id;
+          }
+        } else {
+          rawTeacherTeam[f.shift_test_id]["shiftTest"].push(f);
+          if (f["ordering"] === 1) {
+            rawTeacherTeam[f.shift_test_id]["teacher_1"] = f.teacher_id;
+          } else if (f["ordering"] === 2) {
+            rawTeacherTeam[f.shift_test_id]["teacher_2"] = f.teacher_id;
+          } else {
+            rawTeacherTeam[f.shift_test_id]["teacher_3"] = f.teacher_id;
+          }
+        }
+      });
+      forkRes[1].forEach((f, key) => {
+        idStudent.push(f["student_id"]);
+        shiftTest_id.push(f.id);
+        if (rawTeacherTeam[f.id]) {
+          const tmp = { ...rawTeacherTeam[f.id] };
+          const index = newChamthi.findIndex(
+            (m) =>
+              m.teacher_1 &&
+              m.teacher_2 &&
+              m.teacher_1 === tmp["teacher_1"] &&
+              m.teacher_2 === tmp["teacher_2"]
+          );
+          if (index === -1) {
+            tmp["shift_test_ids"] = [f.id];
+            newChamthi.push(tmp);
+          } else {
+            newChamthi[index]["shift_test_ids"].push(f.id);
+            newChamthi[index]["shiftTest"] = newChamthi[index][
+              "shiftTest"
+            ].concat(tmp["shiftTest"]);
+          }
+        }
+      });
+      const ids = idTeacher.length === 0 ? [0] : [...new Set(idTeacher)];
+      const forkRes_1 = forkRes[1].filter((m) => m.id && m["student_id"]);
+      const forkRes_0 = this.helperService.sort(forkRes[0], "teacher_id");
+      const condition_skill = this.httpParamsHelper
+        .paramsConditionBuilder([
+          {
+            conditionName: "question_number",
+            condition: IctuQueryCondition.notEqual,
+            value: null,
+            orWhere: "and",
+          },
+          {
+            conditionName: "result",
+            condition: IctuQueryCondition.equal,
+            value: "1",
+            orWhere: "and",
+          },
+          {
+            conditionName: "skill",
+            condition: IctuQueryCondition.equal,
+            value: skill,
+            orWhere: "and",
+          },
+          {
+            conditionName: "part",
+            condition: IctuQueryCondition.notEqual,
+            value: "80",
+            orWhere: "and",
+          },
+          {
+            conditionName: "part",
+            condition: IctuQueryCondition.notEqual,
+            value: "90",
+            orWhere: "and",
+          },
+        ])
+        .set("pluck", "id,shift_test_id")
+        .set("include_by", "shift_test_id")
+        .set("include", shiftTest_id.toString());
+      forkJoin([
+        this.tnStudentService.getTnStudentByItem(idStudent.toString(), "id"),
+        this.userService.getUserByItem(ids.toString(), "id"),
+        this.tnShiftTestQuestionService.getTnShiftTestQuestionByCols(
+          condition_skill
+        ),
+      ]).subscribe((result) => {
+        this.dmTeacher = this.helperService.sort(result[1], "id");
+        this.dmTeacherTeam = [...this.dmTeacher];
+        const tmpTBT = {};
+        result[1].forEach((r, key) => {
+          if (!tmpTBT[r.id]) {
+            tmpTBT[r.id] = r;
+          }
+        });
+        newChamthi.forEach((f, key) => {
+          if (f["teacher_1"]) {
+            f[f["teacher_1"]] = tmpTBT[f["teacher_1"]];
+          }
+          if (f["teacher_2"]) {
+            f[f["teacher_2"]] = tmpTBT[f["teacher_2"]];
+          }
+          if (f["teacher_3"]) {
+            f[f["teacher_3"]] = tmpTBT[f["teacher_3"]];
+          }
+        });
+        this.teacherByTeam = newChamthi;
+        let objectSkill = {};
+        if (skill === "writing" && result[2].length !== 0) {
+          result[2].forEach((f, key) => {
+            if (!objectSkill[f.shift_test_id]) {
+              objectSkill[f.shift_test_id] = 1;
+            } else {
+              objectSkill[f.shift_test_id] += 1;
+            }
+          });
+        }
+
+        forkRes_1.forEach((f, key) => {
+          const item = {
+            phongthi: null,
+            display_name: null,
+            name: null,
+            gender: null,
+            ngaysinh: null,
+            code: null,
+            bothi: false,
+            newCode: null,
+            student_code: null,
+          };
+          const shift_test = forkRes_0.filter((m) => m.shift_test_id === f.id);
+          const index__ = result[0].findIndex((m) => m.id === f.student_id);
+          item["computerPoint"] = objectSkill[f.id] ? objectSkill[f.id] : 0;
+          if (index__ !== -1) {
+            item.display_name = result[0][index__]["hoten"];
+            item.name = result[0][index__]["ten"];
+            item.gender = result[0][index__]["gioitinh"];
+            item.code = f["code"];
+            item.newCode = Number(f["code"].replace(/\D/g, ""));
+            item.phongthi = f["room"];
+            item["shift_test_id"] = f.id;
+            item.student_code = result[0][index__]["student_code"];
+            const d = new Date(result[0][index__]["ngaysinh"]);
+            const dateString = d.toLocaleString("en-GB");
+            item.ngaysinh = dateString.slice(0, dateString.length - 10);
+          }
+          if (shift_test && shift_test.length && f["status"] !== 0) {
+            let last_point = 0;
+            let flag = true;
+            let hasSelected = false;
+            if (shift_test.length !== 0) {
+              last_point = shift_test[0].point + item["computerPoint"];
+            }
+            const orderingKey = {};
+            shift_test.forEach((s, k) => {
+              if (!orderingKey[s["ordering"]]) {
+                orderingKey[s["ordering"]] = s;
+              }
+              if (s["ordering"] === 1) {
+                item["teacher_1"] = s.teacher_id;
+              } else if (s["ordering"] === 2) {
+                item["teacher_2"] = s.teacher_id;
+              } else {
+                item["teacher_3"] = s.teacher_id;
+              }
+              if (s.teacher_id) {
+                item[s.teacher_id] =
+                  s.point || s.point === 0 ? this.financial(s.point) : null;
+              }
+            });
+            if (skill === "writing") {
+              if (
+                orderingKey[1]["point"] !== null &&
+                orderingKey[2]["point"] !== null &&
+                orderingKey[1]["point"] === orderingKey[2]["point"]
+              ) {
+                item["hasSelected"] = orderingKey[1]["teacher_id"];
+                item["lastPoint"] = this.financial(orderingKey[1]["point"]);
+                if (!orderingKey[1]["selected_point"]) {
+                  setTimeout(() => {
+                    this.updateSelectedPoint(orderingKey[1]["id"]);
+                  }, 30 * key);
+                }
+              } else if (
+                !orderingKey[3] &&
+                orderingKey[1]["point"] !== null &&
+                orderingKey[2]["point"] !== null &&
+                orderingKey[1]["point"] !== orderingKey[2]["point"]
+              ) {
+                item["noPoint"] = true;
+              } else if (
+                orderingKey[1]["point"] === null ||
+                orderingKey[2]["point"] === null
+              ) {
+                item["noPoint"] = true;
+                item["notYet"] = true;
+              } else if (
+                orderingKey[3] &&
+                orderingKey[1]["point"] !== null &&
+                orderingKey[2]["point"] !== null &&
+                orderingKey[1]["point"] !== orderingKey[2]["point"]
+              ) {
+                if (orderingKey[3]["point"] === null) {
+                  item["noPoint"] = true;
+                } else {
+                  let lP =
+                    (orderingKey[1]["point"] +
+                      orderingKey[2]["point"] +
+                      orderingKey[3]["point"]) /
+                    3;
+                  if (orderingKey[1]["point"] === orderingKey[3]["point"]) {
+                    lP = orderingKey[1]["point"];
+                    item["hasSelected"] = orderingKey[1]["teacher_id"];
+                    if (!orderingKey[1]["selected_point"]) {
+                      setTimeout(() => {
+                        this.updateSelectedPoint(orderingKey[1]["id"]);
+                      }, 30 * key);
+                    }
+                  } else if (
+                    orderingKey[2]["point"] === orderingKey[3]["point"]
+                  ) {
+                    lP = orderingKey[2]["point"];
+                    item["hasSelected"] = orderingKey[2]["teacher_id"];
+                    if (!orderingKey[2]["selected_point"]) {
+                      setTimeout(() => {
+                        this.updateSelectedPoint(orderingKey[2]["id"]);
+                      }, 30 * key);
+                    }
+                  }
+                  item["lastPoint"] = this.financial(lP);
+                }
+              }
+            } else {
+              this.dmTeacherTeam = [];
+              if (orderingKey[3] && orderingKey[3]["point"] !== null) {
+                item["hasSelected"] = orderingKey[3]["teacher_id"];
+                item["lastPoint"] = this.financial(orderingKey[3]["point"]);
+                if (!orderingKey[3]["selected_point"]) {
+                  setTimeout(() => {
+                    this.updateSelectedPoint(orderingKey[3]["id"]);
+                  }, 30 * key);
+                }
+                if (!this.dmTeacherTeam.length)
+                  this.dmTeacherTeam = [...this.dmTeacher].filter(
+                    (m) => m.id === orderingKey[3]["teacher_id"]
+                  );
+              } else if (orderingKey[3] && orderingKey[3]["point"] === null) {
+                item["noPoint"] = true;
+                if (!this.dmTeacherTeam.length)
+                  this.dmTeacherTeam = [...this.dmTeacher].filter(
+                    (m) => m.id === orderingKey[3]["teacher_id"]
+                  );
+              } else {
+                item["noPoint"] = true;
+              }
+            }
+            item["mainPoint"] = this.financial(
+              Number(item["lastPoint"]) + Number(item["computerPoint"])
+            );
+          } else {
+            item["bothi"] = true;
+            item["lastPoint"] = "Bỏ thi";
+            item["mainPoint"] = "Bỏ thi";
+          }
+          newData.push(item);
+        });
+        this.dmShiftTest_0Full = [...newData];
+        this.dmShiftTest_0 = this.helperService.sort(newData, "newCode");
+      });
+    });
+  }
+
+  updateSelectedPoint(id: number) {
+    this.tnChamThiService.updateTnChamThi(id, { selected_point: 1 }).subscribe(
+      () => null,
+      (er) => {
+        console.log(er);
+      }
+    );
+  }
+
+  checkStudent(
+    shiftTest: TnShiftTest[],
+    form: TnTestForm,
+    formDetail: TnFormDetail[],
+    chamThi: TnChamThi[]
+  ): Observable<TnStudentResult[]> {
+    const shiftTestIds = [];
+    shiftTest.forEach((f) => {
+      if (f.student_id && f.code) {
+        shiftTestIds.push(f["id"]);
+      }
+    });
+    if (shiftTestIds.length) {
+      return this.tnStudentResultService
+        .getTTnStudentResultByShiftTest_ids(shiftTestIds)
+        .pipe(
+          mergeMap((student) =>
+            this.xuLyBaiThi(student, shiftTest, form, formDetail, chamThi)
+          )
+        );
+    } else {
+      return of(null);
+    }
+  }
+
+  xuLyBaiThi(
+    student: TnStudentResult[],
+    shiftTest: TnShiftTest[],
+    form: TnTestForm,
+    formDetail: TnFormDetail[],
+    chamThi: TnChamThi[]
+  ): Observable<TnStudentResult[]> {
+    console.log(student);
+    
+    const shiftTestIds = [];
+    shiftTest.forEach((f) => {
+      const index = student.findIndex((m) => m.shift_test_id === f.id);
+      if (index === -1 && f.student_id && f.code) {
+        shiftTestIds.push(f.id);
+      }
+    });
+    const condition = this.httpParamsHelper
+      .paramsConditionBuilder([
+        {
+          conditionName: "grading_teacher",
+          condition: IctuQueryCondition.equal,
+          value: "0",
+          orWhere: "and",
+        },
+      ])
+      .set("select", "id,result,skill,shift_test_id,part,ordering,group_id")
+      .set("include_by", "shift_test_id")
+      .set("include", shiftTestIds.toString());
+
+    return this.tnShiftTestQuestionService
+      .getTnShiftTestQuestionByCols(condition)
+      .pipe(
+        mergeMap((questions) =>
+          this.chamThi(questions, shiftTest, form, formDetail, chamThi)
+        )
+      );
+  }
+
+  chamThi(
+    questions: TnShiftTestQuestion[],
+    shiftTest: TnShiftTest[],
+    form: TnTestForm,
+    formDetail: TnFormDetail[],
+    chamThi: TnChamThi[]
+  ): Observable<TnStudentResult[]> {
+    const results: TnStudentResult[] = [];
+    const objectChamthi = {};
+    chamThi.forEach((f, key) => {
+      if (!objectChamthi[f.shift_test_id.toString().concat(f.skill)]) {
+        objectChamthi[f.shift_test_id.toString().concat(f.skill)] = f;
+      }
+    });
+    if (shiftTest.length) {
+      shiftTest.forEach((f) => {
+        const item = {
+          student_id: f["student_id"],
+          shift_test_id: f["id"],
+          reading_point: null,
+          listening_point: null,
+          writing_point: null,
+          speaking_point: null,
+          total_point: null,
+        };
+        // let chamthiPoint = objectChamthi[f.id.toString().concat('speaking')] ? objectChamthi[f.id.toString().concat('speaking')]['point'] : 0;
+        if (f["status"] !== 0) {
+          let _reading = false;
+          let _listening = false;
+          let _writing = false;
+          // chamthiPoint = objectChamthi[f.id.toString().concat(st.value)] ? objectChamthi[f.id.toString().concat(st.value)]['point'] : 0;
+          let computerPoint = 0;
+          if (form && f["status"] !== 0) {
+            formDetail.forEach((fdt, fdtKey) => {
+              const eachPartTrue = questions.filter(
+                (m) =>
+                  m.shift_test_id === f.id &&
+                  m.group_id !== 0 &&
+                  m["ordering"] === fdt.ordering &&
+                  m.result === 1
+              );
+              const questionNum = questions.filter(
+                (m) =>
+                  m.shift_test_id === f.id &&
+                  m.group_id !== 0 &&
+                  m["ordering"] === fdt.ordering
+              );
+              if (questionNum.length) {
+                computerPoint +=
+                  (fdt.last_point / questionNum.length) * eachPartTrue.length;
+              }
+            });
+          }
+
+          item.total_point = this.financial(computerPoint);
+          // if (!_reading) delete item.reading_point;
+          // if (!_listening) delete item.listening_point;
+          // // if (!_speaking) delete item.speaking_point;
+          // if (!_writing) delete item.writing_point;
+          results.push(item);
+        } else {
+          // if (chamthiPoint) {
+          //     item.speaking_point = this.financial(chamthiPoint);
+          //     results.push(item);
+          // }
+          // item[ 'reading_point' ]   = 0;
+          // item[ 'listening_point' ] = 0;
+          // item[ 'speaking_point' ]  = 0;
+          // item[ 'writing_point' ]   = 0;
+        }
+      });
+    }
+    return of(results);
+  }
+
+  loadFull(object) {
+    const condition = this.httpParamsHelper.paramsConditionBuilder([
+      {
+        conditionName: "form_id",
+        condition: IctuQueryCondition.equal,
+        value: object.form_id.toString(),
+      },
+    ]);
+    const condition_0 = this.httpParamsHelper.paramsConditionBuilder([
+      {
+        conditionName: "shift_id",
+        condition: IctuQueryCondition.equal,
+        value: object.id.toString(),
+      },
+    ]);
+
+    const condition_1 = this.httpParamsHelper.paramsConditionBuilder([
+      {
+        conditionName: "shift_id",
+        condition: IctuQueryCondition.equal,
+        value: object.id.toString(),
+      },
+      {
+        conditionName: "student_id",
+        condition: IctuQueryCondition.notEqual,
+        value: "0",
+        orWhere: "and",
+      },
+      // { conditionName: 'code', condition: IctuQueryCondition.notEqual, value: null, orWhere: 'and' },
+      // { conditionName: 'status', condition: IctuQueryCondition.notEqual, value: '0', orWhere: 'and' },
+    ]);
+
+    forkJoin([
+      this.tnShiftTestService.getTnShiftTestByCols(condition_1),
+      this.tnTestFormService.getTnTestFormByCol("id", object.form_id),
+      this.tnFormDetailService.getTnFormDetailByCols(condition),
+      this.tnChamThiService.getTnChamThiByCols(condition_0),
+    ])
+      .pipe(
+        mergeMap(([shiftTest, form, formDetail, chamThi]) =>
+          this.checkStudent(shiftTest, form[0], formDetail, chamThi)
+        )
+      )
+      .subscribe((result) => {
+        if (result) {
+          let i = 0;
+          this.startProgress = true;
+          this.progressValue = 0;
+
+          result.forEach((f, key) => {
+            setTimeout(() => {
+              const currentDate = formatDate(
+                new Date(),
+                "yyyy-MM-ddTHH:mm:ss",
+                "en-US"
+              );
+              const formData = {
+                ...f,
+                created_at: currentDate,
+              };
+
+              this.tnStudentResultService
+                .addTnStudentResult(formData)
+                .subscribe(() => {
+                  i = i + 1;
+                  this.progressValue = (i / result.length) * 100;
+                  if (i === result.length) {
+                    this.startProgress = false;
+                    this.progressValue = 0;
+                    this.notificationService.toastSuccess(
+                      "Đã cập nhât ca thi thành công"
+                    );
+                    this.tnQLCathiService
+                      .updateTnQLCathi(object.id, {
+                        status: 3,
+                        user_id: this.userId,
+                      })
+                      .subscribe(() => {
+                        this.loadCathi("2");
+                      });
+                    this.isActionDone = false;
+                  }
+                });
+            }, 50 * key);
+          });
+        } else {
+          this.notificationService.toastError("Thao tác thất bại");
+          // this.tnQLCathiService.updateTnQLCathi(object.id, { status: 3 }).subscribe(() => {
+          //     this.loadCathi('2');
+          // });
+          this.isActionDone = false;
+        }
+      });
+  }
+
+  loadStudentResult(object) {
+    const condition = this.httpParamsHelper.paramsConditionBuilder([
+      {
+        conditionName: "shift_id",
+        condition: IctuQueryCondition.equal,
+        value: object.id.toString(),
+      },
+      {
+        conditionName: "code",
+        condition: IctuQueryCondition.notEqual,
+        value: null,
+        orWhere: "and",
+      },
+      {
+        conditionName: "room",
+        condition: IctuQueryCondition.notEqual,
+        value: null,
+        orWhere: "and",
+      },
+    ]);
+    this.tnShiftTestService.getTnShiftTestByCols(condition).subscribe((res) => {
+      if (res && res.length !== 0) {
+        const student_ids = [];
+        const shiftTest_ids = [];
+        res.forEach((f, key) => {
+          student_ids.push(f["student_id"]);
+          shiftTest_ids.push(f["id"]);
+        });
+        const condition_control = this.httpParamsHelper
+          .paramsConditionBuilder([
+            {
+              conditionName: "name",
+              condition: IctuQueryCondition.equal,
+              value: "violation",
+            },
+          ])
+          .set("include_by", "shift_test_id")
+          .set("include", shiftTest_ids.toString());
+        forkJoin([
+          this.tnStudentService.getUserByIds(
+            student_ids
+          ),
+          this.tnStudentResultService.getTTnStudentResultByShiftTest_ids(
+            shiftTest_ids
+          ),
+          this.tnTestFormService.getTnTestFormByCol(
+            "id",
+            this.selectedCathi.form_id
+          ),
+          this.tnShiftTestControlService.getTnShiftTestControlByCols(
+            condition_control
+          ),
+        ]).subscribe((forkRes) => {
+          const array = [];
+          const violation = {};
+          if (forkRes[3] && forkRes[3].length !== 0) {
+            forkRes[3].forEach((f, key) => {
+              if (!violation[f.shift_test_id]) violation[f.shift_test_id] = {};
+              if (!violation[f.shift_test_id][f.skill])
+                violation[f.shift_test_id][f.skill] = {};
+              violation[f.shift_test_id][f.skill]["value"] = f.value;
+              violation[f.shift_test_id][f.skill]["note"] =
+                "Ghi chú: " + f.note;
+              violation[f.shift_test_id][f.skill]["title"] = f.object;
+            });
+            this.violationObject = violation;
+          }
+          if (forkRes[1] && forkRes[1].length !== 0) {
+            res.forEach((s, key) => {
+              const index = forkRes[0].findIndex(
+                (m) => m["id"] === s["student_id"]
+              );
+              const item = {
+                code: null,
+                Hoten: null,
+                name: null,
+                Gioitinh: null,
+                ngaysinh: null,
+                phongthi: null,
+                listening: null,
+                reading: null,
+                speaking: null,
+                writing: null,
+                shift_test_id: null,
+                total: null,
+                bothi: false,
+                ketqua: null,
+                dat: false,
+                id: null,
+                newCode: null,
+              };
+              if (index !== -1) {
+                item["Hoten"] = forkRes[0][index]["hoten"];
+                item["name"] = forkRes[0][index]["ten"];
+                item["Gioitinh"] = forkRes[0][index]["gioitinh"];
+                item["code"] = s["code"];
+                item["phongthi"] = s["room"];
+                item["shift_test_id"] = s["id"];
+                item["student_code"] = forkRes[0][index]["student_code"];
+                item.newCode = Number(s["code"].replace(/\D/g, ""));
+                const d = new Date(forkRes[0][index]["ngaysinh"]);
+                const dateString = d.toLocaleString("en-GB");
+                item["ngaysinh"] = dateString.slice(0, dateString.length - 10);
+                console.log(forkRes[1]);
+                
+                const _index = forkRes[1].findIndex(
+                  (m) =>
+                    m["student_id"] === s["student_id"] &&
+                    m["shift_test_id"] === s.id
+                );
+                if (_index !== -1) {
+                  // item['listening'] = this.financial(forkRes[1][_index].listening_point);
+                  // item['reading'] = this.financial(forkRes[1][_index].reading_point);
+                  // item['speaking'] = this.financial(forkRes[1][_index].speaking_point);
+                  // item['writing'] = this.financial(forkRes[1][_index].writing_point);
+                  item.id = forkRes[1][_index].id;
+                  item["total"] = this.financialTotal(
+                    forkRes[1][_index].total_point
+                  );
+                  // if (forkRes[2].length) {
+                  //     if (forkRes[2][0].scoring_method !== 'other') {
+                  //         const listeningPoint = item['listening'] >= 0 ? this.trudiem(s.id, 'listening', Number(item['listening'])) : 0;
+                  //         const readingPoint = item['reading'] >= 0 ? this.trudiem(s.id, 'reading', Number(item['reading'])) : 0;
+                  //         const speakingPoint = item['speaking'] >= 0 ? this.trudiem(s.id, 'speaking', Number(item['speaking'])) : 0;
+                  //         const writtingPoint = item['writing'] >= 0 ? this.trudiem(s.id, 'writing', Number(item['writing'])) : 0;
+                  //         // console.log(listeningPoint, readingPoint, speakingPoint, writtingPoint);
+                  //         const a = (listeningPoint + readingPoint + speakingPoint + writtingPoint);
+                  //         item['total'] = this.financialTotal(a);
+                  //         // const b = this.point_bank[forkRes[2][0].scoring_method]['total_rate'];
+                  //         // const qu = Math.floor(a / b);
+                  //         // const re = -(qu - (a / b));
+                  //         // if (re >= 0.25 && re < 0.75) {
+                  //         //     item['total'] = this.financial(qu + 0.5);
+                  //         // } else if (re < 0.25) {
+                  //         //     item['total'] = this.financial(qu);
+                  //         // } else if (re >= 0.75) {
+                  //         //     item['total'] = this.financial(qu + 1);
+                  //         // }
+                  //         // item['ketqua'] = item['total'] >= this.point_bank[forkRes[2][0].scoring_method]['diemdat'] ? 'Đạt' : 'Không đạt';
+                  //         // item['dat'] = item['total'] >= this.point_bank[forkRes[2][0].scoring_method]['diemdat'] ? true : false;
+                  //     }
+                  // }
+                } else {
+                  item["listening"] = "";
+                  item["reading"] = "";
+                  item["speaking"] = "";
+                  item["writing"] = "";
+                  item["total"] = "Bỏ thi";
+                  item["ketqua"] = "Bỏ thi";
+                  item["bothi"] = true;
+                }
+                array.push(item);
+              }
+            });
+            this.dmStudentResultFull = [...array];
+            this.dmStudentResult = this.helperService
+              .sort(array, "newCode")
+              .map((m) => {
+                delete m["name"];
+                return m;
+              });
+          }
+        });
+      }
+    });
+  }
+  trudiem(id: number, skill: string, point: number) {
+    const res =
+      this.violationObject[id] && this.violationObject[id][skill]
+        ? point - (this.violationObject[id][skill]["value"] * point) / 100
+        : point;
+    return res;
+  }
+
+  reset() {
+    this.dmShiftTest_0 = [];
+    this.dmChamthi = [];
+    this.dmTeacher = [];
+    this.dmShiftTest = [];
+    this.dmCathi = [];
+    this.dmCathiFull = [];
+    this.selectedCathi = null;
+  }
+
+  onSelectedCathi(cathi: TnQLCathi) {
+    if (!this.selectedCathi || this.selectedCathi.id !== cathi.id) {
+      this.optionSkill = null;
+      this.selectedCathi = cathi;
+      // console.log(this.cathiStatus);
+      
+      // return;
+      if (this.cathiStatus === 3) {
+        this.loadStudentResult(cathi);
+      } else {
+        this.loadShiftTest(this.selectedCathi); /* update */
+      }
+    }
+  }
+
+  financial(x) {
+    return Number.parseFloat(x).toFixed(1);
+  }
+
+  financialTotal(x) {
+    return Number.parseFloat(x).toFixed(1);
+  }
+
+  findCathi(event) {
+    if (event) {
+      const value = event.target.value;
+      this.dmCathi = this.dmCathiFull.filter(
+        (m) => m.name.indexOf(value) !== -1
+      );
+    }
+  }
+
+  chooseSkill(skill) {
+    if (!this.optionSkill || skill.value !== this.optionSkill["value"]) {
+      this.optionSkill = skill;
+      // if (skill.value === 'listening' || skill.value === 'reading') {
+      // this.loadShiftTest(this.selectedCathi, skill.value);/* update */
+      // } else {
+      //     this.loadChamthi(this.selectedCathi, skill.value);
+      // }
+    }
+  }
+  chooseLastPoint(shift: any, teacher: any) {
+    if (this.canAdded) {
+      if (shift[teacher["id"]] || shift[teacher["id"]] === 0) {
+        if (shift["hasSelected"]) {
+          if (shift["hasSelected"] !== teacher["id"]) {
+            const index = this.dmChamthi.findIndex(
+              (m) =>
+                m.teacher_id === shift["hasSelected"] &&
+                m.shift_test_id === shift["shift_test_id"]
+            );
+            if (index !== -1) {
+              this.tnChamThiService
+                .updateTnChamThi(this.dmChamthi[index].id, {
+                  selected_point: 0,
+                })
+                .subscribe(
+                  () => null,
+                  (er) => {
+                    console.log(er);
+                  }
+                );
+            }
+          }
+        }
+        const _index = this.dmChamthi.findIndex(
+          (m) =>
+            m.teacher_id === teacher.id &&
+            m.shift_test_id === shift["shift_test_id"]
+        );
+        if (_index !== -1) {
+          this.tnChamThiService
+            .updateTnChamThi(this.dmChamthi[_index].id, { selected_point: 1 })
+            .subscribe(
+              () => {
+                this.notificationService.toastSuccess(
+                  "Cập nhật điểm thành công"
+                );
+                const __index = this.dmShiftTest_0.findIndex(
+                  (m) => m["shift_test_id"] === shift["shift_test_id"]
+                );
+                if (__index !== -1) {
+                  this.dmShiftTest_0[__index]["lastPoint"] =
+                    Number(shift[teacher["id"]]) +
+                    Number(shift["computerPoint"]);
+                  this.dmShiftTest_0[__index]["hasSelected"] = teacher["id"];
+                  this.dmShiftTest_0[__index]["noPoint"] = false;
+                }
+              },
+              () =>
+                this.notificationService.toastError("Cập nhât điểm thất bại")
+            );
+        }
+      } else {
+        this.notificationService.toastWarning(
+          "Điểm không hợp lệ, xin vui lòng chọn điểm khác"
+        );
+      }
+    } else {
+      this.notificationService.toastWarning("Bạn không có quyền");
+    }
+  }
+
+  actionDone(cathi: TnQLCathi) {
+    this.canUpdate = true;
+    if (this.canUpdate) {
+      this.notificationService
+        .confirmDelete("Bạn có chắc chắn lưu kết quả ca thi này?", "Thông báo")
+        .then(
+          (a) => {
+            if (a) {
+              this.isActionDone = true;
+              this.loadFull(cathi);
+            }
+          },
+          () => null
+        );
+    } else {
+      this.notificationService.toastWarning("Bạn không có quyền");
+    }
+  }
+
+  changeCathi() {
+    this.cathiStatus = this.cathiStatus === 2 ? 3 : 2;
+    this.loadCathi(this.cathiStatus.toString());
+  }
+
+  // convertDataToExportExcel(data: TnBank, tenDonvi: string) {
+  //     const dataExport = [];
+  //     const header = ['STT', 'MÃ SINH VIÊN', 'HỌ TÊN', 'GIỚI TÍNH', 'NGÀY SINH', 'PHÒNG THI', 'MÃ PHÁCH', 'NGHE', 'ĐỌC', 'NÓI', 'VIẾT', 'TỔNG ĐIỂM', 'KẾT QUẢ'];
+  //     this.dmStudentResult.forEach((f, key) => {
+  //         dataExport.push([
+  //             key + 1,
+  //             f['student_code'],
+  //             f['Hoten'],
+  //             f['Gioitinh'],
+  //             f['ngaysinh'],
+  //             f['phongthi'],
+  //             'L'.concat(f['shift_test_id'].toString(), ' - R', f['shift_test_id'].toString(), ' - W', f['shift_test_id'].toString(), ' - S', f['shift_test_id'].toString()),
+  //             this.financial(this.trudiem(f['shift_test_id'], 'listening', Number(f['listening']))),
+  //             this.financial(this.trudiem(f['shift_test_id'], 'reading', Number(f['reading']))),
+  //             this.financial(this.trudiem(f['shift_test_id'], 'speaking', Number(f['speaking']))),
+  //             this.financial(this.trudiem(f['shift_test_id'], 'writing', Number(f['writing']))),
+  //             f['total'],
+  //             ''
+  //         ]);
+  //     });
+  //     const countbothi = this.dmStudentResult.filter(m => m.bothi).length;
+  //     const countDat = this.dmStudentResult.filter(m => !m.bothi && m.dat).length;
+  //     const countKhongdat = this.dmStudentResult.filter(m => !m.bothi && !m.dat).length;
+  //     const tong = this.dmStudentResult.length;
+  //     const titleFont = { name: 'Times New Roman', family: 1, size: 18, bold: true };
+  //     const rowFont = { name: 'Times New Roman', family: 1, size: 11, bold: true };
+  //     const donviFont = { name: 'Times New Roman', family: 1, size: 11, bold: true };
+  //     this.exportExcelService.exportExcel(
+  //         dataExport,
+  //         header,
+  //         'KẾT QUẢ THI '.concat(data.name, ' ', this.selectedCathi['name'], ' ngày ', this.selectedCathi['time_start_format']).toUpperCase(),
+  //         titleFont,
+  //         'E1:M2',
+  //         rowFont,
+  //         rowFont,
+  //         tenDonvi,
+  //         donviFont,
+  //         countbothi,
+  //         countDat,
+  //         countKhongdat,
+  //         tong,
+  //         this.selectedCathi.name
+  //     );
+  // }
+
+  convertDataToExportPdf(data: TnBank, tenDonvi: string) {
+    const countbothi = this.dmStudentResult.filter((m) => m.bothi).length;
+    const countDat = this.dmStudentResult.filter(
+      (m) => !m.bothi && m.dat
+    ).length;
+    const countKhongdat = this.dmStudentResult.filter(
+      (m) => !m.bothi && !m.dat
+    ).length;
+    const tong = this.dmStudentResult.length;
+    const dataExport = [
+      [
+        { text: "STT", style: "headerCol" },
+        { text: "MÃ SINH VIÊN", style: "headerCol" },
+        { text: "HỌ TÊN", style: "headerCol" },
+        { text: "GIỚI TÍNH", style: "headerCol" },
+        { text: "NGÀY SINH", style: "headerCol" },
+        { text: "PHÒNG THI", style: "headerCol" },
+        { text: "MÃ PHÁCH", style: "headerCol" },
+        { text: "NGHE", style: "headerCol" },
+        { text: "ĐỌC", style: "headerCol" },
+        { text: "NÓI", style: "headerCol" },
+        { text: "VIẾT", style: "headerCol" },
+        { text: "TỔNG ĐIỂM", style: "headerCol" },
+        { text: "KẾT QUẢ", style: "headerCol" },
+      ],
+    ];
+    this.dmStudentResult.forEach((f, key) => {
+      dataExport.push([
+        { text: (key + 1).toString(), style: "itemCol" },
+        { text: f["student_code"], style: "itemCol" },
+        { text: f["Hoten"], style: "itemColLeft" },
+        { text: f["Gioitinh"], style: "itemCol" },
+        { text: f["ngaysinh"], style: "itemCol" },
+        { text: f["phongthi"], style: "itemCol" },
+        {
+          text: "L".concat(
+            f["shift_test_id"].toString(),
+            " - R",
+            f["shift_test_id"].toString(),
+            " - W",
+            f["shift_test_id"].toString(),
+            " - S",
+            f["shift_test_id"].toString()
+          ),
+          style: "itemCol",
+        },
+        {
+          text: this.financial(
+            this.trudiem(
+              f["shift_test_id"],
+              "listening",
+              Number(f["listening"])
+            )
+          ),
+          style: "itemCol",
+        },
+        {
+          text: this.financial(
+            this.trudiem(f["shift_test_id"], "reading", Number(f["reading"]))
+          ),
+          style: "itemCol",
+        },
+        {
+          text: this.financial(
+            this.trudiem(f["shift_test_id"], "speaking", Number(f["speaking"]))
+          ),
+          style: "itemCol",
+        },
+        {
+          text: this.financial(
+            this.trudiem(f["shift_test_id"], "writing", Number(f["writing"]))
+          ),
+          style: "itemCol",
+        },
+        { text: this.financialTotal(f["total"]), style: "itemCol" },
+        { text: "", style: "itemCol" },
+      ]);
+    });
+    const docDefinition = {
+      pageOrientation: "landscape",
+      pageSize: "A2",
+      content: [
+        {
+          text: "đại học thái nguyên".toUpperCase(),
+          alignment: "left",
+          fontSize: 11,
+          margin: [77, 0, 0, 0],
+          normal: true,
+        },
+        {
+          text: "Trung tâm Khảo thí và Quản lý CLGD".toUpperCase(),
+          alignment: "left",
+          fontSize: 11,
+          margin: [20, 0, 0, 0],
+          normal: true,
+          bold: true,
+        },
+        {
+          text: "KẾT QUẢ THI "
+            .concat(
+              data.name,
+              " ",
+              this.selectedCathi["name"],
+              " ngày ",
+              this.selectedCathi["time_start_format"]
+            )
+            .toUpperCase(),
+          alignment: "center",
+          fontSize: 18,
+          normal: true,
+          margin: [0, 5],
+          bold: true,
+        },
+        {
+          layout: ["lightHorizontalLines", "lightVerticalLines"], // optional
+          table: {
+            headerRows: 1,
+            widths: [
+              31.68, 120.84, 219.12, 84.18, 114.3, 136.68, 210.84, 84.18, 84.18,
+              84.18, 84.18, 106.68, 106.68,
+            ],
+            alignment: "center",
+            body: dataExport,
+          },
+        },
+      ],
+      defaultStyle: {
+        font: "TimesNewRoman",
+        fontSize: 11,
+      },
+      styles: {
+        headerCol: {
+          bold: true,
+          fontsize: 11,
+          alignment: "center",
+          fillColor: "#f2f2f2",
+          margin: [0, 5],
+        },
+        itemCol: {
+          alignment: "center",
+          margin: [0, 5],
+        },
+        itemColLeft: {
+          alignment: "left",
+          margin: [0, 5],
+        },
+      },
+    };
+
+    const tableLayouts = {
+      exampleLayout: {
+        hLineWidth: function (i, node) {
+          return i === 0 || i === node.table.body.length ? 2 : 1;
+        },
+        vLineWidth: function (i, node) {
+          return i === 0 || i === node.table.widths.length ? 2 : 1;
+        },
+        hLineColor: function (i, node) {
+          return i === 0 || i === node.table.body.length ? "black" : "gray";
+        },
+        vLineColor: function (i, node) {
+          return i === 0 || i === node.table.widths.length ? "black" : "gray";
+        },
+      },
+    };
+    pdfMake
+      .createPdf(docDefinition, tableLayouts)
+      .download(this.selectedCathi.name);
+  }
+
+  export(string) {
+    if (this.dmStudentResult && this.selectedCathi) {
+      // forkJoin([
+      // ])
+      let name = "Trường Chính trị tỉnh Thái Nguyên";
+      // const index = this.auth.dsDonVi.findIndex((m) => m.id === this.donviId);
+      // if (index !== -1) {
+      //   name = this.auth.dsDonVi[index]["ten"];
+      // }
+      this.tnTestFormService
+        .getTnTestFormByCol("id", this.selectedCathi.form_id)
+        .subscribe((res) => {
+          if (res.length) {
+            this.tnBankService
+              .getTnBankByCol("id", res[0].bank_id)
+              .subscribe((bank) => {
+                if (bank.length) {
+                  if (string === "excel") {
+                    this.convertDataToExportExcel(bank[0], name);
+                  } else {
+                    this.convertDataToExportPdf(bank[0], name);
+                  }
+                }
+              });
+          }
+        });
+    } else {
+      this.notificationService.toastWarning("Xìn mời chọn ca thi");
+    }
+  }
+
+  findStudent(event) {
+    if (event) {
+      const value = event.target.value;
+      if (this.cathiStatus === 2) {
+        if (this.optionSkill) {
+          if (
+            this.optionSkill.value === "listening" ||
+            this.optionSkill.value === "reading"
+          ) {
+            this.dmShiftTest = this.dmShiftTestFull.filter(
+              (m) =>
+                m["display_name"]
+                  .concat(m["ngaysinh"], m["code"])
+                  .toLowerCase()
+                  .indexOf(value.toLowerCase()) !== -1
+            );
+          } else {
+            this.dmShiftTest_0 = this.dmShiftTest_0Full.filter(
+              (m) =>
+                m["display_name"]
+                  .concat(m["ngaysinh"], m["code"])
+                  .toLowerCase()
+                  .indexOf(value.toLowerCase()) !== -1
+            );
+          }
+        }
+      } else {
+        this.dmStudentResult = this.dmStudentResultFull.filter(
+          (m) =>
+            m["Hoten"]
+              .concat(m["ngaysinh"], m["code"])
+              .toLowerCase()
+              .indexOf(value.toLowerCase()) !== -1
+        );
+      }
+    }
+  }
+
+  openChooseTeacher() {
+    this.resetTeacherTable();
+    if (!this.searchString) {
+      if (this.optionSkill["value"] === "writing") {
+        if (!this.showAllTeam && this.selectedTeam) {
+          const index_not = this.dmShiftTest_0.findIndex((m) => m["notYet"]);
+          if (index_not !== -1) {
+            this.notificationService.toastWarning(
+              "Cặp chấm này chưa chấm xong"
+            );
+          } else {
+            if (!this.selectedTeam["teacher_3"]) {
+              this.teacherTabletop = [...this.teacherFull];
+              const index_1 = this.teacherTabletop.findIndex(
+                (m) => m.id === this.selectedTeam.teacher_1
+              );
+              if (index_1 !== -1) {
+                this.teacherTabletop.splice(index_1, 1);
+              }
+              const index_2 = this.teacherTabletop.findIndex(
+                (m) => m.id === this.selectedTeam.teacher_2
+              );
+              if (index_2 !== -1) {
+                this.teacherTabletop.splice(index_2, 1);
+              }
+              this.formTeam = "Chọn giáo viên giám khảo";
+              this.flagTeam = false;
+              this.modalService.open(
+                this.templateChooseTeacher,
+                LARGE_MODAL_OPTIONS
+              );
+            } else {
+              this.notificationService.toastWarning(
+                "Cặp chấm này đã được phân giáo viên giám khảo"
+              );
+            }
+          }
+        } else {
+          this.notificationService.toastWarning(
+            "Xin vui lòng lọc theo cặp trước khi chọn giáo viên giam khảo"
+          );
+        }
+      } else {
+        if (!this.dmTeacherTeam.length) {
+          const tmpteach = [];
+          this.teacherFull.forEach((f, key) => {
+            const index = this.dmTeacher.findIndex((m) => m.id === f.id);
+            if (index === -1) {
+              tmpteach.push({ ...f });
+            }
+          });
+          this.teacherTabletop = tmpteach;
+          this.formTeam = "Chọn giáo viên nhập điểm";
+          this.flagTeam = false;
+          this.modalService.open(
+            this.templateChooseTeacher,
+            LARGE_MODAL_OPTIONS
+          );
+        } else {
+          this.notificationService.toastWarning(
+            "Ca thi này đã có giáo viên nhập điểm"
+          );
+        }
+      }
+    } else {
+      this.notificationService.toastWarning(
+        "Xin vui lòng xóa ký tự tìm kiếm trước khi thực hiện thao tác này"
+      );
+    }
+  }
+
+  chooseRowTableTop(teacher: any, rowIndex: number) {
+    // if (this.teacherTable.length < 2) {
+    //     if (this.teacherTable[0] && this.teacherTable[0]['id'] === teacher['id']) {
+    //         this.notificationService.toastWarning('Giảng viên này đã được chọn');
+    //     } else {
+    //         this.teacherTable.push(teacher);
+    //     }
+    // } else {
+    //     this.notificationService.toastWarning('Số lượng giảng viên trong cặp đã đạt tối đa');
+    // }
+    if (this.optionSkill["value"] === "writing") {
+      if (!this.showAllTeam) {
+        if (this.teacherTable.length === 1) {
+          this.notificationService.toastWarning("Chỉ có thể chọn 1 giáo viên");
+        } else {
+          this.teacherTable.push(teacher);
+        }
+      }
+    } else {
+      if (this.teacherTable.length === 1) {
+        this.notificationService.toastWarning("Chỉ có thể chọn 1 giáo viên");
+      } else {
+        this.teacherTable.push(teacher);
+      }
+    }
+  }
+  chooseRowTableBottom(index: number) {
+    this.teacherTable.splice(index, 1);
+  }
+
+  resetTeacherTable() {
+    this.teacherTable = [];
+  }
+
+  saveTeacherAdd(d) {
+    if (this.teacherTable && this.teacherTable.length) {
+      if (this.optionSkill["value"] === "writing") {
+        this.notificationService
+          .confirmDelete(
+            'Bạn có chắc chắn chọn giáo viên "' +
+              this.teacherTable[0]["display_name"] +
+              '" làm giám khảo chấm thi?'
+          )
+          .then(
+            (a) => {
+              if (a) {
+                this.addTeacherToChamthi();
+                d(true);
+              } else {
+                this.notificationService.toastInfo("Thao tác đã bị hủy");
+              }
+            },
+            () => null
+          );
+      } else {
+        this.notificationService
+          .confirmDelete(
+            'Bạn có chắc chắn chọn giáo viên "' +
+              this.teacherTable[0]["display_name"] +
+              '" làm giáo viên nhập điểm?'
+          )
+          .then(
+            (a) => {
+              if (a) {
+                this.addTeacherToChamthi();
+                d(true);
+              } else {
+                this.notificationService.toastInfo("Thao tác đã bị hủy");
+              }
+            },
+            () => null
+          );
+      }
+    } else {
+      this.notificationService.toastWarning("Xin vui lòng chọn giáo viên");
+    }
+  }
+
+  addTeacherToChamthi() {
+    const data = [];
+    this.dmShiftTest_0.forEach((f, key) => {
+      if (!f["bothi"] && f["noPoint"]) {
+        this.teacherTable.forEach((t, k) => {
+          data.push({
+            shift_id: this.selectedCathi["id"],
+            shift_test_id: f["shift_test_id"],
+            teacher_id: t["id"],
+            skill: this.optionSkill["value"],
+            ordering: 3,
+          });
+        });
+      }
+    });
+    if (data.length) {
+      let i = 0;
+      this.resetProgress(true);
+      data.forEach((f, index) => {
+        setTimeout(() => {
+          this.tnChamThiService.addTnChamThi(f).subscribe(
+            (res) => {
+              i = i + 1;
+              this.progressValue = (i / data.length) * 100;
+              if (i === data.length) {
+                this.resetProgress(false);
+                this.notificationService.toastSuccess("Cập nhật thành công");
+                this.loadChamthi(this.selectedCathi, this.optionSkill["value"]);
+              }
+            },
+            () => this.notificationService.toastError("Cập nhật thất bại")
+          );
+        }, 50 * index);
+      });
+    }
+  }
+
+  resetProgress(value: boolean) {
+    this.startProgress = value;
+    this.progressValue = 0;
+    this.isActionAdd = value;
+  }
+
+  actionBack(shift) {
+    if (shift && this.selectedCathi && this.selectedCathi.id === shift.id) {
+      this.notificationService
+        .confirmDelete("Bạn có chắc chắn rằng ca thi này chưa chấm xong?")
+        .then((a) => {
+          if (a) {
+            let i = 0;
+            this.startProgress = true;
+            this.isActionDone = true;
+            this.dmStudentResultFull.forEach((f, index) => {
+              setTimeout(() => {
+                this.tnStudentResultService
+                  .deleteTnStudentResult(Number(f["id"]))
+                  .subscribe(() => {
+                    i = i + 1;
+                    this.progressValue =
+                      (i / this.dmStudentResultFull.length) * 100;
+                    if (i === this.dmStudentResultFull.length) {
+                      this.tnQLCathiService
+                        .updateTnQLCathi(this.selectedCathi.id, {
+                          status: 2,
+                          user_id: this.userId,
+                        })
+                        .subscribe((res) => {
+                          this.loadCathi("3");
+                          this.isActionDone = false;
+                          this.startProgress = false;
+                          this.progressValue = 0;
+                          this.notificationService.toastSuccess(
+                            "Thao tác thành công"
+                          );
+                        });
+                    }
+                  });
+              }, 50 * index);
+            });
+          } else {
+            this.notificationService.toastInfo("Thao tác đã bị hủy");
+            this.isActionDone = false;
+          }
+        });
+    } else {
+      this.notificationService.toastWarning(
+        "Xin vui lòng click thêm 1 lần nữa để thực hiện thao tác này"
+      );
+    }
+  }
+
+  openTeamTeacher() {
+    this.flagTeam = true;
+    this.formTeam = "Chọn cặp chấm";
+    this.modalService.open(this.templateChooseTeacher, NORMAL_MODAL_OPTIONS);
+  }
+
+  chooseAteamTeacher(teache, indexT, close) {
+    this.selectedTeam = teache;
+    this.showAllTeam = false;
+    this.dmTeacherTeam = [];
+    if (teache) {
+      this.dmShiftTest = this.helperService.sort(
+        [...this.dmShiftTestFull].filter(
+          (m) =>
+            m["teacher_1"] === teache["teacher_1"] &&
+            m["teacher_2"] === teache["teacher_2"]
+        ),
+        "newCode"
+      );
+      if (teache["teacher_1"]) {
+        this.dmTeacherTeam.push(teache[teache["teacher_1"]]);
+      }
+      if (teache["teacher_2"]) {
+        this.dmTeacherTeam.push(teache[teache["teacher_2"]]);
+      }
+      if (teache["teacher_3"]) {
+        this.dmTeacherTeam.push(teache[teache["teacher_3"]]);
+      }
+      close(true);
+    }
+  }
+  displayALlteam(d) {
+    this.showAllTeam = true;
+    this.dmTeacherTeam = [...this.dmTeacher];
+    this.dmShiftTest_0 = [...this.dmShiftTest_0Full];
+    d(true);
+  }
+
+  clearGiaovienGiamkhao() {
+    if (!this.showAllTeam) {
+      let data = this.selectedTeam["shiftTest"].filter(
+        (m) => m["ordering"] === 3
+      );
+      const index = data.findIndex((m) => m["point"] !== null);
+      if (index !== -1) {
+        this.notificationService.toastWarning(
+          "Giáo viên này đã nhập điểm, không thể xóa"
+        );
+      } else {
+        this.notificationService.confirmDelete().then(
+          () => {
+            if (this.selectedTeam && this.selectedTeam["shiftTest"]) {
+              if (data.length) {
+                let i = 0;
+                this.resetProgress(true);
+                data.forEach((f, key) => {
+                  setTimeout(() => {
+                    this.tnChamThiService
+                      .deleteTnChamThi(f["id"])
+                      .subscribe(() => {
+                        i = i + 1;
+                        this.progressValue = (i / data.length) * 100;
+                        if (i === data.length) {
+                          this.resetProgress(false);
+                          this.notificationService.toastSuccess(
+                            "Xóa dữ liệu thành công"
+                          );
+                          this.loadChamthi(
+                            this.selectedCathi,
+                            this.optionSkill["value"]
+                          );
+                        }
+                      });
+                  }, 50 * key);
+                });
+              }
+            }
+          },
+          () => null
+        );
+      }
+    }
+  }
+
+  exportWriting(index: number) {
+    console.log(index);
+    
+    if (index === 1) {
+      if (this.flagTeam) {
+        const data = [...this.dmShiftTestFull].filter(
+          (m) =>
+            m["teacher_1"] === this.selectedTeam["teacher_1"] &&
+            m["teacher_2"] === this.selectedTeam["teacher_2"]
+        );
+        this.exportExcelTeamWriting(
+          data,
+          this.selectedTeam,
+          " " +
+            this.selectedTeam[this.selectedTeam["teacher_1"]][
+              "display_name"
+            ].concat(
+              " - ",
+              this.selectedTeam[this.selectedTeam["teacher_2"]]["display_name"]
+            )
+        );
+      } else {
+        this.notificationService.toastError("Xin vui lòng chọn cặp chấm");
+      }
+    } else if (index === 2) {
+      this.exportAllWriting(
+        this.helperService.sort(this.dmShiftTestFull, "newCode")
+      );
+    } else if (index === 3) {
+      if (this.teacherByTeam.length) {
+        const teacherOnly = [];
+        this.teacherByTeam.forEach((f, key) => {
+          const data = [...this.dmShiftTestFull].filter(
+            (m) =>
+              m["teacher_1"] === f["teacher_1"] &&
+              m["teacher_2"] === f["teacher_2"]
+          );
+          f[f["teacher_1"]]["index"] = key + 1;
+          f[f["teacher_2"]]["index"] = key + 1;
+          f[f["teacher_1"]]["totalTest"] = data.length;
+          f[f["teacher_2"]]["totalTest"] = data.length;
+          teacherOnly.push(f[f["teacher_1"]]);
+          teacherOnly.push(f[f["teacher_2"]]);
+        });
+        this.exportTotalWriting(teacherOnly);
+      }
+    } else if (index === 4) {
+      // this.exportWordTest();
+    }
+  }
+
+  exportWordTest() {
+    const documentCreator = new DocumentCreator();
+    if (this.selectionTest && this.selectionTest.length) {
+      const zip = new JSZip();
+      const cathi = this.selectedCathi;
+      const text = this.selectedCathi.name.concat(
+        " - ",
+        this.optionSkill["value"],
+        " - bài thi của thí sinh"
+      );
+      const shiftFolder = zip.folder(text);
+      const shift_test_ids = [];
+      this.selectionTest.forEach((f, key) => {
+        shift_test_ids.push(f["shift_test_id"]);
+      });
+      const condition = this.httpParamsHelper
+        .paramsConditionBuilder([
+          {
+            conditionName: "part",
+            condition: IctuQueryCondition.equal,
+            value: "80",
+          },
+          {
+            conditionName: "part",
+            condition: IctuQueryCondition.equal,
+            value: "90",
+            orWhere: "or",
+          },
+        ])
+        .set("include_by", "shift_test_id")
+        .set("include", shift_test_ids.toString());
+      this.tnShiftTestQuestionService
+        .getTnShiftTestQuestionByCols(condition)
+        .subscribe((_res) => {
+          if (_res.length) {
+            const objectShift = {};
+            this.helperService.sort(_res, "part").forEach((f, key) => {
+              if (!objectShift[f["shift_test_id"]]) {
+                objectShift[f["shift_test_id"]] = {};
+                if (!objectShift[f["shift_test_id"]][f["part"]]) {
+                  objectShift[f["shift_test_id"]][f["part"]] = [];
+                  objectShift[f["shift_test_id"]][f["part"]].push(f);
+                }
+              } else {
+                if (!objectShift[f["shift_test_id"]][f["part"]]) {
+                  objectShift[f["shift_test_id"]][f["part"]] = [];
+                  objectShift[f["shift_test_id"]][f["part"]].push(f);
+                } else if (
+                  Array.isArray(objectShift[f["shift_test_id"]][f["part"]])
+                ) {
+                  objectShift[f["shift_test_id"]][f["part"]].push(f);
+                }
+              }
+            });
+            let i = 0;
+            // console.log(htmlToDoc);
+            Object.keys(objectShift).forEach((f) => {
+              objectShift[f]["80"] = this.helperService.sort(
+                objectShift[f]["80"],
+                "question_number"
+              );
+              objectShift[f]["90"] = this.helperService.sort(
+                objectShift[f]["90"],
+                "question_number"
+              );
+              const index = this.selectionTest.findIndex(
+                (m) => m["shift_test_id"].toString() === f.toString()
+              );
+              if (index !== -1) {
+                i = i + 1;
+                const buffer = this.htmltoDocx(
+                  objectShift[f]["80"]["question_direction"]
+                );
+                // shiftFolder.file(this.selectionTest[index]['student_code'].concat(' - ', this.selectionTest[index]['display_name'], '.docx'), buffer);
+                // const doc = documentCreator.create(objectShift[f], this.optionSkill['value'], this.selectedCathi.name, this.selectionTest[index]);
+                // Packer.toBlob(doc).then(buffer => {
+                //     // fs.saveAs(buffer, c['realCode'] + "-" + f['student']['hoten'] + "-" + f['student']['ngaysinh_convert'] + ".docx");
+                //     i = i + 1;
+                //     console.log(Object.keys(objectShift).length);
+                //     shiftFolder.file(this.selectionTest[index]['student_code'].concat(' - ', this.selectionTest[index]['display_name'], '.docx'), buffer);
+                if (i === Object.keys(objectShift).length) {
+                  zip.generateAsync({ type: "blob" }).then(function (content) {
+                    fs.saveAs(content, text);
+                  });
+                }
+                // });
+              }
+            });
+          }
+        });
+    } else {
+      this.notificationService.toastWarning("Chưa chọn thí sinh");
+    }
+  }
+
+  exportAllWriting(data) {
+    console.log(data);
+    
+    const dataExport = [];
+    const header = [
+      "Stt",
+      "Mã sinh viên",
+      "Họ tên",
+      "Ngày sinh",
+      "Phòng thi",
+      "Máy chấm",
+      "Giáo viên chấm",
+      "Điểm chính",
+      "Ghi chú",
+    ];
+    data.forEach((f, key) => {
+      dataExport.push([
+        key + 1,
+        f["student_code"],
+        f["display_name"],
+        f["ngaysinh"],
+        f["phongthi"],
+        !f["bothi"] ? f["computerPoint"] : "",
+        !f["bothi"] ? f["chamthi"] : "",
+        !f["bothi"] ? f["totalPoint"] : "bỏ thi",
+        "",
+      ]);
+    });
+    const countbothi = 0;
+    const countDat = 0;
+    const countKhongdat = 0;
+    const tong = 0;
+    const titleFont = {
+      name: "Times New Roman",
+      family: 1,
+      size: 12,
+      bold: true,
+    };
+    const rowFont = { name: "Times New Roman", family: 1, size: 11 };
+    const donviFont = {
+      name: "Times New Roman",
+      family: 1,
+      size: 10,
+      bold: true,
+      underline: true,
+    };
+    this.exportPointWritingService.exportExcel(
+      dataExport,
+      header,
+      "KẾT Quả PHẦN THI ".toUpperCase(),
+      titleFont,
+      "A4:H4",
+      rowFont,
+      rowFont,
+      null,
+      donviFont,
+      countbothi,
+      countDat,
+      countKhongdat,
+      tong,
+      this.selectedCathi.name + " -Kết quả phần thi",
+      null,
+      null,
+      this.selectedCathi["time_start_format"],
+      2,
+      this.selectedCathi.name
+    );
+  }
+
+  exportTotalWriting(data) {
+    const dataExport = [];
+    const header = [
+      "Stt",
+      "Cặp số",
+      "Tên giáo viên",
+      "Số bài chấm",
+      "Ký nhận",
+      "Ghi chú",
+    ];
+    const objectIndex = {};
+    let totalNumber = 0;
+    data.forEach((f, key) => {
+      if (!objectIndex[f["index"]]) {
+        objectIndex[f["index"]] = f["totalTest"];
+        totalNumber = totalNumber + Number(f["totalTest"]);
+      }
+      dataExport.push([
+        key + 1,
+        f["index"],
+        f["display_name"],
+        f["totalTest"],
+        "",
+        "",
+      ]);
+    });
+
+    const countbothi = 0;
+    const countDat = 0;
+    const countKhongdat = 0;
+    const tong = 0;
+    const titleFont = {
+      name: "Times New Roman",
+      family: 1,
+      size: 12,
+      bold: true,
+    };
+    const rowFont = { name: "Times New Roman", family: 1, size: 11 };
+    const donviFont = {
+      name: "Times New Roman",
+      family: 1,
+      size: 10,
+      bold: true,
+      underline: true,
+    };
+    // this.exportPointWritingService.exportExcel(
+    //   dataExport,
+    //   header,
+    //   "BIÊN BẢN BỐC THĂM CẶP CHẤM".toUpperCase(),
+    //   titleFont,
+    //   "A4:F4",
+    //   rowFont,
+    //   rowFont,
+    //   null,
+    //   donviFont,
+    //   countbothi,
+    //   countDat,
+    //   countKhongdat,
+    //   totalNumber,
+    //   this.selectedCathi.name + "- tổng kêt số lượng bài chấm",
+    //   null,
+    //   null,
+    //   this.selectedCathi["time_start_format"],
+    //   3
+    // );
+  }
+
+  exportExcelTeamWriting(data, teacher, index) {
+    const dataExport = [];
+    const header = [
+      "Stt",
+      "Mã phách",
+      teacher[teacher["teacher_1"]]["display_name"],
+      teacher[teacher["teacher_2"]]["display_name"],
+      teacher["teacher_3"] && teacher[teacher["teacher_3"]]
+        ? teacher[teacher["teacher_3"]]["display_name"]
+        : "",
+      "Điểm kết luận",
+      "Ghi chú",
+    ];
+    data.forEach((f, key) => {
+      dataExport.push([
+        key + 1,
+        f["id"],
+        f[teacher["teacher_1"]],
+        f[teacher["teacher_2"]],
+        f[teacher["teacher_3"]] ? f[teacher["teacher_3"]] : "x",
+        f["chamthi"],
+        "",
+      ]);
+    });
+    const countbothi = 0;
+    const countDat = 0;
+    const countKhongdat = 0;
+    const tong = 0;
+    const titleFont = {
+      name: "Times New Roman",
+      family: 1,
+      size: 12,
+      bold: true,
+    };
+    const rowFont = { name: "Times New Roman", family: 1, size: 11 };
+    const donviFont = {
+      name: "Times New Roman",
+      family: 1,
+      size: 10,
+      bold: true,
+      underline: true,
+    };
+    // this.exportPointWritingService.exportExcel(
+    //   dataExport,
+    //   header,
+    //   "PHIẾU CHẤM PHẦN THI "
+    //     .concat(this.SKILLTESTTOTALOBJECT[this.optionSkill["value"]])
+    //     .toUpperCase(),
+    //   titleFont,
+    //   "A4:G4",
+    //   rowFont,
+    //   rowFont,
+    //   null,
+    //   donviFont,
+    //   countbothi,
+    //   countDat,
+    //   countKhongdat,
+    //   tong,
+    //   this.selectedCathi.name + " - Cặp: " + index,
+    //   null,
+    //   null,
+    //   this.selectedCathi["time_start_format"],
+    //   1
+    // );
+  }
+
+  async htmltoDocx(htmlString) {
+    const header =
+      "<html xmlns:wpc='http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas' xmlns:cx='http://schemas.microsoft.com/office/drawing/2014/chartex' xmlns:cx1='http://schemas.microsoft.com/office/drawing/2015/9/8/chartex' xmlns:cx2='http://schemas.microsoft.com/office/drawing/2015/10/21/chartex' xmlns:cx3='http://schemas.microsoft.com/office/drawing/2016/5/9/chartex' xmlns:cx4='http://schemas.microsoft.com/office/drawing/2016/5/10/chartex' xmlns:cx5='http://schemas.microsoft.com/office/drawing/2016/5/11/chartex' xmlns:cx6='http://schemas.microsoft.com/office/drawing/2016/5/12/chartex' xmlns:cx7='http://schemas.microsoft.com/office/drawing/2016/5/13/chartex' xmlns:cx8='http://schemas.microsoft.com/office/drawing/2016/5/14/chartex' xmlns:mc='http://schemas.openxmlformats.org/markup-compatibility/2006' xmlns:aink='http://schemas.microsoft.com/office/drawing/2016/ink' xmlns:am3d='http://schemas.microsoft.com/office/drawing/2017/model3d' xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:r='http://schemas.openxmlformats.org/officeDocument/2006/relationships' xmlns:m='http://schemas.openxmlformats.org/officeDocument/2006/math' xmlns:v='urn:schemas-microsoft-com:vml' xmlns:wp14='http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing' xmlns:wp='http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing' xmlns:w10='urn:schemas-microsoft-com:office:word' xmlns:w='http://schemas.openxmlformats.org/wordprocessingml/2006/main' xmlns:w14='http://schemas.microsoft.com/office/word/2010/wordml' xmlns:w15='http://schemas.microsoft.com/office/word/2012/wordml' xmlns:w16cex='http://schemas.microsoft.com/office/word/2018/wordml/cex' xmlns:w16cid='http://schemas.microsoft.com/office/word/2016/wordml/cid' xmlns:w16='http://schemas.microsoft.com/office/word/2018/wordml' xmlns:w16se='http://schemas.microsoft.com/office/word/2015/wordml/symex' xmlns:wpg='http://schemas.microsoft.com/office/word/2010/wordprocessingGroup' xmlns:wpi='http://schemas.microsoft.com/office/word/2010/wordprocessingInk' xmlns:wne='http://schemas.microsoft.com/office/word/2006/wordml' xmlns:wps='http://schemas.microsoft.com/office/word/2010/wordprocessingShape' mc:Ignorable='w14 w15 w16se w16cid w16 w16cex wp14'>" +
+      "<head><meta charset='utf-8'><style>" +
+      "h1,h2,h3,p{" +
+      "font-family:font-family: 'Times New Roman, Times, serif';" +
+      "font-size: 13pt;" +
+      "text-indent:2.5em;" +
+      "text-align:justify;" +
+      "}" +
+      "table{" +
+      "width:100%;" +
+      "borderCollapse: collapse;" +
+      "borderSpacing: 0;" +
+      "border:1px solid #333333;" +
+      "}" +
+      "td{" +
+      "padding:2pt 2pt;" +
+      "width:auto;" +
+      "margin:0px;" +
+      "}" +
+      ".pNotIndent{" +
+      "text-indent:0em;" +
+      "}" +
+      ".page-break{" +
+      "page-break-before: always;" +
+      "}" +
+      "</style><title>Export HTML to Word Document with JavaScript</title></head><body>";
+    const footer = "</body></html>";
+    // return await htmlToDoc(htmlString, header, { orientation: 'portrait' }, footer);
+    // var converted = htmlDocx.asBlob(content);
+    // fS(converted, this.props.baocao_name + '.docx');
+  }
+
+  convertDataToExportExcel(dataBank: TnBank, tenDonvi: string) {
+    this.fileService
+      .getImageAsBlob(
+        "..\\assets\\files\\Danh_sach_thi_sinh_du_thi_mau_qp_ketqua.xlsx"
+      )
+      .subscribe((res) => {
+        const file = res;
+        const reader = new FileReader();
+        reader.readAsBinaryString(file);
+        reader.onloadend = (event) => {
+          const localUrl = reader.result;
+          const wb: XLSX.WorkBook = XLSX.read(localUrl, { type: "binary" });
+          const wsname: string = wb.SheetNames[0];
+          const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+          const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
+          const mergesData = [];
+          const mergesDataFooter = [];
+          const objectRoom = {};
+          let i = 0;
+          const footerData = data.splice(37, 6);
+          const headerData = data.splice(0, 8);
+          const newHeaderData = [];
+          const tableHeader = [];
+          headerData.forEach((f, key) => {
+            if (Array.isArray(f)) {
+              if (!f[0]) {
+                f[0] = "";
+              }
+            }
+            if (key < 6) {
+              newHeaderData.push(f);
+            } else {
+              tableHeader.push(f);
+            }
+          });
+          const newFooterData = [];
+          footerData.forEach((f, key) => {
+            if (Array.isArray(f)) {
+              if (!f[0]) {
+                f[0] = "";
+              }
+            }
+            newFooterData.push(f);
+          });
+          const today = new Date();
+          let _date =
+            today.getDate() < 10
+              ? "0".concat(today.getDate().toString())
+              : today.getDate().toString();
+          let _month =
+            today.getMonth() + 1 < 10
+              ? "0".concat((today.getMonth() + 1).toString())
+              : (today.getMonth() + 1).toString();
+          let _yeah = today.getFullYear().toString();
+          this.dmStudentResult.forEach((f, key) => {
+            if (!objectRoom[f["phongthi"]]) {
+              objectRoom[f["phongthi"]] = {};
+              objectRoom[f["phongthi"]]["dataTable"] = [];
+              i = 0;
+              i = i + 1;
+              objectRoom[f["phongthi"]]["dataTable"].push(
+                this.dataByRoom(f, i)
+              );
+            } else {
+              if (Array.isArray(objectRoom[f["phongthi"]]["dataTable"])) {
+                i = i + 1;
+                objectRoom[f["phongthi"]]["dataTable"].push(
+                  this.dataByRoom(f, i)
+                );
+              }
+            }
+          });
+          Object.keys(objectRoom).forEach((f, key) => {
+            objectRoom[f]["header"] = [];
+            newHeaderData.forEach((he, heKey) => {
+              objectRoom[f]["header"].push([...he]);
+            });
+            objectRoom[f]["header"][3][0] =
+              this.selectedCathi.name.toUpperCase();
+            objectRoom[f]["header"][4][0] = "Tên học phần: ".concat(
+              dataBank.name
+            );
+            objectRoom[f]["header"][5][0] = "Ngày thi: ".concat(
+              this.selectedCathi.time_start_format.split(",")[0]
+            );
+            objectRoom[f]["header"][5][5] = "Giờ thi: ".concat(
+              this.selectedCathi.time_start_format.split(",")[1]
+            );
+            objectRoom[f]["header"][5][8] = "- Phòng thi: ".concat(f);
+            objectRoom[f]["tableHeader"] = tableHeader;
+            objectRoom[f]["footer"] = [];
+            newFooterData.forEach((ft, ftKey) => {
+              objectRoom[f]["footer"].push([...ft]);
+            });
+            objectRoom[f]["footer"][1][1] =
+              "Số sinh viên: " + objectRoom[f]["dataTable"].length;
+            objectRoom[f]["footer"][1][4] =
+              "Số bỏ thi: " +
+              objectRoom[f]["dataTable"].filter((i) => i[7] === "Bỏ thi")
+                .length;
+            objectRoom[f]["footer"][2][6] = "Thái Nguyên, ngày ".concat(
+              _date,
+              " tháng ",
+              _month,
+              " năm ",
+              _yeah
+            );
+            objectRoom[f]["mergesData"] = [];
+            ws["!merges"].map((m) => {
+              if (m.s.r < 36) {
+                objectRoom[f]["mergesData"].push(
+                  this.keyAnswer[m.s.c].concat(
+                    (m.s.r + 1).toString(),
+                    ":",
+                    this.keyAnswer[m.e.c],
+                    (m.e.r + 1).toString()
+                  )
+                );
+              } else {
+                objectRoom[f]["mergesData"].push(
+                  this.keyAnswer[m.s.c].concat(
+                    (
+                      m.s.r -
+                      36 +
+                      headerData.length +
+                      objectRoom[f]["dataTable"].length
+                    ).toString(),
+                    ":",
+                    this.keyAnswer[m.e.c],
+                    (
+                      m.e.r -
+                      36 +
+                      headerData.length +
+                      objectRoom[f]["dataTable"].length
+                    ).toString()
+                  )
+                );
+              }
+            });
+          });
+          const cols = {
+            donvitructhuoc: {
+              name: "A1:D1",
+              font: { name: "Arial", family: 1, size: 10, bold: true },
+              alignment: { vertical: "middle", horizontal: "center" },
+            },
+            donvo: {
+              name: "A2:D2",
+              font: { name: "Arial", family: 1, size: 10, bold: true },
+              alignment: {
+                vertical: "middle",
+                horizontal: "center",
+                wrapText: true,
+              },
+            },
+            chxhcn: {
+              name: "G1:L1",
+              font: { name: "Arial", family: 1, size: 10 },
+              alignment: {
+                vertical: "middle",
+                horizontal: "center",
+                wrapText: true,
+              },
+            },
+            dltdhp: {
+              name: "G2:L2",
+              font: { name: "Arial", family: 1, size: 10, underline: true },
+              alignment: {
+                vertical: "middle",
+                horizontal: "center",
+                wrapText: true,
+              },
+            },
+            title: {
+              name: "A3:L3",
+              font: { name: "Arial", family: 1, size: 12, bold: true },
+              alignment: {
+                vertical: "middle",
+                horizontal: "center",
+                wrapText: true,
+              },
+            },
+            col_1: {
+              name: "L4:L4",
+              font: { name: "Arial", family: 1, size: 10 },
+              alignment: { vertical: "middle", horizontal: "right" },
+            },
+            col_2: {
+              name: "L5:L5",
+              font: { name: "Arial", family: 1, size: 10 },
+              alignment: { vertical: "middle", horizontal: "right" },
+            },
+            col_3: {
+              name: "A4:L4",
+              font: { name: "Arial", family: 1, size: 12, bold: true },
+              alignment: { vertical: "middle", horizontal: "center" },
+            },
+          };
+          const widthPoint = 10;
+          const objectColWidth = {
+            1: 4,
+            2: 4.5,
+            3: 25,
+            4: 20,
+            5: 5,
+            6: widthPoint,
+            7: widthPoint,
+            8: widthPoint,
+            9: 15,
+            10: widthPoint,
+            11: 7,
+          };
+          // this.exportExcelNewService.exportExcel(
+          //   objectRoom,
+          //   cols,
+          //   objectColWidth,
+          //   { name: "Arial", family: 1, size: 10 },
+          //   this.selectedCathi.name
+          // );
+        };
+      });
+  }
+
+  dataByRoom(f, i) {
+    const ho = f["Hoten"]
+      .split(" ")
+      .splice(0, f["Hoten"].split(" ").length - 1)
+      .join(" ");
+    const ten = f["Hoten"]
+      .split(" ")
+      .splice(f["Hoten"].split(" ").length - 1, 1)
+      .join(" ");
+    let number_string = "";
+    if (!f.bothi) {
+      const readnumber = f["total"].toString().replace(/\D/gi, "|").split("|");
+      number_string =
+        readnumber.length < 2
+          ? this.read_number.nguyen[readnumber[0].toString()]
+          : this.read_number.nguyen[readnumber[0].toString()].concat(
+              Number(readnumber[1]) !== 5 ? " phẩy " : " ",
+              this.read_number.nguyen[readnumber[1].toString()]
+            );
+    }
+    return [
+      i,
+      f["code"],
+      f["student_code"],
+      ho,
+      ten,
+      f["ngaysinh"],
+      "",
+      !f["bothi"] ? f["total"].toString().replace(/\D/gi, ",") : f["total"],
+      number_string ? number_string : "",
+      "",
+    ];
+  }
+
+  filterByTeacherSpeaking(object?: User) {
+    if (object) {
+      this.dmShiftTest = [...this.dmShiftTestFull].filter(
+        (m) => m["teacher_3"] === object.id
+      );
+      this.dmTeacherTeam = [object];
+    } else {
+      this.dmShiftTest = [...this.dmShiftTestFull];
+      this.dmTeacherTeam = [...this.dmTeacher];
+    }
+  }
+}

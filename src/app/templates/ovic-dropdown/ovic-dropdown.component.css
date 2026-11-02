@@ -1,0 +1,10 @@
+.p-dropdown {
+    width: 100%; /* Thay đổi kích thước tùy theo yêu cầu của bạn */
+  }
+  
+  /* Cắt ngắn nội dung và hiển thị dấu chấm ba khi quá dài */
+  .p-dropdown .p-dropdown-label {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }

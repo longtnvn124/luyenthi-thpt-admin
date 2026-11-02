@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Pricing Card with Ribbon</title>
+		<style>
+			/* General Styling */
+			body {
+				font-family: Arial, sans-serif;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				height: var(--max-screen-height);
+				margin: 0;
+				background: linear-gradient(to right, #6a11cb, #2575fc);
+			}
+
+			/* Card Container */
+			.pricing-card {
+				width: 300px;
+				padding: 20px;
+				background-color: white;
+				border-radius: 20px;
+				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+				position: relative;
+				overflow: hidden;
+			}
+
+			/* Special Badge */
+			.sale-label {
+				font-size: 14px;
+				list-style: none;
+				position: absolute;
+				top: 5px;
+				left: -5px;
+				z-index: 1;
+			}
+
+			.smart {
+				font-weight: 400;
+				color: #ffffff;
+				padding: 0px 25px 0px 10px;
+				font-size: 14px;
+				height: 30px;
+				line-height: 30px;
+				clip-path: polygon(0% 0%, 100% 0, 75% 50%, 100% 100%, 0% 100%);
+				background-color: #ED1B24;
+				position: relative;
+				display: inline-block;
+			}
+
+			.smart::after {
+				content: '';
+				position: absolute;
+				width: 0;
+				height: 0;
+				border-style: solid;
+				border-width: 0 5px 5px 0;
+				border-color: transparent #B50B13 transparent transparent;
+				bottom: -4px;
+				left: 0px;
+				filter: brightness(0.8);
+			}
+
+			/* Pricing Text */
+			.price {
+				font-size: 2em;
+				text-align: center;
+				margin: 20px 0;
+			}
+
+			.price span {
+				font-size: 0.6em;
+				color: #666;
+			}
+
+			/* Features List */
+			.features {
+				list-style: none;
+				padding: 0;
+				margin: 20px 0;
+			}
+
+			.features li {
+				display: flex;
+				align-items: center;
+				margin-bottom: 10px;
+				font-size: 0.9em;
+			}
+
+			.features li i {
+				font-size: 1.2em;
+				margin-right: 10px;
+			}
+
+			/* Icons Color */
+			.features li .check {
+				color: #4CAF50;
+			}
+
+			.features li .cross {
+				color: #F44336;
+			}
+
+			/* Button */
+			.buy-now {
+				display: block;
+				width: 100%;
+				padding: 10px;
+				text-align: center;
+				color: white;
+				background: linear-gradient(to right, #a64bf4, #e93cff);
+				text-decoration: none;
+				font-weight: bold;
+				border-radius: 20px;
+				margin-top: 20px;
+				transition: background 0.3s;
+			}
+
+			.buy-now:hover {
+				background: linear-gradient(to right, #e93cff, #a64bf4);
+			}
+		</style>
+	</head>
+	<body>
+
+		<div class="pricing-card">
+			<div class="sale-label"><span class="smart">SPECIAL</span></div>
+			<div class="price">$99.99<span>/mon</span></div>
+			<ul class="features">
+				<li><i class="check">✔</i>50 GB Bandwidth</li>
+				<li><i class="check">✔</i>Financ Analysing</li>
+				<li><i class="cross">✖</i>24 hour support</li>
+				<li><i class="cross">✖</i>Customer Managemet</li>
+				<li><i class="cross">✖</i>Financ Analysing</li>
+			</ul>
+			<a href="#" class="buy-now">BUY NOW</a>
+		</div>
+
+	</body>
+</html>

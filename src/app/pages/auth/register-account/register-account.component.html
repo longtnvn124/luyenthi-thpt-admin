@@ -1,0 +1,33 @@
+<div class="auth-main position-relative">
+  <div class="auth-wrapper version-1">
+      <div class="auth-form">
+          <div class="auth-background">
+              <div class="yellow-circle"></div>
+              <div class="red-circle"></div>
+          </div>
+          <div class="main-form intro-y">
+              <app-card [showHeader]="false" class="auth-form-card" [padding]="40">
+                <div class="d-flex flex-column align-items-center text-center m-b-20">
+                  <img src="assets/images/client/logo-tnu.png" style="height: auto;width: 90px;" alt="logo"/>
+                  <span class="fw-bold mt-2" style="font-size: 24px;">Hệ thống quản lý ký túc xá ĐHTN</span>
+              </div>
+              <h4 class="text-center m-b-25 f-22 f-w-700 f-roboto">Đăng ký</h4>
+                  <div class="separator">
+                      <span>Click vào nút bên dưới để tạo tài khoản</span>
+                  </div>
+                  <div class="google-sign-in-area d-flex justify-content-center" id="google_sign_in_area"></div>
+                  <div class="d-flex justify-content-center align-items-center m-t-30">
+                    <span class="f-w-400 f-15 f-roboto m-b-0 mr-2"><i class="fa fa-user-o f-18"></i> Bạn đã có tài khoản?</span>
+                    <a href="javascript:" class="link-primary f-w-400 f-15 f-roboto text-primary-500 m-b-0" routerLink="/auth/login">Đăng nhập</a>
+                </div>
+              </app-card>
+          </div>
+      </div>
+  </div>
+  <!-- <div class="main-form__wrap-loading position-absolute" *ngIf="loading">
+      <div class="ictu-indicator-loading-panel">
+          <span class="ictu-indicator-loading-panel__label">Loading...</span>
+          <mat-progress-bar class="loader" mode="indeterminate" value="40"></mat-progress-bar>
+      </div>
+  </div> -->
+</div>

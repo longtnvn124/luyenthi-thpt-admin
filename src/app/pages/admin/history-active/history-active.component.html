@@ -1,0 +1,156 @@
+<div id="history-active" class="history-active"> 
+    <!-- <div class="alert-danger p-2">
+        Không có lịch sử kích hoạt
+    </div> -->
+    <div *ngIf="!isLoading && listData.length <= 0; else hasData" class="notice notice--danger">
+        <p class="notice__heading">Thông báo</p>
+        <p class="notice__text">Không có lịch sử thanh toán</p>
+    </div>
+
+    <ng-template #hasData>
+      <div >
+        <div class="layout_component_container">
+            <div class="scroll-table-layout-set">
+                <div class="content-table-custom">
+                    <div class="table-header d-flex justify-content-between p-2">
+                        <h3 class="title-left">Danh sách giao dịch</h3>
+                        <div
+                          class="action-right d-flex align-items-center"
+                          style="gap: 10px"
+                        >
+                          <div class="search-block__elm">
+                            <span class="p-input-icon-right">
+                              <i class="pi pi-search"></i>
+                              <input
+                                class="ovic-table-search--head datatable-input"
+                                type="text"
+                                pInputText
+                                placeholder="Nhập tên thí sinh..."
+                                [disabled]="isLoading"
+                                (input)="onInputChange($event.target['value'])"
+                                />
+                            </span>
+                          </div>
+                          <div>
+                            <p-dropdown 
+                              [options]="listStatus" 
+                              [(ngModel)]="statusSelected" 
+                              optionLabel="name" 
+                              [showClear]="true"
+                              [optionValue]="'value'"
+                              (onChange)="changeStatus()"
+                              [disabled]="isLoading"
+                              placeholder="Trạng thái" />
+                          </div>
+                         
+                        </div>
+                      </div>
+
+                      <div *ngIf="!isLoading" class="content-table">
+                        <p-table 
+                        [value]="listData" 
+                        styleClass="p-datatable-gridlines" 
+                        [tableStyle]="{ 'min-width': '50rem' }">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th class="text-center">STT</th>
+                                    <th style="min-width: 250px;">Họ tên</th>
+                                    <th>Ngày tạo</th>
+                                    <th class="text-center">Đơn giá</th>
+                                    <th>Tên gói</th>
+                                    <th class="text-center">Mã giảm giá</th>
+                                    <th class="text-center">Số tiền giảm</th>
+                                    <th class="text-center">Thành tiền</th>
+                                    <th class="text-center">Trạng thái</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-item>
+                                <tr class="intro-x">
+                                    <td class="text-center">{{ item.__index_table }}</td>
+                                    <td style="min-width: 250px;">
+                                      <div *ngIf="item.__student" class="section-left d-flex align-items-center">
+                                        <div class="img-left">
+                                          <img *ngIf="item.__student['hasAvata']" [appLoadCourseThumbnail]="item.avatar"  />
+                                          <img *ngIf="!item.__student['hasAvata']" [src]="item.__student.avata"  />
+                                        </div>
+                                        <div class="name-student">
+                                          <div>{{ item.__student.hoten }}</div>
+                                        </div>
+                                      </div>
+                                    </td>
+                                    <td>{{ item.__created_converted }}</td>
+                                    <td class="text-center">
+                                      <ng-container *ngIf="item.__pack; else loading">
+                                        {{ item?.__pack?.price | formatVndCurrency }}
+                                      </ng-container>
+                                    </td>
+                                    <td>
+                                      <ng-container *ngIf="item.__pack; else loading">
+                                        <span class="badge-blue">
+                                          {{ item?.__pack?.name }}
+                                        </span>
+                                      </ng-container>
+                                    </td>
+
+                                    <td class="text-center">
+                                      <ng-container *ngIf="item.__coupon; else loading">
+                                        
+                                        <span *ngIf="item?.__coupon === '_ _ _'">
+                                          {{ item?.__coupon }}
+                                        </span>
+                                        <span *ngIf="item?.__coupon !== '_ _ _'">
+                                          {{ item?.__coupon?.code }}
+                                        </span>
+                                      </ng-container>
+                                    </td>
+
+                                    <td class="text-center">
+                                      <ng-container *ngIf="item.__coupon; else loading">
+                                        
+                                        <span *ngIf="item?.__coupon === '_ _ _'">
+                                          {{ item?.__coupon }}
+                                        </span>
+                                        <span *ngIf="item?.__coupon !== '_ _ _'">
+                                          {{ item?.__coupon?.amount | formatVndCurrency }}
+                                        </span>
+                                      </ng-container>
+                                    </td>
+
+                                    <td class="text-center">
+                                      {{item.price | formatVndCurrency}}
+                                    </td>
+
+                                    <td class="text-center">
+                                      <span class="badge-green" *ngIf="item.status == 1">
+                                         Thành công
+                                      </span>
+                                      <span class="badge-red" *ngIf="item.status == 0">
+                                        Thất bại
+                                     </span>
+                                    </td>
+
+                                </tr>
+                            </ng-template>
+
+
+                            <ng-template #loading>
+                              <i style="color: #4680ff;" class="pi pi-spin pi-spinner loading-point"></i>
+                            </ng-template>
+                    </p-table>
+                      </div>
+                      <app-table-loader *ngIf="isLoading" [tableRow]="8" [tableCol]="9"></app-table-loader>
+                </div>
+            </div>
+            <div class="page-layout-set">
+                <p-paginator
+                  [rows]="rows"
+                  [totalRecords]="recordsTotal"
+                  [pageLinkSize]="5"
+                  >
+                  <!-- (onPageChange)="paginate($event)" -->
+                </p-paginator>
+              </div>
+        </div>
+    </div>
+    </ng-template>
+</div>

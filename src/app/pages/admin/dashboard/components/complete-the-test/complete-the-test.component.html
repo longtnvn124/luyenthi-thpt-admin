@@ -1,0 +1,39 @@
+<div class="card-stat stat-complete">
+    <div class="row">
+        <div class="col-6">
+            <div class="img">
+                <img src="/assets/images/svg/free_icon_target.svg" alt="">
+            </div>
+        </div>
+
+        <div class="col-6">
+            <div class="title">
+                Hoàn thành bài thi
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-6">
+            <div class="value">
+                <ng-container *ngIf="data != null; else loading">
+                    <span class="intro-y">
+                        {{data}}%
+                    </span>
+                    <!-- <span [countUp]="data" [duration]="2000"></span>% -->
+                  </ng-container>
+                  <ng-template #loading>
+                    <i class="pi pi-spin pi-spinner loading-point"></i>
+                  </ng-template>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="chart">
+                <apx-chart [series]="totalTasksChart.series!" [chart]="totalTasksChart.chart!" [colors]="['#7a4100']" [stroke]="totalTasksChart.stroke!" [fill]="totalTasksChart.fill!"></apx-chart>
+            </div>
+        </div>
+    </div>
+    <span class="bg-stat">
+    
+    </span>
+</div>

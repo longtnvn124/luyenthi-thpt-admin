@@ -1,0 +1,28 @@
+.room-shift .content-input{
+    width: 78%;
+}
+ 
+.room-shift .button-action{
+    width: 15%;
+}
+
+/* .room-shift .action-header{
+    flex: 1 1;
+} */
+
+
+.room-shift .item-room{
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.room-shift .item-room .name{
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.btn-set-h{
+    height:38px;
+  }
+  .btn-set-w{
+    width:38px;
+  }

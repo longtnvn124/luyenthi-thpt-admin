@@ -1,0 +1,62 @@
+<div></div>
+
+<ng-template #dialogDetailResult>
+  <div class="dialog pt-2 pb-5" style="min-width: 50rem">
+    <div class="container mt-3 mb-3">
+      <div class="title d-flex justify-content-between align-items-center mb-2">
+        <div class="title-left text-xl mb-2">
+          <h4 class="ovic-side-navigation-content__head__title">
+             Chi tiết kết quả thi {{propsData.student.hoten}}
+
+          </h4>
+        </div>
+        <button
+          pButton
+          pRipple
+          (click)="hideDialog()"
+          type="button"
+          icon="pi pi-times"
+          class="p-button-rounded p-button-danger p-button-text close ovic-side-navigation-content__head__btn-close"
+        ></button>
+      </div>
+
+      <div class="container-content">
+        <div class="action-top row justify-content-end">
+          <!-- <div class="col-4">
+                <p-dropdown 
+                [options]="dmRooom" 
+                [(ngModel)]="selectedRoom" 
+                optionLabel="name" 
+                placeholder="Chọn phòng thi" />
+              </div> -->
+        </div>
+
+        <div *ngIf="listDetailResultPoint.length > 0" class="mt-3 content-detail-point">
+          <p-table [value]="listDetailResultPoint">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>STT</th>
+                <th>Lần thi</th>
+                <!-- <th>Mã đề thi</th> -->
+                <th>Điểm</th>
+                <th>Thời gian bắt đầu</th>
+                <th>Thời gian kết thúc</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-item let-i="rowIndex">
+              <tr>
+                <td>{{ i + 1 }}</td>
+                <td>Lần {{listDetailResultPoint.length - i}}</td>
+                <!-- <td>{{item.shiftTest.code}}</td> -->
+                <td>{{item.total_point ? item.total_point : 'Bỏ thi'}}</td>
+                <td>{{item['time_start_converted']}}</td>
+                <td>{{item['time_end_converted']}}</td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</ng-template>

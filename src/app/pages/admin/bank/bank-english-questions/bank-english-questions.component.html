@@ -1,0 +1,296 @@
+<div class="ictu-admin-side-layout__head">
+	<div class="ictu-admin-side-layout__container d-flex justify-content-between align-items-center h-100 w-100 position-relative">
+		<div *ngIf="state() === 'loading' || state() === 'error'" class="animation-typing-dots w-100 h-100" style="position: absolute;z-index: 5;top: 0;left: 0;background-color: rgb(255 255 255 / 61%);">
+			<ng-container *ngIf="state() === 'loading'">
+				<div class="animation-typing-dots__element"></div>
+				<div class="animation-typing-dots__element"></div>
+				<div class="animation-typing-dots__element"></div>
+			</ng-container>
+		</div>
+		<div class="ictu-admin-side-layout__head__buttons admin-wrap-table__head-actions">
+			<button mat-flat-button class="btn p-0 ictu-badge-btn--secondary" matTooltip="Đóng menu" matTooltipPosition="above">
+				<i class="ti ti-align-justified"></i>
+			</button>
+		</div>
+		<div class="ictu-admin-side-layout__head__buttons admin-wrap-table__head-actions">
+			<input class="ictu-admin-side-layout__head__input" pInputText placeholder="Tìm kiếm..." type="text" style="width: 300px;">
+			<button [disabled]="!canAddMorePart()" (click)="createNewPart()" mat-flat-button class="btn p-0 ictu-badge-btn--primary-reverse" matTooltip="Thêm part mới" matTooltipPosition="above">
+				<i class="ti ti-plus"></i>
+			</button>
+		</div>
+	</div>
+</div>
+<div class="ictu-admin-side-layout__body position-relative" style="overflow-y: auto;--font-family: var(--primary-font) , sans-serif;">
+	<div *ngIf="state() === 'loading'" class="dashboard-component__loading h-100">
+		<div class="dashboard-component__loading__content dashboard-component__loading__content--hide-background" style="width: 300px;">
+			<h4 class="dashboard-component__loading__heading">Loading...</h4>
+			<mat-progress-bar mode="indeterminate" value="40"></mat-progress-bar>
+		</div>
+	</div>
+	<div *ngIf="state() === 'error'" class="dashboard-component__loading">
+		<div class="alert alert-danger ictu-alert-notice m-0 border-0">
+			Quá trình tải xuống dữ liệu bị gián đoạn!. <a href="javascript:" (click)="reload($event)">tải lại</a>
+		</div>
+	</div>
+	<div class="bank-questions__content" *ngIf="!( isEmpty() && state() === 'success'); else emptyMessage">
+		<div class="list-questions__contents d-flex flex-fill">
+			<ul class="list-questions__contents__list">
+				<ng-container *ngFor="let part of structureParts()">
+					<li class="list-questions__contents__list__elements" *ngIf="structure()[part]['question']">
+						<!-- <div class="list-questions__contents__block list-questions__contents__block&#45;&#45;head d-flex align-items-center flex-wrap" style="width: 100%;padding: 10px 15px;"> -->
+						<div class="w-100 list-questions__contents__block list-questions__contents__block--head d-flex align-items-center flex-wrap">
+							<b class="list-questions__contents__block__code" style="font-size: 16px;font-weight: 900;">{{ structure()[part].name }}</b>
+							<small class="list-questions__contents__block__code__q-id">#{{ structure()[part]['question']['id'] }}</small>
+							<button (click)="openQuestionEditor(0,structure()[part]['question'])" pButton pRipple class="p-button-success p-button-rounded" icon="pi pi-plus" tooltipStyleClass="ictu-p-tooltip" [pTooltip]="'Thêm câu hỏi ' + structure()[part].name" tooltipPosition="top"></button>
+							<button (click)="updatePart(part)" pButton pRipple class="p-button-warning p-button-rounded" icon="pi pi-file-edit" tooltipStyleClass="ictu-p-tooltip" pTooltip="Cập nhật" tooltipPosition="top"></button>
+							<button [disabled]="true" pButton pRipple class="p-button-danger p-button-rounded" icon="pi pi-trash" tooltipStyleClass="ictu-p-tooltip" [pTooltip]="'Xóa '+ structure()[part].name" tooltipPosition="top"></button>
+						</div>
+						<div class="w-100 list-questions__contents__block list-questions__contents__block--body">
+							<div class="lqc-present-single-question__direction lock-ck-content" [appLoadMediaOnText]="structure()[part]['question'].id" [IctuMediaLoader]="structure()[part]['question'].id" [innerHTML]="structure()[part]['question'].content | safeHtmlSingle"></div>
+						</div>
+
+						<!-- <div class="list-questions__contents__block list-questions__contents__block&#45;&#45;body" style="font-weight: 500;">
+							Read the notices/messages/advertisements and decide if the statements that follow each question are TRUE or FALSE. Write X in the corresponding column (T or F) to the right of each statement.
+						</div> -->
+					</li>
+					<ng-container *ngIf="structure()[part].question?.children.length">
+						<li class="list-questions__contents__list__elements" *ngFor="let q of structure()[part].question.children">
+							<div class="list-questions__contents__block list-questions__contents__block--head d-flex align-items-center flex-wrap">
+								<b class="list-questions__contents__block__code">Câu {{ q.question_number }} -
+									<small>{{ q.type | ictuDropdownOptionMap : bankQuestionTypeOptions :untypedLabel }}</small>
+								</b> <small class="list-questions__contents__block__code__q-id">#{{ q.id }}</small>
+								<div *ngIf="['group-input', 'group-radio', 'group-true-false'].includes(q.type)" class="list-questions__contents__block__q-info ml-auto d-inline-flex align-items-center">
+									<p class="list-questions__contents__block__q-info__inverted-answer">
+										<i class="pi" [ngClass]="q.configs['invertedAnswer'] ? 'pi-check' : 'pi-times'"></i>Đảo vị trí {{ [ 'checkbox', 'radio' ].includes(q.type) ? 'của phương án trả lời' : 'của các câu hỏi' }}
+									</p>
+								</div>
+								<button (click)="openQuestionEditor(q.id,structure()[part]['question'])" pButton pRipple class="p-button-warning p-button-rounded" icon="pi pi-file-edit" tooltipStyleClass="ictu-p-tooltip" pTooltip="Cập nhật" tooltipPosition="top"></button>
+								<button (click)="delete(q.id)" pButton pRipple class="p-button-danger p-button-rounded" icon="pi pi-trash" tooltipStyleClass="ictu-p-tooltip" pTooltip="Xóa câu hỏi" tooltipPosition="top"></button>
+							</div>
+							<div class="list-questions__contents__block list-questions__contents__block--body">
+								<div class="lqc-present-single-question__direction lock-ck-content" [appLoadMediaOnText]="q.id" [IctuMediaLoader]="q.id" [innerHTML]="q.content | safeHtmlSingle"></div>
+							</div>
+							<div class="list-questions__contents__block">
+								<ng-container [ngSwitch]="q.type">
+									<div *ngSwitchCase="'input'" class="w-100">
+										<div class="list-questions__contents__input-box__correct-answer" [listCorrectAnswers]="q"></div>
+									</div>
+									<div *ngSwitchCase="'textarea'" class="w-100"></div>
+									<ng-container *ngSwitchCase="'drag-drop'">
+										<div class="list-questions__contents__block__grouping d-flex justify-content-center align-items-center flex-wrap">
+											<span class="list-questions__contents__block__grouping__choice lock-ck-content lock-ck-content-p-mb-0" *ngFor="let o of q.options" [innerHTML]="o.label | safeHtml"></span>
+										</div>
+										<div class="list-questions__contents__block__drag_drop__pairs d-flex align-items-start flex-wrap">
+											<div class="list-questions__contents__block__drag_drop__pairs__elm" *ngFor="let c of q.children">
+												<div class="row w-100">
+													<div style="padding:10px;" class="col-6 question-direction lock-ck-content-p-mb-0 d-flex">
+														<b style="font-family: var(--primary-font) , sans-serif;font-weight: 700;display: inline-block;text-align: left;padding: 0 5px 0 0;">{{ c.question_number }}</b>
+														<div style="width: calc(100% - 20px);display: inline-block;max-width: calc(100% - 20px);" class="lock-ck-content" [IctuMediaLoader]="c.id" [innerHTML]="c.content | safeHtml"></div>
+													</div>
+													<div style="padding: 10px;border-radius: 4px;border: 1px dashed #AFABAB;background-color: #fff;" class="col-6 answer-correct lock-ck-content-p-mb-0" [IctuMediaLoader]="c.id" *ngFor="let _label of (c | matchCorrectAnswers : q)" [innerHTML]="_label | safeHtml"></div>
+												</div>
+											</div>
+										</div>
+									</ng-container>
+									<div *ngSwitchCase="'group-input'" class="w-100">
+										<ul class="question-type-radio__list">
+											<li class="question-type-radio__list__element" [ngClass]="'question-type-radio__list__element--size-' +q.configs?.cols" *ngFor="let child of q.children ; index as i">
+												<div class="d-flex flex-column justify-content-start align-items-start">
+													<b style="font-size: 15px;font-weight: 700;display: block;margin: 0 0 5px;">Câu {{ child.question_number }}</b>
+													<div class="list-questions__contents__block list-questions__contents__block--body" style="padding: 15px;">
+														<div class="lock-ck-content" [appLoadMediaOnText]="i" [innerHTML]="child.content | safeHtmlSingle"></div>
+													</div>
+													<div class="list-questions__contents__block" style="padding: 10px 0;">
+														<div class="list-questions__contents__input-box__correct-answer" [listCorrectAnswers]="child"></div>
+													</div>
+												</div>
+											</li>
+										</ul>
+									</div>
+									<div *ngSwitchCase="'group-radio'" class="w-100">
+										<ul class="question-type-radio__list">
+											<li class="question-type-radio__list__element" [ngClass]="'question-type-radio__list__element--size-' +q.configs?.cols" *ngFor="let child of q.children ; index as i">
+												<div class="d-flex flex-column justify-content-start align-items-start w-100">
+													<div class="d-flex w-100 mb-2">
+														<b style="font-size: 15px;font-weight: 700;display: block;margin: 0;">Câu {{ child.question_number }}</b>
+														<div class="list-questions__contents__block__q-info ml-auto d-inline-flex align-items-center">
+															<p class="list-questions__contents__block__q-info__inverted-answer">
+																<i class="pi" [ngClass]="child.configs['invertedAnswer'] ? 'pi-check' : 'pi-times'"></i>Đảo vị trí của phương án trả lời
+															</p>
+														</div>
+													</div>
+													<div class="list-questions__contents__block list-questions__contents__block--body" style="padding: 15px;">
+														<div class="lock-ck-content" [appLoadMediaOnText]="i" [innerHTML]="child.content | safeHtmlSingle"></div>
+													</div>
+													<div class="list-questions__contents__block" style="padding: 10px 0;">
+														<div class="question-type-radio">
+															<ul class="question-type-radio__list">
+																<li class="question-type-radio__list__element" [ngClass]="'question-type-radio__list__element--size-' +child.configs?.cols" *ngFor="let o of child.options; index as i">
+																	<span class="question-type-radio__radio-button__index" [class.question-type-radio__radio-button__index--highlight]="o | isAnswerCorrect : child">{{ i | questionPrefix }}</span>
+																	<div class="question-type-radio__option" [appLoadMediaOnText]="o.value" [innerHTML]="o.label | safeHtmlSingle"></div>
+																</li>
+															</ul>
+														</div>
+													</div>
+												</div>
+											</li>
+										</ul>
+									</div>
+									<div *ngSwitchCase="'radio'" class="w-100">
+										<ul class="question-type-radio__list">
+											<li class="question-type-radio__list__element" [ngClass]="'question-type-radio__list__element--size-' +q.configs?.cols" *ngFor="let o of q.options; index as i">
+												<span class="question-type-radio__radio-button__index" [class.question-type-radio__radio-button__index--highlight]="o | isAnswerCorrect : q">{{ i | questionPrefix }}</span>
+												<div class="question-type-radio__option" [appLoadMediaOnText]="o.value" [innerHTML]="o.label | safeHtmlSingle"></div>
+											</li>
+										</ul>
+									</div>
+									<div *ngSwitchCase="'checkbox'" class="w-100">
+										<ul class="question-type-radio__list">
+											<li class="question-type-radio__list__element" [ngClass]="'question-type-radio__list__element--size-' +q.configs?.cols" *ngFor="let o of q.options; index as i">
+												<span class="question-type-radio__radio-button__index" [class.question-type-radio__radio-button__index--highlight]="o | isAnswerCorrect : q">{{ i | questionPrefix }}</span>
+												<div class="question-type-radio__option" [appLoadMediaOnText]="o.value" [innerHTML]="o.label | safeHtmlSingle"></div>
+											</li>
+										</ul>
+									</div>
+									<div *ngSwitchCase="'true-false'" class="w-100">
+										<ul class="ictu-logic-question__answers">
+											<li class="ictu-logic-question__answers__element" *ngFor="let btn of q.options">
+												<span class="ictu-logic-question__answers__btn" [class.high-light]="btn | isAnswerCorrect : q">{{ btn.label }}</span>
+											</li>
+										</ul>
+									</div>
+									<div *ngSwitchCase="'group-true-false'" class="w-100">
+										<ul class="question-type-radio__list">
+											<li class="question-type-radio__list__element" [ngClass]="'question-type-radio__list__element--size-' +q.configs?.cols" *ngFor="let child of q.children ; index as i">
+												<!-- <div class="d-flex flex-column justify-content-start align-items-start w-100">
+													<div class="d-flex w-100 mb-2">
+														<b style="font-size: 15px;font-weight: 700;display: block;margin: 0;">Câu {{ child.question_number }}</b>
+													</div>
+													<div class="list-questions__contents__block list-questions__contents__block&#45;&#45;body" style="padding: 15px;">
+														<div class="lock-ck-content" [appLoadMediaOnText]="i" [innerHTML]="child.content | safeHtmlSingle"></div>
+													</div>
+													<div class="list-questions__contents__block" style="padding: 20px 0 0 20px;">
+														<div class="question-type-radio">
+															<ul class="ictu-logic-question__answers">
+																<li class="ictu-logic-question__answers__element" *ngFor="let btn of child.options">
+																	<span class="ictu-logic-question__answers__btn" [class.high-light]="btn | isAnswerCorrect : child">{{ btn.label }}</span>
+																</li>
+															</ul>
+														</div>
+													</div>
+												</div> -->
+												<div class="d-flex flex-column justify-content-start align-items-start w-100" style="border:1px solid #ebebeb;">
+													<div class="list-questions__contents__block list-questions__contents__block--body" style="padding: 15px;">
+														<b style="font-size: 14px;font-weight: 700;display: inline-block;margin: -1px 5px 0 0;max-width: 18px;line-height: 1;vertical-align: middle;">{{ child.question_number }}</b>
+														<div style="max-width: calc(100% - 18px - 5px);display: inline-block;vertical-align: top;" class="lock-ck-content" [appLoadMediaOnText]="i" [innerHTML]="child.content | safeHtmlSingle"></div>
+													</div>
+													<div class="list-questions__contents__block" style="padding: 15px 0;">
+														<div class="question-type-radio">
+															<ul class="ictu-logic-question__answers d-flex justify-content-evenly align-items-center">
+																<li class="ictu-logic-question__answers__element" *ngFor="let btn of child.options" style="width: auto;max-width: max-content;min-width: auto;">
+																	<span class="ictu-logic-question__answers__btn" [class.high-light]="btn | isAnswerCorrect : child">{{ btn.label }}</span>
+																</li>
+															</ul>
+														</div>
+													</div>
+												</div>
+											</li>
+										</ul>
+									</div>
+									<ng-container *ngSwitchCase="'grouping'">
+										<div class="list-questions__contents__block__grouping d-flex justify-content-center align-items-center flex-wrap">
+											<span class="list-questions__contents__block__grouping__choice" *ngFor="let o of q.options">{{ o.label }}</span>
+										</div>
+										<div class="list-questions__contents__block__grouping__pairs d-flex align-items-start flex-wrap">
+											<div class="list-questions__contents__block__grouping__pairs__elm" *ngFor="let c of q.children">
+												<b class="list-questions__contents__block__grouping__pairs__elm__heading" [IctuMediaLoader]="c.id" [innerHTML]="c.content | safeHtml"></b>
+												<div class="list-questions__contents__block__grouping d-flex justify-content-start align-items-start flex-wrap" style="padding: 10px;width: 100%;border-radius: 4px;border: 1px dashed #AFABAB;background-color: #fff;">
+													<span class="list-questions__contents__block__grouping__choice" *ngFor="let _label of (c | matchCorrectAnswers : q)">{{ _label }}</span>
+												</div>
+											</div>
+										</div>
+									</ng-container>
+									<ng-container *ngSwitchCase="'reorder_words'"></ng-container>
+									<app-preview-question-matching *ngSwitchCase="'matching'" [question]="q"></app-preview-question-matching>
+									<div *ngSwitchDefault class="d-flex flex-fill w-100 h-100 justify-content-center align-items-center">
+										<p class="alert alert-secondary m-0 primary-font --fs-14">Vui lòng chọn loại câu hỏi </p>
+									</div>
+								</ng-container>
+							</div>
+						</li>
+					</ng-container>
+				</ng-container>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<ng-template #emptyMessage>
+	<div class="d-flex justify-content-center align-items-center w-100 h-100">
+		<div class="alert alert-primary ictu-alert-notice">Ngân hàng không có câu hỏi.</div>
+	</div>
+</ng-template>
+
+<p-sidebar [(visible)]="sidebarVisible" position="right" appendTo="body" styleClass="ictu-p-drawer" [dismissible]="false" [style]="{'width':'100%', 'max-width':'100%'}" (onHide)="onDrawerHide()">
+	<ng-template pTemplate="header">
+		<h2 class="ictu-p-drawer__heading">
+			<svg style="margin: 0 5px 0 0;" xmlns="http://www.w3.org/2000/svg" fill="none" height="24" viewBox="0 0 24 24" width="24">
+				<g fill="currentColor">
+					<path d="m22 6.75h-8c-.1989 0-.3897-.07902-.5303-.21967-.1407-.14065-.2197-.33142-.2197-.53033s.079-.38968.2197-.53033c.1406-.14065.3314-.21967.5303-.21967h8c.1989 0 .3897.07902.5303.21967.1407.14065.2197.33142.2197.53033s-.079.38968-.2197.53033c-.1406.14065-.3314.21967-.5303.21967z"/>
+					<path d="m22 12.75h-8c-.1989 0-.3897-.079-.5303-.2197-.1407-.1406-.2197-.3314-.2197-.5303s.079-.3897.2197-.5303c.1406-.1407.3314-.2197.5303-.2197h8c.1989 0 .3897.079.5303.2197.1407.1406.2197.3314.2197.5303s-.079.3897-.2197.5303c-.1406.1407-.3314.2197-.5303.2197z"/>
+					<path d="m22 18.75h-8c-.1989 0-.3897-.079-.5303-.2197-.1407-.1406-.2197-.3314-.2197-.5303s.079-.3897.2197-.5303c.1406-.1407.3314-.2197.5303-.2197h8c.1989 0 .3897.079.5303.2197.1407.1406.2197.3314.2197.5303s-.079.3897-.2197.5303c-.1406.1407-.3314.2197-.5303.2197z"/>
+					<path d="m9.5 11.25h-5c-.46332-.0026-.90691-.1878-1.23454-.5155-.32762-.3276-.51283-.77118-.51546-1.2345v-5c.00263-.46332.18784-.90691.51546-1.23454.32763-.32762.77122-.51283 1.23454-.51546h5c.46332.00263.9069.18784 1.2345.51546.3277.32763.5129.77122.5155 1.23454v5c-.0026.46332-.1878.9069-.5155 1.2345-.3276.3277-.77118.5129-1.2345.5155zm-5-7c-.0663 0-.12989.02634-.17678.07322-.04688.04689-.07322.11048-.07322.17678v5c0 .0663.02634.12989.07322.17678.04689.04688.11048.07322.17678.07322h5c.0663 0 .12989-.02634.17678-.07322.04688-.04689.07322-.11048.07322-.17678v-5c0-.0663-.02634-.12989-.07322-.17678-.04689-.04688-.11048-.07322-.17678-.07322z"/>
+					<path d="m9.5 21.25h-5c-.46332-.0026-.90691-.1878-1.23454-.5155-.32762-.3276-.51283-.7712-.51546-1.2345v-5c.00263-.4633.18784-.9069.51546-1.2345.32763-.3277.77122-.5129 1.23454-.5155h5c.46332.0026.9069.1878 1.2345.5155.3277.3276.5129.7712.5155 1.2345v5c-.0026.4633-.1878.9069-.5155 1.2345-.3276.3277-.77118.5129-1.2345.5155zm-5-7c-.0663 0-.12989.0263-.17678.0732-.04688.0469-.07322.1105-.07322.1768v5c0 .0663.02634.1299.07322.1768.04689.0469.11048.0732.17678.0732h5c.0663 0 .12989-.0263.17678-.0732.04688-.0469.07322-.1105.07322-.1768v-5c0-.0663-.02634-.1299-.07322-.1768-.04689-.0469-.11048-.0732-.17678-.0732z"/>
+					<path d="m6.49997 8.75001c-.18863-.00689-.36749-.08559-.5-.22l-1-1c-.09139-.14096-.13281-.30852-.11763-.47582.01519-.16731.08611-.32467.20139-.44686.11528-.1222.26824-.20216.43438-.22706.16614-.02489.33582.0067.48186.08974l.47.47 1.53-1.47c.06181-.09534.14447-.17538.24174-.23409s.20661-.09456.31976-.10483.22716.0053.33341.04554c.10625.04023.20197.10408.27994.18672.07796.08265.13613.18193.17012.29034.03398.10841.04289.22313.02605.33549s-.05899.21943-.12326.31312-.14899.17155-.24776.22771l-2 2c-.13251.13441-.31138.21311-.5.22z"/>
+				</g>
+			</svg>
+			{{ bankName }} > {{ sidebarHeading() }}
+		</h2>
+	</ng-template>
+	<app-bank-question-editor *ngIf="sidebarVisible" [configs]="configEditor()" (change)="setBankAsDirty()" (closePanel)="closeEditPanel()"></app-bank-question-editor>
+</p-sidebar>
+
+<p-sidebar [(visible)]="formControl.visible" position="right" appendTo="body" styleClass="ictu-p-drawer" [dismissible]="false" [style]="{'width':'900px', 'max-width':'100%'}" (onHide)="onDrawerHide()">
+	<ng-template pTemplate="header">
+		<h2 class="ictu-p-drawer__heading">
+			<svg style="margin: 0 5px 0 0;" xmlns="http://www.w3.org/2000/svg" fill="none" height="24" viewBox="0 0 24 24" width="24">
+				<g fill="currentColor">
+					<path d="m22 6.75h-8c-.1989 0-.3897-.07902-.5303-.21967-.1407-.14065-.2197-.33142-.2197-.53033s.079-.38968.2197-.53033c.1406-.14065.3314-.21967.5303-.21967h8c.1989 0 .3897.07902.5303.21967.1407.14065.2197.33142.2197.53033s-.079.38968-.2197.53033c-.1406.14065-.3314.21967-.5303.21967z"/>
+					<path d="m22 12.75h-8c-.1989 0-.3897-.079-.5303-.2197-.1407-.1406-.2197-.3314-.2197-.5303s.079-.3897.2197-.5303c.1406-.1407.3314-.2197.5303-.2197h8c.1989 0 .3897.079.5303.2197.1407.1406.2197.3314.2197.5303s-.079.3897-.2197.5303c-.1406.1407-.3314.2197-.5303.2197z"/>
+					<path d="m22 18.75h-8c-.1989 0-.3897-.079-.5303-.2197-.1407-.1406-.2197-.3314-.2197-.5303s.079-.3897.2197-.5303c.1406-.1407.3314-.2197.5303-.2197h8c.1989 0 .3897.079.5303.2197.1407.1406.2197.3314.2197.5303s-.079.3897-.2197.5303c-.1406.1407-.3314.2197-.5303.2197z"/>
+					<path d="m9.5 11.25h-5c-.46332-.0026-.90691-.1878-1.23454-.5155-.32762-.3276-.51283-.77118-.51546-1.2345v-5c.00263-.46332.18784-.90691.51546-1.23454.32763-.32762.77122-.51283 1.23454-.51546h5c.46332.00263.9069.18784 1.2345.51546.3277.32763.5129.77122.5155 1.23454v5c-.0026.46332-.1878.9069-.5155 1.2345-.3276.3277-.77118.5129-1.2345.5155zm-5-7c-.0663 0-.12989.02634-.17678.07322-.04688.04689-.07322.11048-.07322.17678v5c0 .0663.02634.12989.07322.17678.04689.04688.11048.07322.17678.07322h5c.0663 0 .12989-.02634.17678-.07322.04688-.04689.07322-.11048.07322-.17678v-5c0-.0663-.02634-.12989-.07322-.17678-.04689-.04688-.11048-.07322-.17678-.07322z"/>
+					<path d="m9.5 21.25h-5c-.46332-.0026-.90691-.1878-1.23454-.5155-.32762-.3276-.51283-.7712-.51546-1.2345v-5c.00263-.4633.18784-.9069.51546-1.2345.32763-.3277.77122-.5129 1.23454-.5155h5c.46332.0026.9069.1878 1.2345.5155.3277.3276.5129.7712.5155 1.2345v5c-.0026.4633-.1878.9069-.5155 1.2345-.3276.3277-.77118.5129-1.2345.5155zm-5-7c-.0663 0-.12989.0263-.17678.0732-.04688.0469-.07322.1105-.07322.1768v5c0 .0663.02634.1299.07322.1768.04689.0469.11048.0732.17678.0732h5c.0663 0 .12989-.0263.17678-.0732.04688-.0469.07322-.1105.07322-.1768v-5c0-.0663-.02634-.1299-.07322-.1768-.04689-.0469-.11048-.0732-.17678-.0732z"/>
+					<path d="m6.49997 8.75001c-.18863-.00689-.36749-.08559-.5-.22l-1-1c-.09139-.14096-.13281-.30852-.11763-.47582.01519-.16731.08611-.32467.20139-.44686.11528-.1222.26824-.20216.43438-.22706.16614-.02489.33582.0067.48186.08974l.47.47 1.53-1.47c.06181-.09534.14447-.17538.24174-.23409s.20661-.09456.31976-.10483.22716.0053.33341.04554c.10625.04023.20197.10408.27994.18672.07796.08265.13613.18193.17012.29034.03398.10841.04289.22313.02605.33549s-.05899.21943-.12326.31312-.14899.17155-.24776.22771l-2 2c-.13251.13441-.31138.21311-.5.22z"/>
+				</g>
+			</svg>
+			{{ bankName }} > {{ formControl.formType === 'edit' ? 'Cập nhật > ' + formControl.object.code : 'Thêm part' }}
+		</h2>
+	</ng-template>
+	<div *ngIf="formControl.loading" class="ictu-p-drawer__animations animation-typing-dots">
+		<span class="animation-typing-dots__element"></span> <span class="animation-typing-dots__element"></span>
+		<span class="animation-typing-dots__element"></span>
+	</div>
+	<div class="ictu-p-drawer__body">
+		<div class="ovic-vertical__inputs ovic-vertical__inputs--layout-2 p-0">
+			<form [formGroup]="formControl.formGroup" *ngIf="formControl.visible">
+				<div class="row">
+					<div class="col-12" *ngIf="formControl.formType === 'create'">
+						<p class="form-row">
+							<label class="ictu-form__label">Part <span class="ovic-mark">*</span></label>
+							<p-dropdown [options]="formControl.options" appendTo="body" class="ictu-dropdown-style" panelStyleClass="ictu-dropdown-panel" formControlName="code" placeholder="Part name"></p-dropdown>
+						</p>
+					</div>
+					<div class="col-12">
+						<p class="form-row hide-ck-voice-label">
+							<app-input-question-direction class="w-100" [initData]="formControl.formType === 'edit' ? formControl.object.content : '' " [abstractControl]="formControl.formGroup.get('content')"></app-input-question-direction>
+						</p>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div class="ictu-p-drawer__footer">
+		<button (click)="closeFromPanel()" class="btn ictu-badge-btn--secondary" mat-flat-button>Hủy</button>
+		<button (click)="submitForm()" [disabled]="formControl.formGroup.invalid" class="btn ictu-badge-btn--primary-reverse" mat-flat-button>Lưu lại</button>
+	</div>
+</p-sidebar>

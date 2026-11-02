@@ -1,0 +1,43 @@
+<p-editor
+        styleClass="ovic-editor"
+        (onTextChange)="onTextChange($event)"
+        [(ngModel)]="textContents" [readonly]="false"
+        [style]="{ height: height }"
+        >
+    <p-header>
+        <span class="ql-formats">
+            <select class="ql-header" title="Thẻ tiêu đề">
+                <option selected></option>
+                <option value="1"></option>
+                <option value="2"></option>
+                <option value="3"></option>
+                <option value="4"></option>
+                <option value="5"></option>
+                <option value="6"></option>
+            </select>
+        </span>
+        <span class="ql-formats">
+            <button class="ql-bold" title="Kiểu chữ đậm"></button>
+            <button class="ql-italic" title="Kiểu chữ nghiêng"></button>
+            <button class="ql-underline" title="Kiểu chữ ghạch chân"></button>
+            <button class="ql-strike" title="Kiểu chữ ghạch ngang"></button>
+        </span>
+        <span class="ql-formats">
+            <button class="ql-list" value="ordered" title="Danh sách số"></button>
+            <button class="ql-list" value="bullet" title="Danh sách chấm"></button>
+            <select class="ql-align" title="Căn lề">
+                <option selected></option>
+                <option value="center"></option>
+                <option value="right"></option>
+                <option value="justify"></option>
+            </select>
+            <!--            <button class="ql-indent q1-box" value="+1" title="Thụt phải"></button>-->
+            <!--            <button class="ql-indent q1-box last" value="-1" title="Thụt trái"></button>-->
+        </span>
+        <span class="ql-formats">
+            <button class="ql-link" aria-label="Indent" title="Thẻ liên kết"></button>
+        </span>
+    </p-header>
+</p-editor>
+
+

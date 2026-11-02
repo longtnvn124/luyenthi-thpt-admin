@@ -1,0 +1,60 @@
+<div id="config-system" class="config-system" [class.ictu-is-loading]="isLoading">
+  <div class="banner-top">
+    <div class="elementor-background-overlay"></div>
+
+    <div>
+      <img style="width: 50px" src="/assets/images/config/school.gif" alt="" />
+    </div>
+    <div class="content-banner text-center">
+      <!-- Large Text (Headline) -->
+      <div>
+        <h2 id="headline" class="large-text typing-cursor"></h2>
+      </div>
+
+      <!-- Small Text (Subtext) -->
+      <div>
+        <p id="subtext" class="small-text typing-cursor"></p>
+      </div>
+    </div>
+  </div>
+  <div class="content-config mt-3" >
+    <div class="row">
+      <div
+        *ngFor="let item of listData; index as i"
+        class="col-6 section-save-test section-item-config intro-x"
+      >
+        <app-card [cardTitle]="item['title_converted']">
+          <div class="container-item">
+            <div
+              *ngFor="let config of item.params; index as i2"
+              class="item-config"
+            >
+              <div
+                class="d-flex align-items-item-center justify-content-between"
+              >
+                <div class="icon">
+                  <img style="width: 30px" [src]="config['icon']" alt="" />
+                </div>
+                <div class="ovic-switch round">
+                  <button
+                    [disabled]="item['config_key'] === 'RESOURCE_STORE'"
+                    class="ovic-switch-btn"
+                    [ngClass]="item.value == config['value'] ? 'on' : 'off'"
+                    (click)="changeConfigMode(item, config['value'])"
+                  >
+                    <!-- (click)="changeFeatured(item)" -->
+                    <span class="slider"></span>
+                    <!-- {{ data[col.field[0]] }} -->
+                  </button>
+                </div>
+              </div>
+              <div class="label mt-2">
+                {{ config["title"] }}
+              </div>
+            </div>
+          </div>
+        </app-card>
+      </div>
+    </div>
+  </div>
+</div>

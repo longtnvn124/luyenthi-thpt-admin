@@ -1,0 +1,245 @@
+.progress-container {
+    width: 100%;
+    height: 10px; /* Chiều cao thanh */
+    background-color: #e9ecef; /* Màu nền thanh */
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #1e90ff, #00bfff);
+    border-radius: 10px;
+    position: relative;
+    transition: width 1s ease-out; /* Hiệu ứng thay đổi chiều rộng */
+  }
+  
+.content-label{
+    margin-top: 15px;
+    font-size: 14px;
+    
+}
+
+  .progress-label {
+    font-weight: 500;
+    /* position: absolute; */
+    /* right: 10px;
+    top: 50%; */
+    /* transform: translateY(-50%); */
+    /* font-size: 12px; */
+    /* font-weight: bold; */
+    /* text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); */
+  }
+  
+  /* Hiệu ứng lớp phủ chạy qua */
+  .progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.3);
+    opacity: 0;
+    animation: shine 1.5s infinite;
+  }
+  
+  @keyframes shine {
+    0% {
+      left: -100%;
+      opacity: 0;
+    }
+    50% {
+      left: 50%;
+      opacity: 1;
+    }
+    100% {
+      left: 100%;
+      opacity: 0;
+    }
+  }
+  
+
+
+
+
+/* General container styles */
+.success-container, .error-container, .wait-container, .loading-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Checkmark (PAID) styles */
+.checkmark {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    background-color: #4caf50;
+    border-radius: 50%;
+    animation: pop-in 0.4s ease-out;
+}
+
+.checkmark::after {
+    content: "";
+    position: absolute;
+    width: 15px;
+    height: 30px;
+    border: solid white;
+    border-width: 0 5px 5px 0;
+    transform: rotate(45deg);
+    top: 8px;
+    left: 16px;
+    opacity: 0;
+    animation: checkmark-draw 0.4s ease-out 0.4s forwards;
+}
+
+.success-container .message {
+    margin-top: 15px;
+    font-size: 18px;
+    color: #4caf50;
+    font-weight: bold;
+    opacity: 0;
+    transform: translateY(-10px);
+    animation: message-show 0.5s ease-out 1s forwards;
+}
+
+/* Error icon (FAIL) styles */
+.error-icon {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    background-color: #f44336;
+    border-radius: 50%;
+    animation: pop-in 0.4s ease-out;
+}
+
+.error-icon::before,
+.error-icon::after {
+    content: "";
+    position: absolute;
+    width: 30px;
+    height: 5px;
+    background-color: white;
+    top: 22px;
+    left: 10px;
+}
+
+.error-icon::before {
+    transform: rotate(45deg);
+}
+
+.error-icon::after {
+    transform: rotate(-45deg);
+}
+
+.error-container .message {
+    margin-top: 15px;
+    font-size: 18px;
+    color: #f44336;
+    font-weight: bold;
+    opacity: 0;
+    transform: translateY(-10px);
+    animation: message-show 0.5s ease-out 1s forwards;
+}
+
+
+.loader {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #0088ee;
+    border-radius: 50%;
+    margin: auto;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+}
+
+.loading-container .message {
+    margin-top: 15px;
+    font-size: 18px;
+    color: #0088ee;
+    font-weight: bold;
+    /* opacity: 0; */
+    /* transform: translateY(-10px); */
+    /* animation: message-show 0.1s ease-out 1s forwards; */
+}
+
+/* Loader (WAIT) styles */
+
+.loader-wait {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #ff9800;
+    border-radius: 50%;
+    margin: auto;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+}
+
+
+.wait-container .message {
+    margin-top: 15px;
+    font-size: 18px;
+    color: #ff9800;
+    font-weight: bold;
+    opacity: 0;
+    transform: translateY(-10px);
+    animation: message-show 0.5s ease-out 1s forwards;
+}
+
+/* Keyframes for animations */
+@keyframes pop-in {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes checkmark-draw {
+    0% {
+        opacity: 0;
+        transform: scale(0) rotate(45deg);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) rotate(45deg);
+    }
+}
+
+@keyframes message-show {
+    0% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+
+.btn-close-custom {
+    border: none;
+    color: #fff;
+    background-image: linear-gradient(30deg, #4caf50, #3ebfbf);
+    border-radius: 20px;
+    background-size: 100% auto;
+    padding: 0.3em 2.2em;
+    font-weight: 500;
+    margin-top: 15px;
+  }

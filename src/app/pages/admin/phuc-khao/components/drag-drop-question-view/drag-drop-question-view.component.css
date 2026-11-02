@@ -1,0 +1,48 @@
+
+.drap-drop-question-view .item-data-value{
+    font-weight: 400;
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.5;
+    font-size: 15px;
+    margin: 10px;
+    border: 1px dashed #DBDBDB;
+    padding: 5px 10px;
+}
+
+.drap-drop-question-view .subquestion{
+    line-height: 1.5;
+
+}
+
+.drap-drop-question-view .subquestion .value-answer{
+    border: 1px solid #DBDBDB;
+    padding: 5px 10px;
+    font-size: 15px;
+    border-radius: 5px;
+}
+.border-red{
+    border: 1px solid red !important;
+}
+.drap-drop-question-view .subquestion .value-answer-correct{
+    padding: 5px 10px;
+    font-size: 15px;
+    border-radius: 5px;
+}
+
+.checkmark, .crossmark {
+    display: flex; /* Đặt container dạng flexbox */
+    align-items: center; /* Canh giữa theo trục dọc */
+    gap: 8px; /* Khoảng cách giữa dấu tích/X và nội dung */
+}
+
+.checkmark::before, .crossmark::before {
+    flex-shrink: 0; /* Đảm bảo dấu tích/X không co lại */
+    content: '✓'; /* Hoặc '✗' */
+    color: green; /* Màu cho dấu tích */
+    font-weight: bold; /* In đậm */
+}
+
+.crossmark::before {
+    content: '✗'; /* Nội dung cho dấu X */
+    color: red; /* Màu đỏ */
+}

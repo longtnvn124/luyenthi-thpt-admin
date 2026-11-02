@@ -1,0 +1,119 @@
+::ng-deep.pc-header {
+    min-height: 0;
+    box-shadow: none;
+    //position: fixed;
+    z-index: 1025;
+    backdrop-filter: blur(8px);
+    position: static;
+    //backdrop-filter: none;
+    height: 60px !important;
+
+    .header-wrapper {
+        display: flex;
+        justify-content: space-between;
+        //padding: 0 25px;
+        padding: 0 10px;
+        flex-grow: 1;
+        height: 100%;
+        align-items: center;
+        line-height: 1;
+        background-color: white;
+        box-shadow: 0 1px 5px -2px gray;
+    }
+
+    .header-button {
+        display: inline-flex;
+        align-items: center;
+
+        button {
+            padding: 0;
+            border-radius: 8px;
+
+            .mdc-button__label,
+            .pc-head-link {
+                margin: 0;
+                width: 100%;
+                height: 100%;
+            }
+
+            .mdc-button__label {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .mat-badge {
+                width: 46px;
+                height: 46px;
+                overflow: visible;
+
+                .mat-badge-content {
+                    right: auto !important;
+                    top: 3px !important;
+                    min-width: 18px;
+                    height: 18px;
+                    line-height: 8px;
+                    font-size: 9px;
+                    z-index: 5;
+                    font-weight: 400;
+                    width: auto;
+                    padding: 5px;
+                    left: 24px;
+                    font-family: "Inter var", sans-serif;
+                }
+
+                &::before {
+                    content: none;
+                }
+            }
+        }
+    }
+
+    .header-item {
+        min-height: 54px;
+        display: flex;
+        align-items: center;
+        position: relative;
+
+        &.mdc-button {
+            min-width: 54px;
+        }
+    }
+
+    .pc-head-link {
+        margin: 0 4px;
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+
+        >svg,
+        >i {
+            position: relative;
+            color: var(--accent-600);
+        }
+
+        >i {
+            font-size: 24px;
+        }
+
+        >svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        &:focus,
+        &:hover {
+            text-decoration: none;
+            color: var(--accent-600);
+
+            >svg,
+            >i {
+                color: var(--accent-600);
+                transform: scale(1.08);
+            }
+        }
+    }
+}

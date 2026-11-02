@@ -1,0 +1,73 @@
+<div class="grading-assignment-system">
+	<ng-container [ngSwitch]="state()">
+
+		<div *ngSwitchCase="'loading'" class="dashboard-component--full-height dashboard-component__loading" style="z-index: 100;">
+			<div class="dashboard-component__loading__content">
+				<h4 class="dashboard-component__loading__heading">Tải thông tin bài thi...</h4>
+				<mat-progress-bar mode="indeterminate" value="40"></mat-progress-bar>
+			</div>
+		</div>
+
+		<div *ngSwitchCase="'submitting'" class="dashboard-component--full-height dashboard-component__loading" style="z-index: 100;">
+			<div class="dashboard-component__loading__content">
+				<h4 class="dashboard-component__loading__heading">Cập nhật kết quả chấm...</h4>
+				<mat-progress-bar mode="indeterminate" value="40"></mat-progress-bar>
+			</div>
+		</div>
+
+		<ng-container *ngSwitchCase="'success'">
+			<div *ngIf="isProcessing()" class="dashboard-component--full-height dashboard-component__loading" style="z-index: 100;">
+				<div class="dashboard-component__loading__content">
+					<h4 class="dashboard-component__loading__heading">Xử lý thông tin...</h4>
+					<mat-progress-bar mode="indeterminate" value="40"></mat-progress-bar>
+				</div>
+			</div>
+			<div class="grading-assignment__header position-relative">
+				<button (click)="btnChangeTab('content')" [ngClass]="tabActive() === 'content' ? '--tab-active':null" class="btn grading-assignment-system__head__tab">Bài làm của thí sinh</button>
+				<button (click)="btnChangeTab('guide')" [ngClass]="tabActive() === 'guide' ? '--tab-active':null" class="btn grading-assignment-system__head__tab">Hướng dẫn chấm</button>
+				<button (click)="callSubmitForm()" [disabled]="!form.touched || form.invalid" mat-flat-button class="grading-assignment-system__submit-btn btn ictu-badge-btn--primary-reverse">Hoàn thành</button>
+			</div>
+			<div class="grading-assignment-system__body">
+				<div class="grading-assignment-system__container" *ngIf="info && info.answer && info.question">
+					<ng-container *ngIf="tabActive() === 'content'; else showGuide">
+						<textarea disabled="disabled" pInputTextarea class="grading-assignment-system__presentation" [ngModel]="info.answer.answer"></textarea>
+						<div class="grading-assignment-system__word-counter">
+							<p class="grading-assignment-system__word-counter__text">Tổng số đoạn : {{ info.answer.answer | paragraphCounter }}</p>
+							<p class="grading-assignment-system__word-counter__text">Tổng số chữ : {{ info.answer.answer | wordsCounter }}</p>
+						</div>
+					</ng-container>
+				</div>
+			</div>
+			<div class="grading-assignment-system__footer">
+				<div class="grading-assignment-system__foot__inner">
+					<form [formGroup]="form" class="grading-assignment-system__form">
+						<fieldset>
+							<legend>Điểm</legend>
+							<input type="text" pInputText class="grading-assignment-system__form__input grading-assignment-system__form__input--score" formControlName="score" numericInput>
+						</fieldset>
+						<fieldset>
+							<legend>Lời phê của giáo viên</legend>
+							<textarea pInputTextarea rows="5" cols="100" class="grading-assignment-system__form__input" formControlName="comments"></textarea>
+						</fieldset>
+					</form>
+				</div>
+			</div>
+		</ng-container>
+
+		<div *ngSwitchCase="'error'" class="admin-table__alert-danger text-center m-auto">Tải dữ liệu thất bại. Vui lòng
+			<a (click)="reload($event)" href="javascript:" class="admin-table__alert-danger__btn-reload">tải lại</a>
+		</div>
+
+		<div *ngSwitchCase="'submitFail'" class="admin-table__alert-danger text-center m-auto">Cập nhật kết quả chấm thất bại Vui lòng
+			<a (click)="resubmitting($event)" href="javascript:" class="admin-table__alert-danger__btn-reload">cập nhật nhật lại</a>
+		</div>
+
+		<div *ngSwitchCase="'empty'" class="ictu-badge ictu-badge--success text-center m-auto" style="display: inline-block;font-size: 14px;line-height: 1.5;padding: 10px 15px;">Bạn đã chấm hết bài thi được giao.
+			<a (click)="backToDashboard($event)" href="javascript:" class="admin-table__alert-danger__btn-reload">Trở về trình quản lý</a>
+		</div>
+	</ng-container>
+</div>
+
+<ng-template #showGuide>
+	<div style="--grading-assignment-system-present-size: var(--grading-assignment-body-height)" class="grading-assignment-system__presentation" [innerHTML]="info.question.scoring_guide | safeHtml"></div>
+</ng-template>

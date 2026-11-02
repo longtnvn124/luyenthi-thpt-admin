@@ -1,0 +1,5 @@
+.admin-table__btn-actions .btn:disabled {
+    background-color: rgb(209 209 209) !important;
+    color: rgb(133 133 133) !important;
+    cursor: auto;
+}

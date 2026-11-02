@@ -1,0 +1,57 @@
+<div class="course-info d-flex flex-column position-relative">
+    <div class="course-info__thumbnail">
+        <div class="course-info__thumbnail-link">
+            <img [src]="course.img_url ? '../../../assets/images/svg/loading.svg' : '../../../assets/images/placeholder-368x206.svg'" [appLoadCourseThumbnail]="course.img_url" alt="course info" class="thumbnail-loading">
+        </div>
+        <div class="course-info__buttons-on-thumbnail">
+            <a (click)="putEvent('GET_DETAILS',$event)" href="#" class="course-info__link-to" style="--bg-color: rgb(255 152 0 / 81%);--hover-bg-color: #ff9800;"><i class="ph-duotone ph-eye"></i></a>
+            <a *ngIf="course?.owned; else addToCartButton" (click)="putEvent('GET_TO_LEARNING_PANEL',$event)" href="#" class="course-info__link-to" style="--bg-color:rgb(0 167 7 / 80%); --hover-bg-color:#00a707;"><i class="ph-duotone ph-video"></i></a>
+            <ng-template #addToCartButton>
+                <a *ngIf="!hasInCart" (click)="putItemToCart($event)" href="#" class="course-info__link-to" style="--bg-color:rgb(16 111 239 / 80%);--hover-bg-color:#106fef"><i class="ph-duotone ph-shopping-cart-simple"></i></a>
+                <a *ngIf="hasInCart" (click)="showMiniCart($event)" href="#" class="course-info__link-to" style="--bg-color: rgb(103 58 183 / 80%);--hover-bg-color: #673AB7;"><i class="ph-duotone ph-storefront"></i></a>
+            </ng-template>
+        </div>
+        <div class="course-info__wrap-price">
+            <ng-container *ngIf="!cost.free">
+                <span class="course-info__price" *ngIf="!cost.sale; else showSalePrice"><bdi>{{ cost.price }}</bdi></span>
+                <ng-template #showSalePrice>
+                    <del><span class="course-info__price"><bdi>{{ cost.price }}</bdi></span></del>
+                    <ins><span class="course-info__price"><bdi>{{ cost.sale }}</bdi></span></ins>
+                </ng-template>
+            </ng-container>
+            <span class="course-info__free-label font-roboto" *ngIf="cost.free">Miễn phí</span>
+        </div>
+    </div>
+    <div class="course-info__content">
+        <div class="course-info__categories">
+            <ng-container *ngFor="let c of course?.categories_object">
+                <a (click)="queryCategory($event, c.value)" href="#" class="course-info__category-name">{{ c.label }}</a>
+            </ng-container>
+        </div>
+        <h4 class="course-info__course-title">
+            <a (click)="putEvent('GET_DETAILS',$event)" href="#">{{ course?.title }}</a>
+        </h4>
+        <p class="course-info__excerpt">{{ course?.desc }}</p>
+        <div class="course-info__attrs">
+            <span class="course-info__attrs__item"><i class="ph-duotone ph-books"></i> {{ course?.sobaigiang }} Lessons</span>
+            <span class="course-info__attrs__item"><i class="ph-duotone ph-student"></i> {{ course?.activated }} Students</span>
+        </div>
+    </div>
+    <div class="course-info__wrap-loading" *ngIf="loading || buildCartFait ">
+        <app-loading-progress-bar *ngIf="loading"></app-loading-progress-bar>
+        <div class="course-info__wrap-loading__build-cart-fail w-100 h-100 d-flex justify-content-center align-items-center" *ngIf="buildCartFait">
+            <div class="course-info__wrap-loading__build-cart-fail__inner">
+                <svg class="notice-server-connection-failed__icon" clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                    <g transform="translate(-336)">
+                        <path d="m352 1c-8.279 0-15 6.721-15 15s6.721 15 15 15c.181 0 .351-.048.498-.133.008-.004.015-.009.022-.013.003-.002.006-.003.009-.005.032-.02.063-.042.093-.066l.005-.004c.227-.183.373-.464.373-.779 0-.055-.004-.109-.013-.162-.077-.475-.49-.838-.987-.838-.653 0-1.264-.308-1.831-.818-1.338-1.203-2.401-3.411-3.032-6.182h5.863c.552 0 1-.448 1-1s-.448-1-1-1h-6.228c-.177-1.263-.272-2.607-.272-4s.097-2.737.277-4h10.444c.096.668.168 1.358.215 2.066.037.551.514.968 1.064.932.551-.037.968-.514.932-1.064-.044-.66-.109-1.306-.193-1.934h5.133c.408 1.26.628 2.604.628 4 0 1.395-.22 2.74-.628 4h-.872c-.552 0-1 .448-1 1s.448 1 1 1h.034c-.124.236-.254.468-.391.695-.284.472-.132 1.088.341 1.372.473.285 1.088.133 1.373-.34 1.36-2.257 2.143-4.901 2.143-7.727 0-8.279-6.721-15-15-15zm-6.885 21h-4.649c1.501 2.876 4.045 5.122 7.129 6.233-1.067-1.546-1.937-3.702-2.48-6.233zm-.353-10h-5.134c-.408 1.26-.628 2.604-.628 4s.22 2.74.628 4h5.138c-.173-1.272-.266-2.613-.266-4s.092-2.729.262-4zm2.819-8.228c-3.078 1.113-5.617 3.357-7.115 6.228h4.641c.494-2.33 1.264-4.337 2.21-5.832.087-.136.174-.268.264-.396zm4.419-.772c-1.142 0-2.136.885-2.993 2.238-.786 1.241-1.424 2.873-1.859 4.762h9.703c-.482-2.096-1.212-3.875-2.118-5.15-.799-1.125-1.708-1.85-2.733-1.85zm4.42.772c1.067 1.533 1.935 3.689 2.474 6.228h4.64c-1.499-2.871-4.037-5.114-7.114-6.228z" fill="#2b2d42"/>
+                        <path d="m355.317 14.631c-1.756 3.511-4.401 8.8-6.028 12.055-.465.93-.415 2.035.131 2.919.547.885 1.512 1.423 2.552 1.423h12.056c1.04 0 2.005-.538 2.552-1.423.546-.884.596-1.989.131-2.919l-6.028-12.055c-.508-1.017-1.547-1.659-2.683-1.659s-2.175.642-2.683 1.659zm1.789.894c.169-.339.515-.553.894-.553s.725.214.894.553l6.028 12.056c.155.31.139.678-.043.973-.183.294-.505.474-.851.474-3.386 0-8.67 0-12.056 0-.346 0-.668-.18-.851-.474-.182-.295-.198-.663-.043-.973zm.894 10.475c.552 0 1 .448 1 1s-.448 1-1 1-1-.448-1-1 .448-1 1-1zm-1-7v5c0 .552.448 1 1 1s1-.448 1-1v-5c0-.552-.448-1-1-1s-1 .448-1 1z" fill="#ee243a"/>
+                    </g>
+                </svg>
+                <p class="notice-server-connection-failed__heading f-14 f-w-400">Mất kết nối với máy chủ.<br/>Vui lòng kiểm tra kết nối mạng hiện tại của bạn hoặc thử lại bằng nút bên dưới.
+                </p>
+                <button pButton pRipple class="theme-button p-button-rounded p-button-align-center" label="Kết nối lại với máy chủ" icon="pi pi-refresh" (click)="rebuildCart()"></button>
+            </div>
+        </div>
+    </div>
+
+</div>

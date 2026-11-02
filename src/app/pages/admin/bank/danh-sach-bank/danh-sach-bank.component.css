@@ -1,0 +1,49 @@
+.list-child{
+  padding-top:10px;
+}
+
+.bank-child_item{
+  border-bottom: 1px solid #e5e5e5;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding-top: 8px;
+}
+.bank-child_item .name{
+  font-size:16px;
+  font-weight:500;
+  font-family:Roboto, sans-serif;
+}
+
+.btn-action{
+  display: flex;
+  gap: 5px;
+  padding-right:4px;
+}
+.btn-action div{
+  padding:4px;
+}
+.btn-action div i{
+  font-size: 18px;
+}
+
+.icon-warning{
+ color:#F59E0B;
+}
+.icon-danger{
+ color:#EF4444;
+}
+.btn-action div:hover{
+  cursor: pointer;
+}
+
+.btn-change {
+  display:flex;
+  gap:4px;
+}
+.btn-set-h{
+  height:38px;
+}
+.btn-set-w{
+  width:38px;
+}

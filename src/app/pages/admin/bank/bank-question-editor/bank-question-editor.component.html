@@ -1,0 +1,71 @@
+<div class="bank-question-editor d-flex flex-column w-100 h-100 position-relative">
+	<div class="bank-question-editor__head d-flex justify-content-between align-items-center">
+		<div class="ovic-vertical__inputs ovic-vertical__inputs--layout-2 p-0 flex-fill">
+			<form [formGroup]="formGroup" class="form-row m-0">
+				<p-dropdown [autofocus]="false" [options]="questionTypeMatchBankFormat()" scrollHeight="400px" appendTo="body" class="ictu-dropdown-style" panelStyleClass="ictu-dropdown-panel" formControlName="format" placeholder="-- Chọn loại câu hỏi --"></p-dropdown>
+			</form>
+		</div>
+		<button mat-flat-button class="btn ictu-badge-btn--secondary-reverse" [disabled]=" !isCreateForm() || formatField.disabled">
+			<span class="bank-question-editor__head__btn-label">Làm mới form</span>
+		</button>
+		<button [disabled]="!dirty()" mat-flat-button class="btn ictu-badge-btn--primary-reverse" (click)="submitForm()">
+			<span class="bank-question-editor__head__btn-label">Lưu lại</span>
+		</button>
+	</div>
+	<div class="bank-question-editor__body position-relative w-100 flex-fill">
+		<div *ngIf="formatField.invalid; else showContent" class="d-flex justify-content-center align-items-center w-100 h-100">
+			<div *ngIf="state() !== 'loading'" class="alert alert-primary ictu-alert-notice">Chọn loại câu hỏi.</div>
+		</div>
+	</div>
+	<div *ngIf="state() === 'loading'" class="animation-typing-dots w-100 h-100" style="position: absolute;z-index: 150;top: 0;left: 0;background-color: rgb(255 255 255 / 61%);">
+		<div class="dashboard-component__loading__content dashboard-component__loading__content--hide-background" style="width: 300px;">
+			<h4 class="dashboard-component__loading__heading">Loading...</h4>
+			<mat-progress-bar mode="indeterminate" value="40"></mat-progress-bar>
+		</div>
+	</div>
+</div>
+<ng-template #showContent>
+	<ng-container *ngIf="question()">
+		<div class="question-preview__question">
+			<div class="question-preview__question__direction">
+				<div class="question-preview__question__size">
+					<b class="question-preview__question__direction__prefix">CÂU HỎI
+						<div class="ovic-vertical__inputs ovic-vertical__inputs--layout-2" style="width: 100px;display: inline-block;padding: 0;">
+							<input style="font-size: 15px;font-weight: 700;color: #000000;border-radius: 4px;height: auto;line-height: 1;padding: 9px 10px;" [(ngModel)]="question().question_number" (ngModelChange)="markQuestionAsDirty()" class="admin-wrap-table__head-actions__search" pInputText placeholder="...." type="text">
+						</div>
+					</b>
+					<div class="question-preview__question__direction__content" *ngIf="question().type !== 'fill-in-blank'">
+						<app-ictu-wrap-editor (resultData)="updateDirection($event)" [initData]="question().content"></app-ictu-wrap-editor>
+					</div>
+					<div class="question-preview__question__list-answer-options" *ngIf="question().type === 'grouping'">
+						<span class="question-preview__question__list-answer-options__text" *ngFor="let option of question().options">{{ option.label }}</span>
+					</div>
+					<div class="question-preview__question__list-answer-options" *ngIf="question().type === 'drag-drop'">
+						<div class="question-preview__question__list-answer-options__text lock-ck-content" *ngFor="let option of question().options" [innerHTML]="option.label | safeHtml"></div>
+					</div>
+				</div>
+			</div>
+			<div class="question-preview__question__answer">
+				<div *ngIf="question()" class="question-preview__question__size position-relative">
+					<ng-container [ngSwitch]="question().type">
+						<app-question-radio (markAsDirty)="markQuestionAsDirty()" [question]="question" [mode]="'edit'" *ngSwitchCase="'radio'"></app-question-radio>
+						<app-question-group (markAsDirty)="markQuestionAsDirty()" [question]="question" [mode]="'edit'" *ngSwitchCase="'group-radio'"></app-question-group>
+						<app-question-checkbox (markAsDirty)="markQuestionAsDirty()" [question]="question" [mode]="'edit'" *ngSwitchCase="'checkbox'"></app-question-checkbox>
+						<app-question-input (markAsDirty)="markQuestionAsDirty()" [question]="question" [mode]="'edit'" *ngSwitchCase="'input'"></app-question-input>
+						<app-question-group (markAsDirty)="markQuestionAsDirty()" [question]="question" [mode]="'edit'" *ngSwitchCase="'group-input'"></app-question-group>
+						<app-question-textarea (markAsDirty)="markQuestionAsDirty()" [question]="question" [mode]="'edit'" *ngSwitchCase="'textarea'"></app-question-textarea>
+						<app-question-grouping (markAsDirty)="markQuestionAsDirty()" [question]="question" [mode]="'edit'" *ngSwitchCase="'grouping'"></app-question-grouping>
+						<app-question-drag-drop (markAsDirty)="markQuestionAsDirty()" [question]="question" [mode]="'edit'" *ngSwitchCase="'drag-drop'"></app-question-drag-drop>
+						<app-question-matching (markAsDirty)="markQuestionAsDirty()" [question]="question" [mode]="'edit'" *ngSwitchCase="'matching'"></app-question-matching>
+						<app-question-fill-in-blank (markAsDirty)="markQuestionAsDirty()" [question]="question" [mode]="'edit'" *ngSwitchCase="'fill-in-blank'"></app-question-fill-in-blank>
+						<app-question-complete-word (markAsDirty)="markQuestionAsDirty()" [question]="question" [mode]="'edit'" *ngSwitchCase="'complete-word'"></app-question-complete-word>
+						<app-question-arrange-words (markAsDirty)="markQuestionAsDirty()" [question]="question" [mode]="'edit'" *ngSwitchCase="'arrange-words'"></app-question-arrange-words>
+						<app-question-true-false (markAsDirty)="markQuestionAsDirty()" [question]="question" [mode]="'edit'" *ngSwitchCase="'true-false'"></app-question-true-false>
+						<app-question-group (markAsDirty)="markQuestionAsDirty()" [question]="question" [mode]="'edit'" *ngSwitchCase="'group-true-false'"></app-question-group>
+						<div *ngSwitchDefault class="alert alert-danger">Định dạng {{ question().type }} chưa được hỗ trợ. Vui lòng thông báo với quản trị viên.</div>
+					</ng-container>
+				</div>
+			</div>
+		</div>
+	</ng-container>
+</ng-template>

@@ -1,0 +1,22 @@
+.unauthorized-message {
+	--error-component-icon-size: 80px;
+}
+
+.unauthorized-message {
+	text-align: center;
+}
+
+.unauthorized-message svg {
+	width: var(--error-component-icon-size);
+	height: var(--error-component-icon-size);
+}
+
+.unauthorized-message__heading {
+	font-family: var(--primary-font), sans-serif;
+	font-size: 16px;
+	margin: 15px 0 30px;
+}
+
+.unauthorized-message__button {
+	padding: 13px 20px;
+}

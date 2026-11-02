@@ -1,0 +1,50 @@
+.dsh-btn-input__btn-group {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.dsh-btn-input__btn-group > .btn {
+	width: calc(50% - 5px);
+	height: 49px;
+	border-radius: 6px;
+	color: #ffffff;
+	background: #3B82F6;
+	border: 1px solid #3B82F6;
+	font-family: var(--primary-font), sans-serif;
+	font-size: 14px;
+	padding: 0;
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+	font-weight: 400;
+}
+
+.dsh-btn-input__btn-group > .btn:not(.focus) {
+	background-color: #f5f5f5;
+	border-color: #f5f5f5;
+	color: #888888;
+}
+
+.avtar {
+	line-height: 0;
+}
+
+.avtar svg {
+	height: auto;
+	width: 100%;
+	max-width: 100%;
+}
+
+.form-social .form-group {
+	margin: 0;
+}
+
+.form-social .form-control {
+	line-height: 1;
+}
+
+
+.form-social > div + div {
+	margin-top: 15px;
+}

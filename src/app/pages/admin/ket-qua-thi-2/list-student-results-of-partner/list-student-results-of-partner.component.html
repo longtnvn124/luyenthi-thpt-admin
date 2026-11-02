@@ -1,0 +1,129 @@
+<div class="ictu-admin-side-layout__head">
+	<div class="ictu-admin-side-layout__container d-flex justify-content-between align-items-center h-100 w-100 position-relative">
+		<div *ngIf="state() === 'loading'" class="animation-typing-dots w-100 h-100" style="position: absolute;z-index: 5;top: 0;left: 0;background-color: rgb(255 255 255 / 61%);">
+			<div class="animation-typing-dots__element"></div>
+			<div class="animation-typing-dots__element"></div>
+			<div class="animation-typing-dots__element"></div>
+		</div>
+		<h4 class="admin-wrap-table__heading">
+			<svg>
+				<use href="assets/fonts/custom-icon.svg#custom-folder-open-2"></use>
+			</svg>
+			Danh sách thí sinh
+		</h4>
+		<div class="ictu-admin-side-layout__head__buttons admin-wrap-table__head-actions" style="--font-family: var(--primary-font) , sans-serif;">
+			<input [(ngModel)]="search" class="ictu-admin-side-layout__head__input w-100" pInputText placeholder="Tìm kiếm..." type="text" (keyup.enter)="onSearch()">
+			<div class="ovic-vertical__inputs ovic-vertical__inputs--layout-2 p-0">
+				<p-dropdown [(ngModel)]="dotThiSelected" appendTo="body" class="ictu-dropdown-style" panelStyleClass="ictu-dropdown-panel" [options]="DOT_THI_OPTIONS" placeholder="Chọn đợt thi" (onChange)="onSearch()">
+					<ng-template let-item pTemplate="item">
+						<div class="d-flex justify-content-between align-items-center">
+							<div class="d-flex flex-column">
+								<span style="color: #333;font-weight: 500;">{{ item.label }}</span>
+								<small class="text-muted">Đóng nhận HS: {{ item.object.date_end | date: 'dd/MM/yyyy' }}</small>
+							</div>
+							<span *ngIf="item.object.status === 1" class="ictu-badge ictu-badge--success ml-3">Đang mở</span>
+							<span *ngIf="item.object.status !== 1" class="ictu-badge ictu-badge--danger ml-3">Đã đóng</span>
+						</div>
+					</ng-template>
+				</p-dropdown>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="ictu-admin-side-layout__body position-relative test-results-side d-flex flex-column">
+	<div class="test-results-side__body ovic-scroll-style">
+		<div class="admin-wrap-table__body">
+			<table class="tbl admin-table table-hover">
+				<thead>
+					<tr>
+						<th class="col-index text-center">#</th>
+						<th class="col-student-name">Thí sinh</th>
+						<th class="text-center wid-100" *ngFor="let s of testSubjects">{{ s.name }}</th>
+					</tr>
+				</thead>
+				<tbody>
+					<ng-container *ngFor="let row of dataTable.data(); index as i; trackBy:identify">
+						<tr>
+							<td class="col-index text-center">{{ dataTable.paginator.startIndex() + i }}</td>
+							<td class="col-student-name">{{ row.hoten }}</td>
+							<!-- <td class="text-center wid-100 p-0 m-0" *ngFor="let s of testSubjects">
+								<button (click)="btnGetMoreDetail(row,s)" [pTooltip]="'Kết quả thi môn ' + s.name" tooltipPosition="top" class="test-results__button d-flex w-100 h-100 justify-content-evenly" [innerHTML]="row.results | reportStudentResult : s | safeHtml"></button>
+							</td> -->
+							<td class="text-center wid-100 p-0 m-0" *ngFor="let s of row.results">
+								<button *ngIf="s.owned;else noOwned" (click)="btnGetMoreDetail(row,s)" [pTooltip]="'Kết quả thi môn ' + s.name" tooltipPosition="top" class="test-results__button d-flex w-100 h-100 justify-content-evenly" [class.text-danger]="!s.attempt">
+									<span style="width: 48px;">{{ s.attempt }}</span>|<span style="width: 48px;">{{ s.lastScore }}</span>
+								</button>
+							</td>
+						</tr>
+					</ng-container>
+					<tr *ngIf="dataTable.data().length===0">
+						<td colspan="10" class="text-center">Không có bản ghi nào.</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="test-results-side__foot d-flex justify-content-center align-items-center w-100">
+		<ictu-paginator [control]="dataTable.paginator" (onChangePage)="onChangePage($event)"></ictu-paginator>
+	</div>
+</div>
+
+<ng-template #noOwned>
+	<div class="d-flex w-100 h-100 justify-content-evenly text-muted">
+		<span style="width: 48px;">--</span>|<span style="width: 48px;">--</span>
+	</div>
+</ng-template>
+
+<ng-template #detailTpl>
+	<div class="ictu-dashboard-dialog">
+		<div class="ictu-dashboard-dialog__head border-bottom-0">
+			<div class="ictu-dashboard-dialog__head__inner d-flex w-100 h-100">
+				<h4 class="ictu-dashboard-dialog__head__title mr-auto">Bài thi môn : {{ studentTestDetails ? studentTestDetails.subject.name : '' }} | Thí sinh : {{ studentTestDetails ? studentTestDetails.result.hoten : '' }} | Email : {{ studentTestDetails ? studentTestDetails.result.email : '' }} </h4>
+				<button (click)="closePanel()" class="btn ictu-badge-btn--danger-reverse ictu-dashboard-dialog__head__btn-close" mat-flat-button matTooltip="Đóng chi tiết" matTooltipPosition="below">
+					<i class="ti ti-x"></i>
+				</button>
+			</div>
+		</div>
+		<div class="ictu-dashboard-dialog__body flex-fill position-relative">
+			<table class="table table-bordered" *ngIf="studentTestDetails">
+				<thead>
+					<tr>
+						<th scope="col">#</th>
+						<th scope="col">Bắt đầu</th>
+						<th scope="col">Kết thúc</th>
+						<th scope="col">Trạng thái</th>
+						<th scope="col">Tổng Điểm</th>
+						<th scope="col" class="wid-90">Điểm TL</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let o  of studentTestDetails.attempts; index as i">
+						<th scope="row">{{ 1 + i }}</th>
+						<td>{{ o.created_at | date: 'dd/MM/yyyy hh:mm:ss' }}</td>
+						<td>{{ o.updated_at | date: 'dd/MM/yyyy hh:mm:ss' }}</td>
+						<td>
+							<ng-container [ngSwitch]="o.status">
+								<span *ngSwitchCase="0" class="ictu-badge ictu-badge--secondary ml-3">Chưa bắt đầu</span>
+								<span *ngSwitchCase="1" class="ictu-badge ictu-badge--primary ml-3">Đang làm bài</span>
+								<span *ngSwitchCase="2" class="ictu-badge ictu-badge--warning ml-3">Chờ chấm</span>
+								<span *ngSwitchCase="3" class="ictu-badge ictu-badge--orange ml-3">Chờ gv chấm</span>
+								<span *ngSwitchCase="4" class="ictu-badge ictu-badge--success ml-3">Đã chấm xong</span>
+							</ng-container>
+						</td>
+						<td>{{ o.status === 4 ? o.tong_diem : '___' }}</td>
+						<td class="p-0 wid-90">
+							<div class="admin-table__btn-actions" *ngIf="o.teacher_id">
+								<button (click)="getGradingResults(o)" class="btn ictu-button-info-light" matTooltip="Kết quả chấm câu hỏi viết luận" matTooltipPosition="above">
+									<i class="ti ti-list-search"></i>
+								</button>
+							</div>
+						</td>
+					</tr>
+					<tr *ngIf="!studentTestDetails.attempts.length">
+						<td colspan="6" class="text-center">Không có dữ liệu.</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</ng-template>

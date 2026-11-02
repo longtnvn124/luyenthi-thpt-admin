@@ -1,0 +1,354 @@
+.ket-qua-thi-content-1 {
+  display: flex;
+}
+
+.ket-qua-thi-left {
+  width: 350px;
+  height: 100%;
+  border-right: 2px dashed #ccc;
+}
+
+.ket-qua-thi-right{
+    width: calc(100% - 350px);
+}
+
+@media screen and (max-width: 1300px) {
+  .ket-qua-thi-left {
+    width: 300px;
+    height: 100%;
+    border-right: 2px dashed #ccc;
+  }
+
+  .ket-qua-thi-right{
+    width: calc(100% - 300px);
+}
+}
+
+.ket-qua-thi-right {
+  width: calc(100% - 300px);
+  height: 100%;
+  overflow-y: auto;
+}
+
+.tim-kiem-ca-thi {
+  /* border-bottom: 1px solid #c8c8c8; */
+  /* padding: 5px; */
+  margin: 5px auto;
+  display: flex;
+  align-items: center;
+  width: 95%;
+}
+
+.tim-kiem-ca-thi .search-block__elm {
+  width: calc(100% - 26px);
+  /* border: 1px solid #c8c8c8; */
+  padding: 5px 5px;
+}
+.tim-kiem-ca-thi .search-block__elm .p-input-icon-right{
+    width: 100%;
+}
+.tim-kiem-ca-thi .search-block__elm input{
+    width: 100%;
+}
+
+.ket-qua-thi_ca-thi {
+  /* height: calc(100% - 37px);
+  overflow-y: auto; */
+}
+
+.cathi-name {
+  border: 1px solid #ddd;
+  cursor: pointer;
+  border-radius: 5px;
+  width: 95%;
+  margin: 5px auto;
+  padding: 20px 12px;
+  background: #ffffff;
+  color: #333333;
+}
+
+.cathi-name:hover {
+  background: #8dcdff5e;
+}
+
+.name-cathi-text {
+  /* color: #1b81d7; */
+  font-weight: 600;
+}
+
+.high-light-cathi {
+  background: #8dcdff5e;
+}
+
+.time-cathi {
+  font-size: 12px;
+  font-style: italic;
+}
+
+.group-bank-skill {
+  transition: all 0.3s linear;
+  height: 0px;
+  overflow: hidden;
+}
+
+.group-bank-skill-active {
+  height: 140px;
+}
+
+.data-content_name_skill {
+  padding-left: 1.5em;
+  width: 100%;
+  background-color: #f4f4f4;
+}
+
+.data-content_name_skill:hover {
+  background: #8dcdff5e;
+}
+
+.data-content_name_skill_active {
+  background: #8dcdff5e;
+}
+
+.student-name-point {
+  min-width: 250px;
+}
+
+.ngaysinh-studentpoint {
+  min-width: 150px;
+}
+
+.gender-student {
+  min-width: 100px;
+}
+
+.code-student-point {
+  min-width: 100px;
+}
+
+.raw_point {
+  min-width: 80px;
+}
+
+.convert_point {
+  min-width: 150px;
+}
+
+.ket-qua-thi-right .action-donecathi {
+}
+
+.cathi-name-name {
+  /* display: flex;
+    align-items: center; */
+}
+
+.cathi-name-name .cathi-text {
+  width: 250px;
+}
+
+.cathi-name-name .cathi-text-button i {
+  margin: 0px;
+  font-size: 11px;
+}
+
+.cathi-name-name .cathi-text-button button {
+  padding: 2px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.font-hight-light-color {
+  color: #ffffff;
+}
+
+.font-low-color {
+  color: #333333;
+}
+.btn-filter {
+  background-color: #e7e7e7;
+  border-color: #f1f1f1;
+  color: #fff;
+}
+.tim-kiem-ca-thi button {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 5px;
+}
+
+/* .tim-kiem-ca-thi button i {
+    margin: 0;
+    font-size: 11px;
+} */
+
+.ket-qua-thi-right-top {
+  /* height: 45.5px; */
+  border-bottom: 1px solid #c8c8c8;
+  text-align: right;
+  padding: 5px;
+}
+
+.ket-qua-thi-right-top input {
+  /* padding: 0 5px;
+    border: 1px solid #c8c8c8;
+    margin-left: 5px; */
+}
+
+.ket-qua-thi-right-top button {
+  /* height: 26px; */
+  margin-left: 5px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ket-qua-thi-right-top button i {
+  font-size: 11px;
+}
+
+.ket-qua-thi-right-bottom {
+  height: calc(100% - 37px);
+  overflow: auto;
+  padding: 5px;
+}
+
+.so-tt-student {
+  width: 50px;
+}
+
+.number-row {
+  min-width: 50px;
+  width: 50px;
+  text-align: center;
+}
+
+.teacher_point {
+  min-width: 180px;
+}
+
+.code-student-point .ovic-mark {
+  font-size: 14px !important;
+}
+
+.choose-team-teacher {
+  width: 250px;
+  margin: 0 auto;
+}
+
+.choose-team-teacher .ovic-input-item {
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.choose-team-teacher .ovic-input-item label {
+  font-size: 14px !important;
+  color: #333 !important;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.choose-team-teacher .ovic-input-line {
+  background-color: #b0ec6c38;
+  border: 1px solid #c8c8c8;
+  padding: 5px;
+  display: flex;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.choose-team-teacher .count-teamteacher {
+  margin-top: 3px;
+  margin-right: 5px;
+  width: 30px;
+}
+
+.choose-team-teacher .fa-check {
+  color: #4caf50;
+  font-size: 20px;
+  width: 20px;
+}
+
+.show-all-team {
+  text-align: center;
+}
+
+.choose-team-teacher .ovic-input-line:hover {
+  background-color: #2196f36e;
+}
+
+.clear-teacher-3 {
+  width: 20px;
+  height: 20px;
+  padding: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clear-teacher-3 i {
+  margin-right: 0 !important;
+  font-size: 11px !important;
+}
+
+.name-teacher-3 {
+  display: flex;
+}
+
+.name-teacher-3 label {
+  margin-bottom: 0px !important;
+  margin-right: 10px;
+}
+
+.normal-teacher label {
+  margin-bottom: 0px !important;
+}
+
+.ket-qua-thi-right-bottom-temp-table {
+  width: max-content;
+  min-width: 100%;
+}
+
+.ket-qua-thi-content-1 .action-right button {
+  padding: 0 !important;
+  width: 25px;
+  height: 25px;
+  font-size: 11px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+}
+
+.ket-qua-thi-content-1 .action-right button i {
+  font-size: 12px;
+}
+
+.ca-thi-footer .p-paginator {
+  padding: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60px;
+}
+
+.content-ca-thi {
+  height: calc(var(--max-screen-height) - 60px - 60px - 80px);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.content-students-section{
+  height: calc(var(--max-screen-height) - 60px - 60px - 70px);
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
+.student-section-footer .p-paginator {
+  height: 60px;
+}

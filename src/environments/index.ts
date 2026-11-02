@@ -1,0 +1,28 @@
+import { environment } from "./environment";
+import { Environment } from "./environment.model";
+
+export const linkDriveFileInfo : ( id : string ) => string     = ( id : string ) : string => environment.deploy.driverFile + id;
+export const linkDownloadDriveFile : ( id : string ) => string = ( id : string ) : string => environment.deploy.driverFile + id + 'download';
+export const linkFileInfo : ( id : string ) => string          = ( id : string ) : string => environment.deploy.media + id;
+export const getLinkDownload : ( id : string ) => string       = ( id : string ) : string => environment.deploy.media + 'file/' + id;
+export const linkDownloadFile : ( id : string ) => string      = ( id : string ) : string => environment.deploy.media + id + 'download';
+export const linkAwsInfo : ( id : string ) => string           = ( id : string ) : string => environment.deploy.aws + id;
+export const linkGetFileContentAws : ( id : number ) => string = ( id : number ) : string => environment.deploy.aws + 'file/' + id.toString( 10 );
+export const getLinkDriverStream : ( id : string ) => string   = ( id : string ) : string => environment.deploy.driverFile + 'stream/' + id;
+export const getApiRouteLink : ( route : string ) => string    = ( route : string ) : string => ( route ? ''.concat( environment.deploy.api , route ) : environment.deploy.api );
+export const getHostDomain : ( suffix? : string ) => string    = ( suffix? : string ) : string => ( suffix ? ''.concat( environment.deploy.domain , suffix ) : environment.deploy.domain );
+export const ENCRYPT_KEY : string                              = 'ZkNxq7mS6WHDy04u';
+export const REFRESH_TOKEN_KEY : string                        = '__ocmQk73vw6fp';
+export const ACCESS_TOKEN_KEY : string                         = '__ocmI69Hl3avA';
+export const USER_STORAGE_KEY : string                         = '__ocmJg6Db36rU';
+export const PERMISSION_STORAGE_KEY : string                   = '__ocmF3ACvs0O7';
+export const TEACHER_STORAGE_KEY : string                        = '__ocmEMSu316PB';
+export const USER_META_STORAGE_KEY : string                    = '__ocmCX40BVR9Z';
+export const AUTH_OPTIONS : string                             = '__ocm057iFXr48';
+export const CART_KEY : string                                 = '__lms-v3_cart';
+export const IDENTITY_CODE : string                            = '12vL0?ZkNxq7mS';
+export const UCASE_KEY                                         = '__ocm057cFor065';
+export const HIDDEN_MENUS                                      = new Set( [ 'message/notification-details' ] );
+export const SELECTED_DONVI_ID                                 = 'd8lPtY#N';
+export const DEFAULT_AVATAR                                    = `/assets/images/client/avatar_default.svg`;
+export const ENVIRONMENT : Environment                         = environment;

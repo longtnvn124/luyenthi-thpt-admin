@@ -1,0 +1,21 @@
+<input type="file" #fileChooser hidden="true" (change)="onInputAvatar($event , fileChooser,0)">
+<div class="w-100 h-100 border border-1 rounded">
+  <div class="row m-0 h-100">
+    <div class="col">
+      <div class="h-100 d-flex justify-content-center">
+        <button pRipple [disabled]=" disabled === true ? true : false " class="btn w-100 btn-avata" (click)="fileChooser.click()">
+          <ng-container *ngIf="image || characterAvatar ; else showIcon">
+            <img *ngIf="characterAvatar; else showIamges" class="imgchecksize" [src]="characterAvatar | safeResourceUrl " alt="">
+            <ng-template #showIamges>
+              <img class="imgchecksize img-exist"  [appLoadCourseThumbnail]="image" alt="">
+            </ng-template>
+          </ng-container>
+          <ng-template #showIcon>
+            <i class="pi pi-upload"></i>
+            <div>{{ textView }}</div>
+          </ng-template>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

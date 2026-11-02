@@ -1,0 +1,110 @@
+<div class="scoring-assignments position-relative test-results-side d-flex flex-column">
+	<div class="scoring-assignments__body admin-wrap-table ovic-scroll-style">
+		<ng-container *ngIf="state() !== 'error'; else errorTemplate">
+			<div class="admin-wrap-table__head d-flex">
+				<h4 class="admin-wrap-table__heading">
+					<svg>
+						<use href="assets/fonts/custom-icon.svg#custom-folder-open-2"></use>
+					</svg>
+					{{ heading }}
+				</h4>
+				<div class="admin-wrap-table__head-actions" style="--font-family: var(--primary-font) , sans-serif;">
+					<div class="ovic-vertical__inputs ovic-vertical__inputs--layout-2 p-0">
+						<p-dropdown [(ngModel)]="dotThiSelected" appendTo="body" class="ictu-dropdown-style" panelStyleClass="ictu-dropdown-panel" [options]="dotThiOptions" placeholder="Chọn đợt thi" (onChange)="onSearch()">
+							<ng-template let-item pTemplate="item">
+								<div class="d-flex justify-content-between align-items-center">
+									<div class="d-flex flex-column">
+										<span style="color: #333;font-weight: 500;">{{ item.label }}</span>
+										<small class="text-muted">Đóng nhận HS: {{ item.object.date_end | date: 'dd/MM/yyyy' }}</small>
+									</div>
+									<span *ngIf="item.object.status === 1" class="ictu-badge ictu-badge--success ml-3">Đang mở</span>
+									<span *ngIf="item.object.status !== 1" class="ictu-badge ictu-badge--danger ml-3">Đã đóng</span>
+								</div>
+							</ng-template>
+						</p-dropdown>
+					</div>
+					<div *ngIf="isUserAdmin" class="ovic-vertical__inputs ovic-vertical__inputs--layout-2 p-0">
+						<p-dropdown [(ngModel)]="filterByTeacherId" appendTo="body" class="ictu-dropdown-style" panelStyleClass="ictu-dropdown-panel" [options]="teacherList" placeholder="Chọn giáo viên" emptyMessage="Không có giáo viên" (onChange)="onSearch()"></p-dropdown>
+					</div>
+					<button style="line-height: 0;" (click)="submitData()" [disabled]="!dataTable.someItemsChecked()" mat-flat-button class="btn p-0 ictu-badge-btn--primary-reverse" matTooltip="Hủy phân quyền" matTooltipPosition="above">
+						<i class="ti ti-refresh"></i>
+					</button>
+				</div>
+			</div>
+			<div class="admin-wrap-table__body">
+				<table class="tbl admin-table table-hover">
+					<thead>
+						<tr>
+							<th class="col-checkbox">
+								<mat-checkbox [checked]="dataTable.totalChecked()" [indeterminate]="dataTable.partiallyChecked()" (change)="dataTable.selectRow($event.checked)" [disabled]=" isUserAdmin ? !dataTable.data().length : true"></mat-checkbox>
+							</th>
+							<th class="col-index text-center">#</th>
+							<th>Thí sinh</th>
+							<th class="text-center" style="width: 300px;">Giáo viên</th>
+							<th class="text-center wid-150">Môn</th>
+							<th class="text-center wid-120">Thời gian thi</th>
+							<th class="text-center wid-120">Trạng thái</th>
+							<th class="text-center wid-60 px-0">Điểm 1</th>
+							<th class="text-center wid-60 px-0">Điểm 2</th>
+							<th class="text-center wid-60 px-0">Điểm 3</th>
+							<th class="text-center wid-60">KQ</th>
+						</tr>
+					</thead>
+					<tbody>
+						<ng-container *ngFor="let row of dataTable.data(); index as i; trackBy:identify">
+							<tr>
+								<td class="col-checkbox">
+									<mat-checkbox [disabled]="!isUserAdmin" [checked]="!!row['_ictuDataTableRowChecked']" (change)="dataTable.selectRow($event.checked, i)"></mat-checkbox>
+								</td>
+								<td class="col-index text-center">{{ dataTable.paginator.startIndex() + i }}</td>
+								<td class="text-left">
+									<span class="d-block fw-bold">{{ row.registers?.hoten }}</span>
+									<span class="d-block text-muted">{{ row.registers?.email }}</span>
+								</td>
+								<td class="text-left" style="width: 300px;">
+									<span class="d-block fw-bold">{{ row.teacher?.full_name }}</span>
+									<span class="d-block text-muted">{{ row.teacher?.email }}</span>
+								</td>
+								<td class="text-left wid-150">{{ row._subjectName }}</td>
+								<td class="text-center wid-120">{{ row.created_at | date : 'dd-MM-yyyy' }}</td>
+								<td class="text-center wid-120 px-0">
+									<span class="ictu-badge" [ngClass]="row.status === 4 ? 'ictu-badge--success' : 'ictu-badge--secondary'">{{ row.status === 4 ? 'Đã chấm xong' : 'Chờ chấm' }}</span>
+								</td>
+								<td class="text-center wid-60 px-0">{{ row.score }}</td>
+								<td class="text-center wid-60 px-0">{{ row.hand_score }}</td>
+								<td class="text-center wid-60 px-0">{{ row.tong_diem }}</td>
+								<td class="text-center wid-60 px-0">
+									<button (click)="getGradingResults(row)" *ngIf="row.status === 4" style="line-height: 0; border-radius: 6px;" class="btn ictu-button-info-light" matTooltip="Xem kết quả chấm" matTooltipPosition="above">
+										<i class="ti ti-vocabulary"></i>
+									</button>
+									<button disabled="disabled" *ngIf="row.status < 4" mat-flat-button style="line-height: 0; border-radius: 6px;width: 38px;max-width: 38px; height: 38px; max-height: 38px" class="btn ictu-badge-btn--secondary">
+										<i class="ti ti-vocabulary"></i>
+									</button>
+								</td>
+							</tr>
+						</ng-container>
+						<tr *ngIf="dataTable.data().length===0">
+							<td colspan="11" class="text-center">Không có bản ghi nào.</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="admin-wrap-table__foot">
+				<div class="d-flex justify-content-center align-items-center w-100">
+					<ictu-paginator [control]="dataTable.paginator" (onChangePage)="onChangePage($event)"></ictu-paginator>
+				</div>
+			</div>
+		</ng-container>
+	</div>
+	<div *ngIf="state() === 'loading'" class="animation-typing-dots w-100 h-100" style="position: absolute;z-index: 5;top: 0;left: 0;background-color: rgb(255 255 255 / 61%);">
+		<div class="animation-typing-dots__element"></div>
+		<div class="animation-typing-dots__element"></div>
+		<div class="animation-typing-dots__element"></div>
+	</div>
+</div>
+
+<ng-template #errorTemplate>
+	<div class="admin-table__alert-danger text-center w-100">Tải dữ liệu thất bại. Vui lòng chọn
+		<a (click)="reload($event)" href="javascript:" class="admin-table__alert-danger__btn-reload">tải lại</a>
+	</div>
+</ng-template>

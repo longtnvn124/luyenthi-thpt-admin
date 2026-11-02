@@ -1,0 +1,20 @@
+<div>
+	<p #editableContent contenteditable="true"
+	   style="border: 1px solid #ccc; padding: 10px; min-height: 100px;">
+		Nhập đoạn văn bản ở đây. Bôi đen một phần và nhấn Ctrl + R để thay bằng input.
+	</p>
+
+	<div style="margin-top: 10px;">
+		<h4>Danh sách các input đã chèn:</h4>
+		<ul>
+			<li *ngFor="let item of inputs">
+				{{ item.placeholder }} <small>({{ item.id }})</small>
+			</li>
+		</ul>
+	</div>
+
+	<div style="margin-top: 10px;">
+		<button (click)="alert(exportText('curly'))">Xuất với dấu ngoặc nhọn: </button>
+		<button (click)="alert(exportText('brackets'))">Xuất với [blank]</button>
+	</div>
+</div>

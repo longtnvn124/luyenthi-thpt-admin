@@ -1,0 +1,19 @@
+<div class="preview-question-matching">
+	<div #container class="preview-question-matching__container">
+		<div class="columns" *ngIf="question && question.children.length">
+			<div class="column">
+				<div class="item" *ngFor="let q of question.children; index as i" [id]="'left-' + question.id+'-'+q.correct_answer">
+					<span class="item__prefix">{{ i + 1 }}.</span>
+					<div class="lock-ck-content" [IctuMediaLoader]="question.id + i" [innerHTML]="q.content | safeHtml" (loaded)="rerender()" (failed)="rerender()"></div>
+				</div>
+			</div>
+			<div class="column">
+				<div class="item" *ngFor="let option of question.options; index as i" [id]="'right-' + question.id+'-|'+option.value+'|'">
+					<span class="item__prefix">{{ i | questionPrefix }}.</span>
+					<div class="lock-ck-content" [IctuMediaLoader]="question.id + i" [innerHTML]="option.label | safeHtml" (loaded)="rerender()" (failed)="rerender()"></div>
+				</div>
+			</div>
+		</div>
+		<svg #svg class="svg-connector"></svg>
+	</div>
+</div>

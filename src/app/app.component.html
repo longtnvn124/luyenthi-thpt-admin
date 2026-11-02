@@ -1,0 +1,10 @@
+<router-outlet></router-outlet>
+<div *ngIf="isSpinnerVisible">
+	<mat-progress-bar class="loader" mode="indeterminate" value="40"></mat-progress-bar>
+</div>
+<div class="app-wrap-loading-animation" *ngIf="isLoading">
+	<div class="loaderPage"></div>
+</div>
+<p-toast position="bottom-left"></p-toast>
+<span class="app-version"><i class="app-version__connect-status" [class.connected]="isInternetConnected"></i>{{ appVersion }}</span>
+

@@ -1,0 +1,165 @@
+<div class="detail-form pt-2 pr-3 pl-3">
+  <div class="header row p-3">
+    <div class="orderNumber col-1">STT</div>
+    <div class="level-quest col-2">Chương / Phần</div>
+
+    <div class="numberOfQuestions col-5">Tổng số câu hỏi</div>
+
+    <div class="numberOfQuestionSelected col-2">Số lượng câu hỏi cần lấy</div>
+    <div class="action col-2">
+      <div class="text-center">Thao tác</div>
+    </div>
+  </div>
+
+  <div class="body" *ngIf="listFormdetails.length > 0; else noDetailForm">
+    <div  *ngFor="let item of listFormdetails; index as i" class="row item-body p-3 align-items-center">
+      <div class="orderNumber col-1">{{i+1}}</div>
+      <div class="level-quest col-2">
+       
+        {{item['tnBank']['name']}}
+      </div>
+
+      <div class="numberOfQuestions col-5">
+          {{item['questions'].length ?? 0}}
+      </div>
+
+      <div class="numberOfQuestionSelected col-2">{{item.number_questions}}</div>
+      <div class="action col-2">
+        <div class="d-flex justify-content-center">
+          <p-button
+            type="button"
+            icon="pi pi-pencil"
+            [disabled]="cantAction"
+            [pTooltip]="'Sửa'"
+            (onClick)="setupFormUpdate(item)"
+            tooltipPosition="bottom"
+            class="mr-2"
+            severity="warning"
+            size="small"
+          ></p-button>
+          <p-button
+            type="button"
+            [disabled]="cantAction"
+            icon="pi pi-trash"
+            (onClick)="deleteFormDetail(item.id)"
+            [pTooltip]="'Xóa'"
+            tooltipPosition="bottom"
+            severity="danger"
+            size="small"
+          ></p-button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-end mt-2">
+    <p-button
+      (click)="setupFormAdd()"
+      [disabled]="cantAction"
+      type="button"
+      icon="pi pi-plus"
+      label="Thêm"
+      severity="success"
+    ></p-button>
+  </div>
+</div>
+
+<ng-template #noDetailForm>
+  <div class="notice notice--danger">
+    <p class="notice__heading">Thông báo</p>
+    <p class="notice__text">Không có form</p>
+</div>
+</ng-template>
+
+<ng-template #create_update>
+  <div class="ovic-side-navigation-content">
+    <div class="ovic-side-navigation-content__head">
+      <h4 class="ovic-side-navigation-content__head__title">{{ titleForm }}</h4>
+      <button
+      (click)="hideDialog()"
+        pButton
+        pRipple
+        type="button"
+        icon="pi pi-times"
+        class="p-button-rounded p-button-danger p-button-text close ovic-side-navigation-content__head__btn-close"
+      ></button>
+    </div>
+    <div
+      style="padding: 5px"
+      class="ovic-side-navigation-content__body ovic-scroll-style"
+    >
+      <div class="ovic-vertical__inputs ovic-vertical__inputs--layout-2">
+        <div class="row">
+          <div class="form-row mt-2 --disabled">
+            <label>Chương/phần <span class="ovic-mark">*</span></label>
+            <p-dropdown
+              class="input-element ovic-dropdown-style"
+              [filter]="false"
+              [options]="listBankChild"
+              [(ngModel)]="selectedBank"
+              (ngModelChange)="changesBankChild()"
+              optionLabel="name"
+              [placeholder]="'-- Chọn chương/phần --'"
+            ></p-dropdown>
+          </div>
+
+          <div class="form-row mt-4 --disabled">
+            <label>Dạng vận dụng <span class="ovic-mark">*</span></label>
+            <p-dropdown
+              class="input-element ovic-dropdown-style"
+              [filter]="false"
+              [options]="vandungTypes"
+              [(ngModel)]="selectedLevel"
+              (ngModelChange)="changesLevel()"
+              optionLabel="label"
+              [placeholder]="'-- Chọn dạng vận dụng --'"
+            ></p-dropdown>
+          </div>
+
+          <div class="form-row mt-4 --disabled">
+            <label>Tổng số câu hỏi<span class="ovic-mark">*</span></label>
+            <input
+              [disabled]="true"
+              type="text"
+              pInputText
+              [(ngModel)]="questionIds.length"
+              placeholder="vd: 50"
+            />
+          </div>
+
+          <div class="form-row mt-4 --disabled">
+            <label
+              >Số lượng câu hỏi cần lấy<span class="ovic-mark">*</span></label
+            >
+            <input type="number" [(ngModel)]="dataSave.number_questions " pInputText placeholder="vd: 10" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ovic-side-navigation-content__foot">
+      <span class="ovic-side-navigation-content__foot__notice mr-auto"
+        ><mark>(*)</mark> bắt buộc phải nhập</span
+      >
+
+      <button
+        (click)="hideDialog()"
+        pButton
+        pRipple
+        type="button"
+        label="Đóng"
+        class="p-button-secondary mr-3"
+        icon="pi pi-times"
+      ></button>
+      <button
+        (click)="submitData()"
+        pButton
+        pRipple
+        type="button"
+        label="Lưu lại"
+        icon="pi pi-save"
+        class="p-button-primary"
+      ></button>
+    </div>
+  </div>
+</ng-template>

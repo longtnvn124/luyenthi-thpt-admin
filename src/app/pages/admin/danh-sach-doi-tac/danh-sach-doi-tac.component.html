@@ -1,0 +1,79 @@
+<section class="dashboard-component--full-height position-relative">
+	<div class="admin-section--table position-relative">
+		<div class="admin-wrap-table">
+			<ng-container *ngIf="state() !== 'error'; else errorTemplate">
+				<div class="admin-wrap-table__head d-flex">
+					<h4 class="admin-wrap-table__heading">
+						<svg>
+							<use href="assets/fonts/custom-icon.svg#custom-folder-open-2"></use>
+						</svg>
+						Danh sách đối tác
+					</h4>
+					<div class="ictu-admin-side-layout__head__buttons admin-wrap-table__head-actions" style="--font-family: var(--primary-font) , sans-serif;">
+						<!-- <div class="ovic-vertical__inputs ovic-vertical__inputs&#45;&#45;layout-2 p-0">
+							<p-dropdown [(ngModel)]="dotThiSelected" appendTo="body" class="ictu-dropdown-style" panelStyleClass="ictu-dropdown-panel" [options]="DOT_THI_OPTIONS" placeholder="Chọn đợt thi" (onChange)="onSearch()">
+								<ng-template let-item pTemplate="item">
+									<div class="d-flex justify-content-between align-items-center">
+										<div class="d-flex flex-column">
+											<span style="color: #333;font-weight: 500;">{{ item.label }}</span>
+											<small class="text-muted">Đóng nhận HS: {{ item.object.date_end | date: 'dd/MM/yyyy' }}</small>
+										</div>
+										<span *ngIf="item.object.status === 1" class="ictu-badge ictu-badge&#45;&#45;success ml-3">Đang mở</span>
+										<span *ngIf="item.object.status !== 1" class="ictu-badge ictu-badge&#45;&#45;danger ml-3">Đã đóng</span>
+									</div>
+								</ng-template>
+							</p-dropdown>
+						</div> -->
+						<!-- <button (click)="checkData()" mat-flat-button class="btn p-0 ictu-badge-btn&#45;&#45;purple-reverse" style="line-height: 0;"> -->
+						<!-- <i class="ti ti-refresh"></i> -->
+						<!-- </button> -->
+					</div>
+				</div>
+			</ng-container>
+			<div class="admin-wrap-table__body">
+				<table class="tbl admin-table table-hover">
+					<thead>
+						<tr>
+							<th class="col-index text-center">#</th>
+							<th class="col-title text-left">Đối tác</th>
+							<th class="text-center wid-100">Tổng số</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr *ngFor="let row of dataTable.data(); index as i; trackBy:identify ">
+							<td class="col-index text-center">{{ dataTable.paginator.startIndex() + i }}</td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr *ngIf="dataTable.data().length===0">
+							<td colspan="3">Không có bản ghi nào.</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="admin-wrap-table__foot">
+				<div class="d-flex justify-content-center align-items-center w-100">
+					<ictu-paginator [control]="dataTable.paginator" (onChangePage)="onChangePage($event)"></ictu-paginator>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div *ngIf="state() === 'loading';" class="dashboard-component--full-height dashboard-component__loading">
+		<div class="dashboard-component__loading__content">
+			<h4 class="dashboard-component__loading__heading">Loading...</h4>
+			<mat-progress-bar mode="indeterminate" value="40"></mat-progress-bar>
+		</div>
+	</div>
+</section>
+
+<ng-template #noRegisted>
+	<div class="d-flex w-100 h-100 justify-content-evenly text-muted">
+		<span style="width: 48px;">--</span>|<span style="width: 48px;">--</span>
+	</div>
+</ng-template>
+
+<ng-template #errorTemplate>
+	<div class="admin-table__alert-danger text-center w-100">Tải dữ liệu thất bại. Vui lòng chọn
+		<a (click)="reload($event)" href="javascript:" class="admin-table__alert-danger__btn-reload">tải lại</a>
+	</div>
+</ng-template>

@@ -1,0 +1,16 @@
+<div class="modal-header ">
+	<h4 class="modal-title" id="modal-title">{{ head }}</h4>
+	<button type="button" class="close" aria-describedby="modal-title" (click)="confirm(false)">
+		<i class="pi pi-times"></i></button>
+</div>
+<div class="modal-body ovic-modal-body">
+	<p>{{ message }}</p>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-primary" (click)="confirm(true)">
+		<i class="ti ti-check"></i> Xác nhận
+	</button>
+	<button type="button" class="btn btn-cancel border border-1" (click)="confirm(false)">
+		<i class="ti ti-x"></i> Không
+	</button>
+</div>

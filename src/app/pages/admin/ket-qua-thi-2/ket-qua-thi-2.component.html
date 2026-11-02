@@ -1,0 +1,66 @@
+<div class="ictu-admin-side-layout" [ngClass]="isAdminUser() ? '':'ictu-admin-side-layout--no-sidebar'">
+	<div class="ictu-admin-side-layout__side ictu-admin-side-layout__side--left" *ngIf="isAdminUser()">
+		<div class="ictu-admin-side-layout__head">
+			<div class="ictu-admin-side-layout__container d-flex justify-content-center align-items-center h-100 w-100 position-relative">
+				<input [(ngModel)]="searchLeft" class="ictu-admin-side-layout__head__input w-100" pInputText placeholder="Tìm kiếm..." type="text" (keyup.enter)="onSearchData(searchLeft,'left')" style="border: none;padding-inline: 5px;">
+				<i class="pi pi-search"></i>
+				<div *ngIf="leftSectionState() === 'loading'" class="animation-typing-dots w-100 h-100" style="position: absolute;z-index: 5;top: 0;left: 0;background-color: rgb(255 255 255 / 61%);">
+					<div class="animation-typing-dots__element"></div>
+					<div class="animation-typing-dots__element"></div>
+					<div class="animation-typing-dots__element"></div>
+				</div>
+			</div>
+		</div>
+		<div class="ictu-admin-side-layout__body position-relative">
+			<div *ngIf="leftSectionState() === 'loading'" class="dashboard-component__loading h-100">
+				<div class="dashboard-component__loading__content dashboard-component__loading__content--hide-background">
+					<h4 class="dashboard-component__loading__heading">Loading...</h4>
+					<mat-progress-bar mode="indeterminate" value="40"></mat-progress-bar>
+				</div>
+			</div>
+			<ng-container [ngSwitch]="leftSectionState()">
+				<div *ngSwitchCase="'empty'" class="d-flex justify-content-center align-items-center w-100 h-100">
+					<div class="alert alert-primary ictu-alert-notice">Không có dữ liệu!</div>
+				</div>
+				<div *ngSwitchCase="'error'" class="d-flex justify-content-center align-items-center w-100 h-100" style="padding: 10px;">
+					<div class="alert alert-danger ictu-alert-notice m-0 border-0" style="padding: 10px;">
+						Quá trình tải dữ liệu bị gián đoạn!. <a href="javascript:" (click)="reload($event)">tải lại</a>
+					</div>
+				</div>
+				<div *ngSwitchDefault class="ictu-admin-side-layout__body test-results-side d-flex flex-column">
+					<div class="test-results-side__body ovic-scroll-style">
+						<div *ngIf="dataTable.data().length" class="ictu-admin-side-layout__container">
+							<ul class="test-results-side__partners">
+								<ng-container *ngFor="let dt of dataTable.data(); index as i; trackBy:identify">
+									<li class="test-results-side__partners__elm">
+										<button (click)="choosePartner(dt)" class="test-results-side__partners__btn" type="button" [class.--selected]="partnerId() === dt.user_id">
+											<h4 class="test-results-side__partners__btn__label">{{ dt.hoten }}</h4>
+											<small class="test-results-side__partners__btn__small-label">{{ dt.officeName }}</small>
+										</button>
+									</li>
+								</ng-container>
+							</ul>
+						</div>
+					</div>
+					<div class="test-results-side__foot d-flex justify-content-center align-items-center w-100">
+						<ictu-paginator [control]="dataTable.paginator" (onChangePage)="onChangePage($event)"></ictu-paginator>
+					</div>
+				</div>
+			</ng-container>
+		</div>
+	</div>
+	<div class="ictu-admin-side-layout__side ictu-admin-side-layout__side--right">
+		<div class="d-flex justify-content-center align-items-center w-100 h-100" *ngIf="partnerId() === 0; else showList ">
+			<div class="alert alert-primary ictu-alert-notice">Chọn đối tác để hiển thị danh sách thí sinh.</div>
+		</div>
+	</div>
+</div>
+<ng-template #emptySelectBank>
+	<div class="d-flex justify-content-center align-items-center w-100 h-100">
+		<div class="alert alert-primary ictu-alert-notice">Chọn ngân hàng trước.</div>
+	</div>
+</ng-template>
+
+<ng-template #showList>
+	<app-list-student-results-of-partner [partner_id]="partnerId()" [DOT_THI_OPTIONS]="DOT_THI_OPTIONS"></app-list-student-results-of-partner>
+</ng-template>

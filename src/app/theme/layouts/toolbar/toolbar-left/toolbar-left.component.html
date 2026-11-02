@@ -1,0 +1,18 @@
+<div class="header-button">
+    <!-- <button mat-button class="header-item sidebar-collapse" (click)="toggleMenu()">
+    <span class="pc-head-link"><i class="ti ti-menu-2"></i></span>
+       </button>
+       <button mat-button [matMenuTriggerFor]="menu" class="header-item" aria-label="search">
+           <span class="pc-head-link"><svg class="pc-icon"><use href="assets/fonts/custom-icon.svg#custom-search-normal-1"></use></svg></span>
+       </button>
+       <mat-menu #menu="matMenu" class="dropdown-item-search">
+           <mat-form-field class="w-100">
+               <input matInput (click)="$event.stopPropagation()" placeholder="Tìm kiếm. . ." (keydown.enter)="search($event)"/>
+           </mat-form-field>
+       </mat-menu> -->
+    <button mat-button class="header-item sidebar-collapse" (click)="toggleMenu()">
+        <span class="pc-head-link"><i class="ti ti-align-justified"></i></span>
+    </button>
+    <h4 class="header-button__feature-name">{{ featureName }}</h4>
+    <!--<h4 class="header-button__feature-name"><i class="ti ti-align-justified"></i>{{ featureName }}</h4>-->
+</div>

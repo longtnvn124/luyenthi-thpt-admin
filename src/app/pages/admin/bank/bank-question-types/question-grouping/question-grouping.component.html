@@ -1,0 +1,19 @@
+<ng-container *ngIf="question() && question().children && question().children.length">
+	<div class="grouping-question">
+		<div class="grouping-question__section">
+			<input placeholder="Câu hỏi..." class="grouping-question__section__input-direction" type="text" pInputText [(ngModel)]="question().children[0].content">
+			<textarea placeholder="Các đáp án..." class="grouping-question__section__input-text-area" [rows]="5" [cols]="30" pInputTextarea [autoResize]="true" [(ngModel)]="group1.text" (ngModelChange)="triggerChange()"></textarea>
+			<small class="grouping-question__section__text-guide text-secondary">Các đáp án được ngăn cách nhau bởi chấm phẩy (";")</small>
+		</div>
+		<div class="grouping-question__section">
+			<input placeholder="Câu hỏi..." class="grouping-question__section__input-direction" type="text" pInputText [(ngModel)]="question().children[1].content">
+			<textarea placeholder="Các đáp án..." class="grouping-question__section__input-text-area" [rows]="5" [cols]="30" pInputTextarea [autoResize]="true" [(ngModel)]="group2.text" (ngModelChange)="triggerChange()"></textarea>
+			<small class="grouping-question__section__text-guide text-secondary">Các đáp án được ngăn cách nhau bởi chấm phẩy (";")</small>
+		</div>
+	</div>
+	<div class="grouping-question__disturbed-answers">
+		<h4 class="grouping-question__disturbed-answers__heading">Các phương án gây nhiễu( nếu có)</h4>
+		<input class="grouping-question__disturbed-answers__input" type="text" pInputText [(ngModel)]="distractorGroup.text" (ngModelChange)="triggerChange()">
+		<small class="grouping-question__section__text-guide text-secondary">Các phương án được ngăn cách nhau bởi dấu chấm phẩy (";")</small>
+	</div>
+</ng-container>

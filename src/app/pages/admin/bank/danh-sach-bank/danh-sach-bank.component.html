@@ -1,0 +1,119 @@
+<div class="table-card intro-y">
+	<div [class.ictu-is-loading]="isLoading">
+		<div class="layout_component_container intro-x">
+			<div class="scroll-table-layout-set">
+				<ovic-table [data]="dmBank" styleClass="tbl-danh-muc-truong" dataKey="id" rowHover="false" [index]="index" [rows]="10" [tableName]="'Danh sách ngân hàng'" [tblStructure]="tblCols" [enableSearch]="true" [globalFilterFields]="['name', 'asc']" (onButtonClick)="handleClickOnTable($event)" [headerButtons]="headButtons" [enableSearchLocal]="false" (onSearch)="onSearch($event)" [searchDebounceTime]="800"></ovic-table>
+			</div>
+			<div class="page-layout-set">
+				<p-paginator [rows]="rows" [totalRecords]="recordsTotal" [pageLinkSize]="5" (onPageChange)="paginate($event)"></p-paginator>
+			</div>
+		</div>
+	</div>
+</div>
+
+<ng-template #fromUpdate>
+	<div class="ovic-side-navigation-content">
+		<div class="ovic-side-navigation-content__head">
+			<h4 class="ovic-side-navigation-content__head__title">
+				{{ formActive ? formActive.title : "" }} </h4>
+			<button (click)="closeForm()" pButton pRipple icon="pi pi-times" class="p-button-rounded p-button-danger p-button-text close ovic-side-navigation-content__head__btn-close"></button>
+		</div>
+		<div class="ovic-side-navigation-content__body ovic-scroll-style">
+			<div class="ovic-vertical__inputs ovic-vertical__inputs--layout-2">
+				<form [formGroup]="formData" autocomplete="off">
+					<div class="row">
+						<div class="col-6">
+							<p class="form-row">
+								<label>Tên ngân hàng<span class="ovic-mark">*</span></label>
+								<input pInputText type="text" placeholder="vd: Ngân hàng Toán 7..." formControlName="name" autocomplete="off" (focusout)="onChangeTitle()"/>
+							</p>
+						</div>
+
+						<div class="col-6">
+							<p class="form-row">
+								<label>Ký hiệu<span class="ovic-mark">*</span></label>
+								<input pInputText type="text" [ngClass]="inputErrors.slug ? 'ng-invalid ng-dirty': ''" placeholder="vd: ngan-hang-toan-7..." formControlName="slug" (focusout)="onchangeSlug()" autocomplete="off"/>
+								<small *ngIf="inputErrors.slug" style="color: #e94560;" id="slug"> Ký hiệu đã tồn tại </small>
+							</p>
+						</div>
+
+						<div class="col-6">
+							<p class="form-row">
+								<label>Chọn môn học<span class="ovic-mark">*</span></label>
+								<ovic-dropdown [options]="dmMonHoc" [defaultValue]="f['subject_id'].value" optionId="id" optionLabel="name" [formField]="f['subject_id']" [placeholder]="'--- Chọn môn học ---'" [showClear]="false" style="line-height: 14px"></ovic-dropdown>
+							</p>
+						</div>
+						<div class="col-6">
+							<p class="form-row">
+								<label> Kiểu ngân hàng <span class="ovic-mark">*</span></label>
+								<ovic-dropdown [options]="typeTest" [defaultValue]="f['type'].value" optionId="type" optionLabel="title" [formField]="f['type']" [placeholder]="'--- Chọn kiểu ngân hàng ---'" [showClear]="false" style="line-height: 14px"></ovic-dropdown>
+							</p>
+						</div>
+
+						<div class="col-12">
+							<p class="form-row">
+								<label>Mô tả</label>
+								<textarea formControlName="desc" placeholder="Mô tả..." autocomplete="off" cols="30" rows="2"></textarea>
+							</p>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="ovic-side-navigation-content__foot">
+      <span class="ovic-side-navigation-content__foot__notice mr-auto">
+          <mark>(*)</mark> bắt buộc phải nhập
+      </span>
+			<button pButton pRipple [label]="btn_checkAdd" icon="pi pi-save" (click)="saveFormData()" class="p-button-success"></button>
+			<button pButton pRipple label="Đóng" class="p-button-secondary ml-3" icon="pi pi-times" (click)="closeForm()"></button>
+		</div>
+	</div>
+</ng-template>
+
+
+<ng-template #fromAddChild>
+	<div class="ovic-side-navigation-content child-container">
+		<div class="ovic-side-navigation-content__head">
+			<h4 class="ovic-side-navigation-content__head__title">
+				{{ bankSelected.name }} </h4>
+			<button (click)="closeForm()" pButton pRipple icon="pi pi-times" class="p-button-rounded p-button-danger p-button-text close ovic-side-navigation-content__head__btn-close"></button>
+		</div>
+		<div class="ovic-side-navigation-content__body ovic-scroll-style">
+			<div class="ovic-vertical__inputs ovic-vertical__inputs--layout-2">
+				<div class="w-100 d-flex align-items-end " style="gap:4px;">
+					<div class="w-100" style="flex:1 1 auto">
+						<div class="form-row mx-0 px-0">
+							<label>Tên chương / bài<span class="ovic-mark">*</span></label>
+							<input pInputText type="text" placeholder="Vd: Chương 1,..." autocomplete="off" [(ngModel)]="bankChild"/>
+						</div>
+					</div>
+					<div class="btn-change">
+						<button *ngIf="btnActionChild === 'add'" pButton pRipple (click)="btnSaveChild()" label="Thêm" icon="pi pi-plus" class="p-button-success btn-set-h"></button>
+						<button *ngIf="btnActionChild === 'edit'" pButton pRipple (click)="btnSaveEdit()" icon="pi pi-save" class="p-button-warning btn-set-h"></button>
+						<button *ngIf="!bankChild else useRemove" pButton pRipple icon="pi pi-times" disabled class="p-button-secondary btn-set-w btn-set-h"></button>
+						<ng-template #useRemove>
+							<button pButton pRipple (click)="btnRemoveChild()" icon="pi pi-times" class="p-button-danger btn-set-h btn-set-w"></button>
+						</ng-template>
+					</div>
+				</div>
+				<hr>
+				<div *ngIf="listBankChildren.length > 0; else notListChildBank" class="list-child">
+					<div *ngFor="let item of listBankChildren" class="bank-child_item">
+						<div class="name">{{ item.name }}</div>
+						<div class="btn-action ">
+							<div (click)="btnEditChildBank(item)"><i class="fa fa-pencil-square-o icon-warning"></i>
+							</div>
+							<div (click)="btnDeleteChildBank(item)"><i class="fa fa-trash-o icon-danger"></i></div>
+						</div>
+					</div>
+				</div>
+
+				<ng-template #notListChildBank>
+					<div class="mt-4 d-flex justify-content-center align-items-center">
+						<i class="pi pi-info-circle"></i> <span class="ml-1">Không có dữ liệu</span>
+					</div>
+				</ng-template>
+			</div>
+		</div>
+	</div>
+</ng-template>

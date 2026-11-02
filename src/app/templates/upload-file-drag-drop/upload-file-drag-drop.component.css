@@ -1,0 +1,216 @@
+/* .custom-label-file {
+   padding-top: 50px;
+  padding-bottom: 50px; 
+  padding: 15px 0px;
+  display: block;
+  border: 2px dashed #cccccc; 
+  border-radius: 5px;
+  text-align: center;
+   line-height: 150px; 
+  font-size: 16px;
+  color: #666666;
+  cursor: pointer;
+  background-color: #f9f9f9;
+  position: unset;
+  margin: 0px;
+}
+
+.content-file-input{
+  padding: 5px;
+}
+
+.content-file-input .img img {
+  width: 85%; 
+  padding: 20px; 
+}
+
+.list-file {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.list-file--elm {
+  display: flex;
+  justify-content: flex-start;
+  padding: 0;
+  border: 1px dashed #dee2e6;
+  margin: 5px 0;
+}
+
+.list-file--elm__info {
+  display: flex;
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  padding: 12px 0 12px 10px;
+  border-radius: 0;
+}
+
+.list-file--elm:hover {
+  background-color: #eaeaea;
+  border-color: #eaeaea;
+}
+
+.list-file--elm__download {
+  width: 60px;
+  font-size: 13px;
+  text-align: right;
+  line-height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  color: #666;
+  margin: 0;
+  border: none;
+  background: none;
+  outline: none;
+  box-shadow: none;
+  padding: 0;
+  border-left: 1px solid #dee2e6;
+}
+
+.list-file--elm__download:hover {
+  background-color: #dee2e6;
+}
+
+*/
+
+
+
+.file-container {
+  position: relative;
+  border: 2px dashed #cccccc;
+  border-radius: 10px;
+  text-align: center;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+  padding: 20px;
+  background-color: #f9f9f9;
+}
+
+.file-container:hover {
+  cursor: pointer;
+  border-color: #bbbbbb;
+  background-color: #f0f0f0;
+}
+
+.custom-label-file {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.custom-label-file:hover {
+  background-color: #f0f0f0;
+}
+
+.content-file-input {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.content-file-input .img {
+  margin-bottom: 10px;
+}
+
+.content-file-input img {
+  width: 50px;
+  height: 50px;
+}
+
+.content-file-input .mt-1 {
+  margin-top: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333333;
+}
+
+.content-file-input .p-5 {
+  padding: 10px;
+  font-size: 14px;
+  color: #666666;
+  text-align: center;
+}
+
+.list-file {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0 0;
+  width: 100%;
+}
+
+.list-file--elm {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 15px;
+  border: 1px solid #dddddd;
+  border-radius: 5px;
+  margin-bottom: 5px;
+  transition: background-color 0.3s ease;
+  background-color: #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.list-file--elm:hover {
+  background-color: #f8f8f8;
+}
+
+.list-file--elm__info {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: default;
+  color: #333333;
+}
+
+.list-file--elm__download {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #ff0000;
+  transition: color 0.3s ease;
+}
+
+.list-file--elm__download:hover {
+  color: #cc0000;
+}
+
+.mr-2 {
+  margin-right: 8px;
+}
+
+.img-icon,
+.pptx-icon,
+.pdf-icon,
+.word-icon,
+.excel-icon {
+  width: 24px;
+  height: 24px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: inline-block;
+}
+
+.list-file--elm__title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.list-file--elm__title--overflow {
+  /* Adjust color as needed */
+  color: #999;
+}

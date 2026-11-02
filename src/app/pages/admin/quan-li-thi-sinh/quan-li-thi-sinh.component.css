@@ -1,0 +1,108 @@
+.list-cathi {
+  /* padding-top: 20px; */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cathi-item {
+  height: 85px;
+  background: #ffffff;
+  border: 1px solid #dee2e6;
+  padding: 12px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+}
+
+.cathi-item:hover {
+  background: #f5f7fa;
+  cursor: pointer;
+}
+
+.cathi-itemSelect {
+  background: #e3f2fd;
+  border-color: #90caf9;
+}
+
+.admin-wrap-table {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.admin-wrap-table__head {
+  height: 75px;
+}
+
+.admin-wrap-table__body {
+  flex: 1 1 auto;
+  height: 1%;
+  overflow: hidden;
+  overflow-y: auto;
+  background: #ededed;
+}
+
+.admin-wrap-table__foot {
+  height: 55px;
+}
+
+.doitac-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 200px;
+}
+
+.doitac-head {
+  height: 55px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.doitac-body {
+  flex: 1 1 auto;
+  height: 1%;
+  overflow: hidden;
+  overflow-y: auto;
+  background: #ededed;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px 5px;
+}
+
+.doitac-foot {
+  height: 55px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #fff;
+}
+.warning-dialog {
+  width: 300px;
+  height: auto;
+}
+
+.dialog-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  padding: 20px;
+}
+
+.icon {
+  font-size: 3rem;
+  color: #f44336;
+  margin-bottom: 20px;
+}
+
+.message {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+}

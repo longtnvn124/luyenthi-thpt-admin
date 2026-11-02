@@ -1,0 +1,153 @@
+<section class="dashboard-component--full-height position-relative">
+	<div class="admin-section--table position-relative">
+		<div *ngIf="mode() == 'listDF'">
+			<div class="admin-wrap-table">
+        <ng-container *ngIf="state() !== 'error'; else errorTemplate">
+          <div class="admin-wrap-table__head d-flex">
+            <h4 class="admin-wrap-table__heading">
+              <svg>
+                <use href="assets/fonts/custom-icon.svg#custom-folder-open-2"></use>
+              </svg>
+              Danh sách đơn giá thí sinh
+            </h4>
+            <div class="admin-wrap-table__head-actions">
+              <input [(ngModel)]="search" class="admin-wrap-table__head-actions__search" pInputText placeholder="Tìm kiếm..." type="text" (keyup.enter)="onSearchData()">
+              <p-dropdown  [(ngModel)]="subjectSelect"  [options]="dotthiDropdownField.options()" appendTo="body" [showClear]="true" class="wid-175" [placeholder]="dotthiDropdownField.placeholder()" (onChange)="onSearchData()"/>
+              <button *ngIf="userCanCreate()" (click)="addNewItem()" mat-flat-button class="btn p-0 ictu-badge-btn--success-reverse">
+                <i class="ti ti-plus"></i>
+              </button>
+            </div>
+          </div>
+        </ng-container>
+  
+        <div class="admin-wrap-table__body">
+          <table class="tbl admin-table table-hover">
+            <thead>
+              <tr>
+                <!-- <th class="col-checkbox">
+                  <mat-checkbox [checked]="dataTable.totalChecked()" [indeterminate]="dataTable.partiallyChecked()" (change)="dataTable.selectRow($event.checked)" [disabled]="!dataTable.data().length || !userCanDelete()"></mat-checkbox>
+                </th> -->
+                <th class="col-index text-center">#</th>
+                <th class="text-center">Tên học sinh</th>
+                <th class="text-center">Môn đăng ký</th>
+                <th class="wid-120 text-center">Đơn giá</th>
+                <th class="wid-120 text-center">Giảm giá</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of dataTable.data(); index as i; trackBy:identify ">
+                <!-- <td class="col-checkbox">
+                  <mat-checkbox [checked]="!!row['_ictuDataTableRowChecked']" (change)="dataTable.selectRow($event.checked, i)" [disabled]="!permissionControl().canDelete"></mat-checkbox>
+                </td> -->
+                <td class="col-index text-center">{{ dataTable.paginator.startIndex() + i }}</td>
+                <td class="text-center">
+                      {{ row.name }}
+                </td>
+                <!-- <td class="text-left">{{ row.desc }}</td> -->
+                <td class="wid-120 text-center p-0">{{formatDateHTML(row.date_start.toString())}}</td>
+                <td class="wid-120 text-center p-0">
+                  {{formatDateHTML(row.date_end.toString())}}
+                </td>
+
+
+                <td class="wid-120 text-center p-0">{{formatDateHTML(row.ngaythi_dukien.toString())}}</td>             
+              </tr>
+              <tr *ngIf="dataTable.data().length===0">
+                <td colspan="6">Không có bản ghi nào.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="admin-wrap-table__foot">
+          <div class="d-flex justify-content-center align-items-center w-100">
+            <ictu-paginator [control]="dataTable.paginator" (onChangePage)="onChangePage($event)"></ictu-paginator>
+          </div>
+        </div>
+      </div>
+      
+		</div>
+	</div>
+ 
+	<div *ngIf="state() === 'loading';" class="dashboard-component--full-height dashboard-component__loading">
+		<div class="dashboard-component__loading__content">
+			<h4 class="dashboard-component__loading__heading">Loading...</h4>
+			<mat-progress-bar mode="indeterminate" value="40"></mat-progress-bar>
+		</div>
+	</div>
+</section>
+<ng-template #errorTemplate>
+	<div class="admin-table__alert-danger text-center w-100">Tải dữ liệu thất bại. Vui lòng chọn
+		<a (click)="reload($event)" href="javascript:" class="admin-table__alert-danger__btn-reload">tải lại</a>
+	</div>
+</ng-template>
+<!-- 
+<p-sidebar [(visible)]="formControl.visible" position="right" appendTo="body" styleClass="ictu-p-drawer" [dismissible]="false" [style]="{'width':'400px', 'max-width':'100%'}" (onHide)="onDrawerHide()">
+	<ng-template pTemplate="header">
+		<h2 class="ictu-p-drawer__heading">
+			<svg style="margin: 0 5px 0 0;" xmlns="http://www.w3.org/2000/svg" fill="none" height="24" viewBox="0 0 24 24" width="24">
+				<g fill="currentColor">
+					<path d="m22 6.75h-8c-.1989 0-.3897-.07902-.5303-.21967-.1407-.14065-.2197-.33142-.2197-.53033s.079-.38968.2197-.53033c.1406-.14065.3314-.21967.5303-.21967h8c.1989 0 .3897.07902.5303.21967.1407.14065.2197.33142.2197.53033s-.079.38968-.2197.53033c-.1406.14065-.3314.21967-.5303.21967z"/>
+					<path d="m22 12.75h-8c-.1989 0-.3897-.079-.5303-.2197-.1407-.1406-.2197-.3314-.2197-.5303s.079-.3897.2197-.5303c.1406-.1407.3314-.2197.5303-.2197h8c.1989 0 .3897.079.5303.2197.1407.1406.2197.3314.2197.5303s-.079.3897-.2197.5303c-.1406.1407-.3314.2197-.5303.2197z"/>
+					<path d="m22 18.75h-8c-.1989 0-.3897-.079-.5303-.2197-.1407-.1406-.2197-.3314-.2197-.5303s.079-.3897.2197-.5303c.1406-.1407.3314-.2197.5303-.2197h8c.1989 0 .3897.079.5303.2197.1407.1406.2197.3314.2197.5303s-.079.3897-.2197.5303c-.1406.1407-.3314.2197-.5303.2197z"/>
+					<path d="m9.5 11.25h-5c-.46332-.0026-.90691-.1878-1.23454-.5155-.32762-.3276-.51283-.77118-.51546-1.2345v-5c.00263-.46332.18784-.90691.51546-1.23454.32763-.32762.77122-.51283 1.23454-.51546h5c.46332.00263.9069.18784 1.2345.51546.3277.32763.5129.77122.5155 1.23454v5c-.0026.46332-.1878.9069-.5155 1.2345-.3276.3277-.77118.5129-1.2345.5155zm-5-7c-.0663 0-.12989.02634-.17678.07322-.04688.04689-.07322.11048-.07322.17678v5c0 .0663.02634.12989.07322.17678.04689.04688.11048.07322.17678.07322h5c.0663 0 .12989-.02634.17678-.07322.04688-.04689.07322-.11048.07322-.17678v-5c0-.0663-.02634-.12989-.07322-.17678-.04689-.04688-.11048-.07322-.17678-.07322z"/>
+					<path d="m9.5 21.25h-5c-.46332-.0026-.90691-.1878-1.23454-.5155-.32762-.3276-.51283-.7712-.51546-1.2345v-5c.00263-.4633.18784-.9069.51546-1.2345.32763-.3277.77122-.5129 1.23454-.5155h5c.46332.0026.9069.1878 1.2345.5155.3277.3276.5129.7712.5155 1.2345v5c-.0026.4633-.1878.9069-.5155 1.2345-.3276.3277-.77118.5129-1.2345.5155zm-5-7c-.0663 0-.12989.0263-.17678.0732-.04688.0469-.07322.1105-.07322.1768v5c0 .0663.02634.1299.07322.1768.04689.0469.11048.0732.17678.0732h5c.0663 0 .12989-.0263.17678-.0732.04688-.0469.07322-.1105.07322-.1768v-5c0-.0663-.02634-.1299-.07322-.1768-.04689-.0469-.11048-.0732-.17678-.0732z"/>
+					<path d="m6.49997 8.75001c-.18863-.00689-.36749-.08559-.5-.22l-1-1c-.09139-.14096-.13281-.30852-.11763-.47582.01519-.16731.08611-.32467.20139-.44686.11528-.1222.26824-.20216.43438-.22706.16614-.02489.33582.0067.48186.08974l.47.47 1.53-1.47c.06181-.09534.14447-.17538.24174-.23409s.20661-.09456.31976-.10483.22716.0053.33341.04554c.10625.04023.20197.10408.27994.18672.07796.08265.13613.18193.17012.29034.03398.10841.04289.22313.02605.33549s-.05899.21943-.12326.31312-.14899.17155-.24776.22771l-2 2c-.13251.13441-.31138.21311-.5.22z"/>
+				</g>
+			</svg>
+			{{ formControl.heading() }}
+		</h2>
+	</ng-template>
+	<div *ngIf="formControl.enableLoading()" class="ictu-p-drawer__animations animation-typing-dots">
+		<span class="animation-typing-dots__element"></span>
+		<span class="animation-typing-dots__element"></span>
+		<span class="animation-typing-dots__element"></span>
+	</div>
+	<div class="ictu-p-drawer__body">
+		<div class="ovic-vertical__inputs ovic-vertical__inputs--layout-2 p-0">
+			<form [formGroup]="this.formControl.formGroup">
+				<div class="row">
+					<div class="col-12">
+						<p class="form-row">
+							<label for="name">Tên môn học<span class="ovic-mark">*</span></label>
+							<input id="name" pInputText type="text" placeholder="Nhập môn học" formControlName="name"/>
+						</p>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12">
+						<p class="form-row">
+							<label for="slug">Ký hiệu môn học<span class="ovic-mark">*</span></label>
+							<span class="d-block position-relative width">
+							<input id="slug" pInputText type="text" placeholder="Ký hiệu môn học" formControlName="slug"/>
+							<span *ngIf="formField('slug').pending" style="position: absolute;top: 1px;left: 1px;width: calc(100% - 2px);height: calc(100% - 2px);z-index: 1;background-color: #ffffff75;border-radius: 4px;display: flex;justify-content: flex-end;align-items: center;">
+								<i class="pi pi-spin pi-spinner" style="width: auto;font-size: 14px;aspect-ratio: 1;display: inline-flex;justify-content: center;align-items: center;border-radius: 999px;height: 100%;"></i>
+							</span>
+						</span>
+							<small *ngIf="formField('slug').invalid && formField('slug').errors['slugExists']" style="color: #e31506;line-height: 1.5;margin: 0;display: block;font-size: 12px;position: absolute;z-index: 1;top: 100%;left: 0;padding: 2px 0 0;">Ký hiệu đã tồn tại </small>
+						</p>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12">
+						<p class="form-row">
+							<label for="desc">Mô tả</label>
+							<textarea pInputTextarea placeholder="Mô tả cho môn học..." id="desc" cols="30" rows="2" formControlName="desc"></textarea>
+						</p>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12">
+						<p class="form-row">
+							<label class="ictu-form__label">Trạng thái</label>
+							<p-dropdown [options]="optionStates" appendTo="body" class="ictu-dropdown-style" panelStyleClass="ictu-dropdown-panel" formControlName="status" placeholder="Trạng thái"></p-dropdown>
+						</p>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div class="ictu-p-drawer__footer">
+		<button (click)="formControl.closeForm()" class="btn ictu-badge-btn--secondary" mat-flat-button>Hủy</button>
+		<button (click)="submitForm()" [disabled]="!formControl.formFilledAndValid" class="btn ictu-badge-btn--primary-reverse" mat-flat-button>Lưu lại</button>
+	</div>
+</p-sidebar> -->
